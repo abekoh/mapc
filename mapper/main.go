@@ -1,11 +1,13 @@
-package mapper
+package main
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
 	"go/types"
 	"golang.org/x/tools/go/packages"
 	"io"
+	"log"
 )
 
 type Mapper struct {
@@ -37,7 +39,7 @@ func findPkg(param StructParam) (*packages.Package, error) {
 			return pkg, nil
 		}
 	}
-	return nil, fmt.Errorf("package %s is not found in %s", sp.Pkg, sp.Dir)
+	return nil, fmt.Errorf("package %s is not found in %s", param.Pkg, param.Dir)
 }
 
 func Lookup(param StructParam) (*Struct, error) {
@@ -61,8 +63,27 @@ func (m Mapper) Map(w io.Writer, from, to StructParam) error {
 	if err != nil {
 		return fmt.Errorf("failed to lookup %+v: %w", fromStr, err)
 	}
-	toStr, err := Lookup(from)
+	toStr, err := Lookup(to)
 	if err != nil {
 		return fmt.Errorf("failed to lookup %+v: %w", toStr, err)
+	}
+	fmt.Printf("%+v, %+v", fromStr.str.String(), toStr.str.String())
+	return nil
+}
+
+func main() {
+	m := Mapper{}
+	buf := bytes.Buffer{}
+	err := m.Map(&buf, StructParam{
+		Dir:    "mapper/a",
+		Pkg:    "a",
+		Struct: "User",
+	}, StructParam{
+		Dir:    "mapper/b",
+		Pkg:    "b",
+		Struct: "User",
+	})
+	if err != nil {
+		log.Fatal(err)
 	}
 }
