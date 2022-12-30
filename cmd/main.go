@@ -22,7 +22,7 @@ func main() {
 	flag.Parse()
 	args := flag.Args()
 	if len(args) != 2 {
-		log.Fatal("number of arguments must be 3")
+		log.Fatal("number of arguments must be 2")
 	}
 	params.from = parseStructParam(args[0])
 	params.to = parseStructParam(args[1])
