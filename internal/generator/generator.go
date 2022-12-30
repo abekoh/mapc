@@ -18,6 +18,8 @@ func (g Generator) Generate(w io.Writer, from, to model.StructParam) error {
 	if err != nil {
 		return fmt.Errorf("failed to lookup %+v: %w", toStr, err)
 	}
-	fmt.Printf("%+v, %+v", fromStr.String(), toStr.String())
+	//fmt.Printf("%+v, %+v", fromStr.String(), toStr.String())
+	m := model.MatchModel(fromStr, toStr)
+	fmt.Printf("%+v", m)
 	return nil
 }
