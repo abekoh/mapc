@@ -35,9 +35,9 @@ func parseStructParam(s string) model.StructParam {
 		log.Fatal("from/to param must be like 'filepath:package:structname'")
 	}
 	return model.StructParam{
-		Path:    ss[0],
-		Package: ss[1],
-		Struct:  ss[2],
+		Dir:    ss[0],
+		Pkg:    ss[1],
+		Struct: ss[2],
 	}
 }
 

@@ -8,19 +8,23 @@ import (
 )
 
 type StructParam struct {
-	Path    string
-	Package string
-	Struct  string
+	Dir    string
+	Pkg    string
+	Struct string
 }
 
 type Struct struct {
 	str *types.Struct
 }
 
+func (s Struct) String() string {
+	return fmt.Sprintf("%+v", s.str.String())
+}
+
 func findPkg(param StructParam) (*packages.Package, error) {
 	pkgs, err := packages.Load(&packages.Config{
 		Mode: packages.NeedName | packages.NeedSyntax | packages.NeedTypes | packages.NeedTypesInfo | packages.NeedDeps,
-		Dir:  param.Path,
+		Dir:  param.Dir,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("error is occured when loading package: %w", err)
@@ -29,11 +33,11 @@ func findPkg(param StructParam) (*packages.Package, error) {
 		return nil, errors.New("package not found")
 	}
 	for _, pkg := range pkgs {
-		if pkg.Name == param.Package {
+		if pkg.Name == param.Pkg {
 			return pkg, nil
 		}
 	}
-	return nil, fmt.Errorf("package %s is not found in %s", param.Package, param.Path)
+	return nil, fmt.Errorf("package %s is not found in %s", param.Pkg, param.Dir)
 }
 
 func Lookup(param StructParam) (*Struct, error) {
