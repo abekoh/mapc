@@ -91,7 +91,7 @@ func camelize(s string) string {
 func Write(w io.Writer, param TmplParam) error {
 	var buf bytes.Buffer
 	tmpl := template.Must(template.New("mapper").Parse(mapperTmpl))
-	if err := tmpl.Execute(w, param); err != nil {
+	if err := tmpl.Execute(&buf, param); err != nil {
 		return fmt.Errorf("failed to write mapper: %w", err)
 	}
 	formatted, err := format.Source(buf.Bytes())
