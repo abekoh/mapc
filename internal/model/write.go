@@ -27,10 +27,10 @@ type Field struct {
 	To   string
 }
 
-const mapperTmpl = `package {{ .Pkg }}
+const mapperTmpl = `package {{ .Package }}
 
 import (
-{{ range .ImportPkgs }}
+{{ range .ImportPackages }}
 	"{{ . }}"
 {{ end }}
 )

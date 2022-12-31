@@ -13,12 +13,12 @@ var golden string
 func TestGenerator_Generate(t *testing.T) {
 	var w bytes.Buffer
 	from := model.StructParam{
-		Dir:    "internal/testdata/a",
+		Dir:    "testdata/a",
 		Pkg:    "a",
 		Struct: "User",
 	}
 	to := model.StructParam{
-		Dir:    "internal/testdata/b",
+		Dir:    "testdata/b",
 		Pkg:    "b",
 		Struct: "User",
 	}
