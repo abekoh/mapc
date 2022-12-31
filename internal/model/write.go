@@ -62,7 +62,8 @@ func NewTmplParam(m *Model, dstPkgName string) TmplParam {
 	}
 	// FIXME
 	pkgs := []string{
-		"example.com/hoge",
+		"github.com/abekoh/mapstructor/internal/generator/testdata/a",
+		"github.com/abekoh/mapstructor/internal/generator/testdata/b",
 	}
 	return TmplParam{
 		Package:        dstPkgName,
