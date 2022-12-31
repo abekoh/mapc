@@ -84,7 +84,7 @@ func camelize(s string) string {
 	if f < 0x61 || f > 0x7A {
 		return s
 	}
-	return string(f+0x20) + s[1:]
+	return string(f-0x20) + s[1:]
 }
 
 func Write(w io.Writer, param TmplParam) error {
