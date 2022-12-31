@@ -74,7 +74,7 @@ func NewTmplParam(m *Model, dstPkgName string) TmplParam {
 
 func funcName(m *Model) string {
 	var b strings.Builder
-	b.WriteString("to")
+	b.WriteString("To")
 	b.WriteString(camelize(m.to.param.Pkg))
 	b.WriteString(camelize(m.to.param.Struct))
 	return b.String()
