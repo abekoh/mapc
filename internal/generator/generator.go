@@ -20,6 +20,9 @@ func (g Generator) Generate(w io.Writer, from, to model.StructParam) error {
 	}
 	//fmt.Printf("%+v, %+v", fromStr.String(), toStr.String())
 	m := model.MatchModel(fromStr, toStr)
-	fmt.Printf("%+v", m)
+	tmplParam := model.NewTmplParam(m, "ab")
+	if err := model.Write(w, tmplParam); err != nil {
+		return fmt.Errorf("failed to write: %w", err)
+	}
 	return nil
 }
