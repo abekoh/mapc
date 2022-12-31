@@ -30,20 +30,20 @@ type Field struct {
 const mapperTmpl = `package {{ .Package }}
 
 import (
-{{ range .ImportPackages }}
-	"{{ . }}"
-{{ end }}
+{{- range .ImportPackages }}
+	"{{- . }}"
+{{- end }}
 )
 
-{{ range .Funcs }}
+{{- range .Funcs }}
 func {{ .Name }}(inp {{ .FromType }}) {{ .ToType }} {
 	return {{ .ToType }}{
-		{{ range .Fields }}
+		{{- range .Fields }}
 		{{ .From }}: inp.{{ .To }},
-		{{ end }}
+		{{- end }}
 	}
 }
-{{ end }}
+{{- end }}
 `
 
 func NewTmplParam(m *Model, dstPkgName string) TmplParam {
