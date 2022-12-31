@@ -1,8 +1,9 @@
-package model
+package exporter
 
 import (
 	"bytes"
 	"fmt"
+	"github.com/abekoh/mapstructor/internal/pivot"
 	"go/format"
 	"html/template"
 	"io"
@@ -46,18 +47,18 @@ func {{ .Name }}(inp {{ .FromType }}) {{ .ToType }} {
 {{- end }}
 `
 
-func NewTmplParam(m *Model, dstPkgName string) TmplParam {
-	fields := make([]Field, 0, len(m.maps))
-	for _, mp := range m.maps {
+func NewTmplParam(m *pivot.Pivot, dstPkgName string) TmplParam {
+	fields := make([]Field, 0, len(m.Maps))
+	for _, mp := range m.Maps {
 		fields = append(fields, Field{
-			From: mp.from.Name(),
-			To:   mp.to.Name(),
+			From: mp.From.Name(),
+			To:   mp.To.Name(),
 		})
 	}
 	fc := Func{
 		Name:     funcName(m),
-		FromType: fmt.Sprintf("%s.%s", m.from.param.Pkg, m.from.param.Struct),
-		ToType:   fmt.Sprintf("%s.%s", m.to.param.Pkg, m.to.param.Struct),
+		FromType: fmt.Sprintf("%s.%s", m.From.PackageName(), m.From.StructName()),
+		ToType:   fmt.Sprintf("%s.%s", m.To.PackageName(), m.To.StructName()),
 		Fields:   fields,
 	}
 	// FIXME
@@ -72,11 +73,11 @@ func NewTmplParam(m *Model, dstPkgName string) TmplParam {
 	}
 }
 
-func funcName(m *Model) string {
+func funcName(m *pivot.Pivot) string {
 	var b strings.Builder
 	b.WriteString("To")
-	b.WriteString(camelize(m.to.param.Pkg))
-	b.WriteString(camelize(m.to.param.Struct))
+	b.WriteString(camelize(m.To.PackageName()))
+	b.WriteString(camelize(m.To.StructName()))
 	return b.String()
 }
 

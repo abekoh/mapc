@@ -1,4 +1,4 @@
-package model
+package pivot
 
 import (
 	"errors"
@@ -16,6 +16,14 @@ type StructParam struct {
 type Struct struct {
 	str   *types.Struct
 	param *StructParam
+}
+
+func (s Struct) PackageName() string {
+	return s.param.Pkg
+}
+
+func (s Struct) StructName() string {
+	return s.param.Struct
 }
 
 func (s Struct) String() string {
