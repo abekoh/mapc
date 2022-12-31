@@ -46,7 +46,7 @@ func {{ .Name }}(inp {{ .FromType }}) {{ .ToType }} {
 {{ end }}
 `
 
-func NewTmplParam(m *Model) TmplParam {
+func NewTmplParam(m *Model, dstPkgName string) TmplParam {
 	fields := make([]Field, 0, len(m.maps))
 	for _, mp := range m.maps {
 		fields = append(fields, Field{
@@ -65,7 +65,7 @@ func NewTmplParam(m *Model) TmplParam {
 		"example.com/hoge",
 	}
 	return TmplParam{
-		Package:        "ab", // FIXME
+		Package:        dstPkgName,
 		ImportPackages: pkgs,
 		Funcs:          []Func{fc},
 	}
