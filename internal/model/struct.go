@@ -56,8 +56,3 @@ func Lookup(param StructParam) (*Struct, error) {
 	}
 	return &Struct{str: str, param: &param}, nil
 }
-
-type FieldMap struct {
-	from *types.Var
-	to   *types.Var
-}

@@ -2,26 +2,31 @@ package model
 
 import "go/types"
 
+type FieldPair struct {
+	from *types.Var
+	to   *types.Var
+}
+
 type Model struct {
 	from *Struct
 	to   *Struct
-	maps []FieldMap
+	maps []FieldPair
 }
 
 func MatchModel(from, to *Struct) *Model {
-	toFields := make(map[string]*types.Var)
+	toFieldMap := make(map[string]*types.Var)
 	for i := 0; i < to.str.NumFields(); i++ {
 		f := to.str.Field(i)
 		// TODO: fix key
-		toFields[f.Name()] = f
+		toFieldMap[f.Name()] = f
 	}
 
-	res := make([]FieldMap, 0)
+	res := make([]FieldPair, 0)
 	for i := 0; i < from.str.NumFields(); i++ {
 		fromField := from.str.Field(i)
 		// TODO: fix matching logic
-		if toField, ok := toFields[fromField.Name()]; ok {
-			res = append(res, FieldMap{fromField, toField})
+		if toField, ok := toFieldMap[fromField.Name()]; ok {
+			res = append(res, FieldPair{fromField, toField})
 		}
 	}
 	return &Model{
