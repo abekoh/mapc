@@ -16,9 +16,15 @@ func (o Var) Name() string {
 
 type tokenFieldMap map[string]Var
 
+type Caster struct {
+	fc        func(any) any
+	fmtString string
+}
+
 type FieldPair struct {
-	From Var
-	To   Var
+	From   Var
+	To     Var
+	Caster Caster
 }
 
 type Pivot struct {
@@ -46,7 +52,7 @@ func match(from *Struct, toTokenFieldMap tokenFieldMap) []FieldPair {
 		fromToken := tokenizer.Tokenize(fromField.Name())
 		// TODO: fix matching logic
 		if toObj, ok := toTokenFieldMap[fromToken]; ok {
-			res = append(res, FieldPair{Var{fromField}, toObj})
+			res = append(res, FieldPair{From: Var{fromField}, To: toObj, Caster: Caster{}})
 		}
 	}
 	return res
