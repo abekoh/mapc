@@ -11,9 +11,9 @@ import (
 )
 
 type TmplParam struct {
-	Package        string
-	ImportPackages []string
-	Funcs          []Func
+	Pkg        string
+	ImportPkgs []string
+	Funcs      []Func
 }
 
 type Func struct {
@@ -28,10 +28,10 @@ type Field struct {
 	To   string
 }
 
-const mapperTmpl = `package {{ .Package }}
+const mapperTmpl = `package {{ .Pkg }}
 
 import (
-{{- range .ImportPackages }}
+{{- range .ImportPkgs }}
 	"{{- . }}"
 {{- end }}
 )
@@ -67,9 +67,9 @@ func NewTmplParam(m *pivot.Pivot, dstPkgName string) TmplParam {
 		"github.com/abekoh/mapstructor/internal/generator/testdata/b",
 	}
 	return TmplParam{
-		Package:        dstPkgName,
-		ImportPackages: pkgs,
-		Funcs:          []Func{fc},
+		Pkg:        dstPkgName,
+		ImportPkgs: pkgs,
+		Funcs:      []Func{fc},
 	}
 }
 
