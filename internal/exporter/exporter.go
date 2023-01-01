@@ -73,11 +73,11 @@ func NewTmplParam(p *pivot.Pivot, dstPkgName string) TmplParam {
 	}
 }
 
-func funcName(m *pivot.Pivot) string {
+func funcName(p *pivot.Pivot) string {
 	var b strings.Builder
 	b.WriteString("To")
-	b.WriteString(camelizeFirst(m.To.PkgName()))
-	b.WriteString(camelizeFirst(m.To.StructName()))
+	b.WriteString(camelizeFirst(p.To.PkgName()))
+	b.WriteString(camelizeFirst(p.To.StructName()))
 	return b.String()
 }
 
