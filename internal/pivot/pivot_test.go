@@ -1,6 +1,7 @@
 package pivot
 
 import (
+	"reflect"
 	"testing"
 )
 
@@ -58,6 +59,40 @@ func Test_match(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := match(tt.args.from, tt.args.toTokenFieldMap); len(got) != tt.wantElements {
 				t.Errorf("match() = %v, wantElements = %v", got, tt.wantElements)
+			}
+		})
+	}
+}
+
+func Test_newFieldPair(t *testing.T) {
+	type args struct {
+		from Var
+		to   Var
+	}
+	tests := []struct {
+		name       string
+		args       args
+		wantExists bool
+		wantCaster *Caster
+	}{
+		{
+			name: "",
+			args: args{
+				from: loadField(t, From{}, "Int"),
+				to:   loadField(t, From{}, "Int"),
+			},
+			wantExists: true,
+			wantCaster: nil,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, got1 := newFieldPair(tt.args.from, tt.args.to)
+			if !reflect.DeepEqual(got.Caster, tt.wantCaster) {
+				t.Errorf("newFieldPair().Caster. got = %v, want %v", got.Caster, tt.wantCaster)
+			}
+			if got1 != tt.wantExists {
+				t.Errorf("newFieldPair() got1 = %v, want %v", got1, tt.wantExists)
 			}
 		})
 	}
