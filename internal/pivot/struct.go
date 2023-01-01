@@ -14,16 +14,21 @@ type StructParam struct {
 }
 
 type Struct struct {
-	str   *types.Struct
-	param *StructParam
+	pkg        *packages.Package
+	str        *types.Struct
+	structName string
 }
 
 func (s Struct) PkgName() string {
-	return s.param.Pkg
+	return s.pkg.Name
+}
+
+func (s Struct) PkgPath() string {
+	return s.pkg.PkgPath
 }
 
 func (s Struct) StructName() string {
-	return s.param.Struct
+	return s.structName
 }
 
 func (s Struct) String() string {
@@ -62,5 +67,5 @@ func newStruct(param StructParam) (*Struct, error) {
 	if !ok {
 		return nil, fmt.Errorf("%s is not model", param.Struct)
 	}
-	return &Struct{str: str, param: &param}, nil
+	return &Struct{pkg: pkg, str: str, structName: param.Struct}, nil
 }
