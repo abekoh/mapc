@@ -63,8 +63,8 @@ func NewTmplParam(m *pivot.Pivot, dstPkgName string) TmplParam {
 	}
 	// FIXME
 	pkgs := []string{
-		"github.com/abekoh/mapstructor/internal/generator/testdata/a",
-		"github.com/abekoh/mapstructor/internal/generator/testdata/b",
+		"github.com/abekoh/mapstructor/internal/cmd/testdata/a",
+		"github.com/abekoh/mapstructor/internal/cmd/testdata/b",
 	}
 	return TmplParam{
 		Pkg:        dstPkgName,

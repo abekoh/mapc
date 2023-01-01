@@ -1,4 +1,4 @@
-package generator
+package cmd
 
 import (
 	"fmt"
@@ -6,9 +6,6 @@ import (
 	"github.com/abekoh/mapstructor/internal/pivot"
 	"io"
 )
-
-type Generator struct {
-}
 
 type Param struct {
 	Dir    string
@@ -24,7 +21,7 @@ func toStructParam(inp Param) pivot.StructParam {
 	}
 }
 
-func (g Generator) Generate(w io.Writer, from, to Param) error {
+func Generate(w io.Writer, from, to Param) error {
 	p, err := pivot.New(toStructParam(from), toStructParam(to))
 	if err != nil {
 		return fmt.Errorf("failed to construct pivot: %w", err)

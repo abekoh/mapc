@@ -4,14 +4,14 @@ import (
 	"bytes"
 	"flag"
 	"fmt"
-	"github.com/abekoh/mapstructor/internal/generator"
+	"github.com/abekoh/mapstructor/internal/cmd"
 	"log"
 	"strings"
 )
 
 type parameters struct {
-	from generator.Param
-	to   generator.Param
+	from cmd.Param
+	to   cmd.Param
 	out  string
 }
 
@@ -28,12 +28,12 @@ func main() {
 	run(params)
 }
 
-func parseStructParam(s string) generator.Param {
+func parseStructParam(s string) cmd.Param {
 	ss := strings.Split(s, ":")
 	if len(ss) != 3 {
 		log.Fatal("from/to param must be like 'filepath:package:structname'")
 	}
-	return generator.Param{
+	return cmd.Param{
 		Dir:    ss[0],
 		Pkg:    ss[1],
 		Struct: ss[2],
@@ -41,9 +41,8 @@ func parseStructParam(s string) generator.Param {
 }
 
 func run(params parameters) {
-	g := generator.Generator{}
 	var buf bytes.Buffer
-	if err := g.Generate(&buf, params.from, params.to); err != nil {
+	if err := cmd.Generate(&buf, params.from, params.to); err != nil {
 		log.Fatal(err)
 	}
 	fmt.Printf("%s", buf.String())

@@ -1,4 +1,4 @@
-package generator
+package cmd
 
 import (
 	"bytes"
@@ -21,8 +21,7 @@ func TestGenerator_Generate(t *testing.T) {
 		Pkg:    "b",
 		Struct: "User",
 	}
-	g := Generator{}
-	err := g.Generate(&w, from, to)
+	err := Generate(&w, from, to)
 	if err != nil {
 		t.Fatal(err)
 	}
