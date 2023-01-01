@@ -21,13 +21,12 @@ func toStructParam(inp Param) pivot.StructParam {
 	}
 }
 
-func Generate(w io.Writer, from, to Param) error {
-	p, err := pivot.New(toStructParam(from), toStructParam(to))
+func Generate(w io.Writer, from, to Param, distPkgName string) error {
+	p, err := pivot.New(toStructParam(from), toStructParam(to), distPkgName)
 	if err != nil {
 		return fmt.Errorf("failed to construct pivot: %w", err)
 	}
-	// TODO: set dstPkgName
-	tmplParam := exporter.NewTmplParam(p, "ab")
+	tmplParam := exporter.NewTmplParam(p, distPkgName)
 	if err := exporter.Run(w, tmplParam); err != nil {
 		return fmt.Errorf("failed to export: %w", err)
 	}

@@ -21,7 +21,8 @@ func TestGenerator_Generate(t *testing.T) {
 		Pkg:    "b",
 		Struct: "User",
 	}
-	err := Generate(&w, from, to)
+	distPkgName := "ab"
+	err := Generate(&w, from, to, distPkgName)
 	if err != nil {
 		t.Fatal(err)
 	}

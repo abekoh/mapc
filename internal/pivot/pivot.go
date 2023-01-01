@@ -19,12 +19,13 @@ type FieldPair struct {
 }
 
 type Pivot struct {
-	From *Struct
-	To   *Struct
-	Maps []FieldPair
+	From        *Struct
+	To          *Struct
+	Maps        []FieldPair
+	DistPkgName string
 }
 
-func match(from, to *Struct) *Pivot {
+func newWithMatch(from, to *Struct, distPkgName string) *Pivot {
 	toFieldMap := make(map[string]Var)
 	for i := 0; i < to.str.NumFields(); i++ {
 		f := to.str.Field(i)
@@ -41,13 +42,14 @@ func match(from, to *Struct) *Pivot {
 		}
 	}
 	return &Pivot{
-		From: from,
-		To:   to,
-		Maps: res,
+		From:        from,
+		To:          to,
+		Maps:        res,
+		DistPkgName: distPkgName,
 	}
 }
 
-func New(from, to StructParam) (*Pivot, error) {
+func New(from, to StructParam, distPkgName string) (*Pivot, error) {
 	fromStr, err := newStruct(from)
 	if err != nil {
 		return nil, fmt.Errorf("failed to lookup %+v: %w", fromStr, err)
@@ -56,5 +58,5 @@ func New(from, to StructParam) (*Pivot, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to lookup %+v: %w", toStr, err)
 	}
-	return match(fromStr, toStr), nil
+	return newWithMatch(fromStr, toStr, distPkgName), nil
 }
