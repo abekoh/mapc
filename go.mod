@@ -1,4 +1,4 @@
-module github.com/abekoh/mapstructor
+module github.com/abekoh/mapc
 
 go 1.19
 

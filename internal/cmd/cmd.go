@@ -2,8 +2,8 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/abekoh/mapstructor/internal/exporter"
-	"github.com/abekoh/mapstructor/internal/pivot"
+	"github.com/abekoh/mapc/internal/exporter"
+	"github.com/abekoh/mapc/internal/pivot"
 	"io"
 )
 

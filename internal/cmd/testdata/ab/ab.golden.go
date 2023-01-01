@@ -1,8 +1,8 @@
 package ab
 
 import (
-	"github.com/abekoh/mapstructor/internal/cmd/testdata/a"
-	"github.com/abekoh/mapstructor/internal/cmd/testdata/b"
+	"github.com/abekoh/mapc/internal/cmd/testdata/a"
+	"github.com/abekoh/mapc/internal/cmd/testdata/b"
 )
 
 func ToBUser(inp a.User) b.User {

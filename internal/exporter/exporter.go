@@ -3,7 +3,7 @@ package exporter
 import (
 	"bytes"
 	"fmt"
-	"github.com/abekoh/mapstructor/internal/pivot"
+	"github.com/abekoh/mapc/internal/pivot"
 	"go/format"
 	"html/template"
 	"io"
@@ -63,8 +63,8 @@ func NewTmplParam(m *pivot.Pivot, dstPkgName string) TmplParam {
 	}
 	// FIXME
 	pkgs := []string{
-		"github.com/abekoh/mapstructor/internal/cmd/testdata/a",
-		"github.com/abekoh/mapstructor/internal/cmd/testdata/b",
+		"github.com/abekoh/mapc/internal/cmd/testdata/a",
+		"github.com/abekoh/mapc/internal/cmd/testdata/b",
 	}
 	return TmplParam{
 		Pkg:        dstPkgName,
