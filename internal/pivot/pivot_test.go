@@ -5,11 +5,13 @@ import (
 )
 
 type From struct {
-	Int int
+	Int   int
+	Int64 int64
 }
 
 type To struct {
-	Int int
+	Int   int
+	Int64 int64
 }
 
 func loadField(t *testing.T, str any, fieldName string) Var {
@@ -40,6 +42,14 @@ func Test_match(t *testing.T) {
 			args: args{
 				from:            loadStruct(t, From{}),
 				toTokenFieldMap: tokenFieldMap{"Int": loadField(t, To{}, "Int")},
+			},
+			wantElements: 1,
+		},
+		{
+			name: "int64 -> int",
+			args: args{
+				from:            loadStruct(t, From{}),
+				toTokenFieldMap: tokenFieldMap{"Int64": loadField(t, To{}, "Int")},
 			},
 			wantElements: 1,
 		},
