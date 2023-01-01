@@ -14,19 +14,39 @@ func (v Var) Name() string {
 	return v.v.Name()
 }
 
-func newFieldPair(from, to Var) (FieldPair, bool) {
-	// TODO: logic
-	return FieldPair{
-		From:   from,
-		To:     to,
-		Caster: nil,
-	}, true
+func newFieldPair(from, to Var) (pair FieldPair, ok bool) {
+	pair = FieldPair{
+		From: from,
+		To:   to,
+	}
+	if from.v.Type().String() == to.v.Type().String() {
+		ok = true
+		return
+	}
+	switch from.v.Type().Underlying().(type) {
+	case *types.Basic:
+		fromBasic := from.v.Type().Underlying().(*types.Basic)
+		toBasic := to.v.Type().Underlying().(*types.Basic)
+		if isCastableBasicInfo(fromBasic.Info()) && fromBasic.Info() == toBasic.Info() {
+			pair.Caster = &Caster{
+				fmtString: fmt.Sprintf("%s(%%s)", to.v.Type().String()),
+			}
+			ok = true
+			return
+		}
+		return
+	default:
+		return
+	}
+}
+
+func isCastableBasicInfo(i types.BasicInfo) bool {
+	return i&(types.IsBoolean|types.IsInteger|types.IsUnsigned|types.IsFloat|types.IsComplex) > 0
 }
 
 type tokenFieldMap map[string]Var
 
 type Caster struct {
-	fc        func(any) any
 	fmtString string
 }
 

@@ -5,14 +5,20 @@ import (
 	"testing"
 )
 
+type Hoge struct {
+	Fuga string
+}
+
 type From struct {
 	Int   int
 	Int64 int64
+	Hoge  Hoge
 }
 
 type To struct {
 	Int   int
 	Int64 int64
+	Hoge  Hoge
 }
 
 func loadField(t *testing.T, str any, fieldName string) Var {
@@ -76,10 +82,30 @@ func Test_newFieldPair(t *testing.T) {
 		wantCaster *Caster
 	}{
 		{
-			name: "",
+			name: "int -> int",
 			args: args{
 				from: loadField(t, From{}, "Int"),
-				to:   loadField(t, From{}, "Int"),
+				to:   loadField(t, To{}, "Int"),
+			},
+			wantExists: true,
+			wantCaster: nil,
+		},
+		{
+			name: "int -> int64",
+			args: args{
+				from: loadField(t, From{}, "Int"),
+				to:   loadField(t, To{}, "Int64"),
+			},
+			wantExists: true,
+			wantCaster: &Caster{
+				fmtString: "int64(%s)",
+			},
+		},
+		{
+			name: "struct -> struct",
+			args: args{
+				from: loadField(t, From{}, "Hoge"),
+				to:   loadField(t, To{}, "Hoge"),
 			},
 			wantExists: true,
 			wantCaster: nil,
