@@ -29,8 +29,18 @@ type Pivot struct {
 }
 
 func newWithMatch(from, to *Struct, distPkgName string) *Pivot {
+	maps := match(from, to)
+	return &Pivot{
+		From:        from,
+		To:          to,
+		Maps:        maps,
+		DistPkgName: distPkgName,
+	}
+}
+
+func match(from, to *Struct) []FieldPair {
 	toTokenFieldMap := to.tokenFieldMap()
-	res := make([]FieldPair, 0)
+	var res []FieldPair
 	for i := 0; i < from.str.NumFields(); i++ {
 		fromField := from.str.Field(i)
 		fromToken := tokenizer.Tokenize(fromField.Name())
@@ -39,12 +49,7 @@ func newWithMatch(from, to *Struct, distPkgName string) *Pivot {
 			res = append(res, FieldPair{Var{fromField}, toObj})
 		}
 	}
-	return &Pivot{
-		From:        from,
-		To:          to,
-		Maps:        res,
-		DistPkgName: distPkgName,
-	}
+	return res
 }
 
 func New(from, to StructParam, distPkgName string) (*Pivot, error) {
