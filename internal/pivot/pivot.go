@@ -10,8 +10,17 @@ type Var struct {
 	v *types.Var
 }
 
-func (o Var) Name() string {
-	return o.v.Name()
+func (v Var) Name() string {
+	return v.v.Name()
+}
+
+func newFieldPair(from, to Var) (FieldPair, bool) {
+	// TODO: logic
+	return FieldPair{
+		From:   from,
+		To:     to,
+		Caster: nil,
+	}, true
 }
 
 type tokenFieldMap map[string]Var
@@ -24,7 +33,7 @@ type Caster struct {
 type FieldPair struct {
 	From   Var
 	To     Var
-	Caster Caster
+	Caster *Caster
 }
 
 type Pivot struct {
@@ -50,9 +59,10 @@ func match(from *Struct, toTokenFieldMap tokenFieldMap) []FieldPair {
 	for i := 0; i < from.str.NumFields(); i++ {
 		fromField := from.str.Field(i)
 		fromToken := tokenizer.Tokenize(fromField.Name())
-		// TODO: fix matching logic
-		if toObj, ok := toTokenFieldMap[fromToken]; ok {
-			res = append(res, FieldPair{From: Var{fromField}, To: toObj, Caster: Caster{}})
+		if toVar, ok := toTokenFieldMap[fromToken]; ok {
+			if pair, ok := newFieldPair(Var{v: fromField}, toVar); ok {
+				res = append(res, pair)
+			}
 		}
 	}
 	return res
