@@ -32,6 +32,15 @@ func (s Struct) StructName() string {
 	return s.structName
 }
 
+func (s Struct) Var(fieldName string) *types.Var {
+	for i := 0; i < s.str.NumFields(); i++ {
+		if s.str.Field(i).Name() == fieldName {
+			return s.str.Field(i)
+		}
+	}
+	return nil
+}
+
 func (s Struct) String() string {
 	return fmt.Sprintf("%+v", s.str.String())
 }
