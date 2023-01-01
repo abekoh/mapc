@@ -5,14 +5,13 @@ import (
 	"flag"
 	"fmt"
 	"github.com/abekoh/mapstructor/internal/generator"
-	"github.com/abekoh/mapstructor/internal/model"
 	"log"
 	"strings"
 )
 
 type parameters struct {
-	from model.StructParam
-	to   model.StructParam
+	from generator.Param
+	to   generator.Param
 	out  string
 }
 
@@ -29,12 +28,12 @@ func main() {
 	run(params)
 }
 
-func parseStructParam(s string) model.StructParam {
+func parseStructParam(s string) generator.Param {
 	ss := strings.Split(s, ":")
 	if len(ss) != 3 {
 		log.Fatal("from/to param must be like 'filepath:package:structname'")
 	}
-	return model.StructParam{
+	return generator.Param{
 		Dir:    ss[0],
 		Pkg:    ss[1],
 		Struct: ss[2],

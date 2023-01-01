@@ -3,7 +3,6 @@ package generator
 import (
 	"bytes"
 	_ "embed"
-	"github.com/abekoh/mapstructor/internal/pivot"
 	"testing"
 )
 
@@ -12,12 +11,12 @@ var golden string
 
 func TestGenerator_Generate(t *testing.T) {
 	var w bytes.Buffer
-	from := pivot.StructParam{
+	from := Param{
 		Dir:    "testdata/a",
 		Pkg:    "a",
 		Struct: "User",
 	}
-	to := pivot.StructParam{
+	to := Param{
 		Dir:    "testdata/b",
 		Pkg:    "b",
 		Struct: "User",
