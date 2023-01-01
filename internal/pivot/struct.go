@@ -66,7 +66,7 @@ func newStruct(param StructParam) (*Struct, error) {
 	}
 	str, ok := obj.Type().Underlying().(*types.Struct)
 	if !ok {
-		return nil, fmt.Errorf("%s is not model", param.Struct)
+		return nil, fmt.Errorf("%s is not *types.struct", param.Struct)
 	}
 	return &Struct{pkg: pkg, str: str, structName: param.Struct}, nil
 }
