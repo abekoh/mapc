@@ -17,7 +17,7 @@ func (g Generator) Generate(w io.Writer, from, to pivot.StructParam) error {
 	}
 	// TODO: set dstPkgName
 	tmplParam := exporter.NewTmplParam(p, "ab")
-	if err := exporter.Write(w, tmplParam); err != nil {
+	if err := exporter.Run(w, tmplParam); err != nil {
 		return fmt.Errorf("failed to export: %w", err)
 	}
 	return nil

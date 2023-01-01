@@ -76,12 +76,12 @@ func NewTmplParam(m *pivot.Pivot, dstPkgName string) TmplParam {
 func funcName(m *pivot.Pivot) string {
 	var b strings.Builder
 	b.WriteString("To")
-	b.WriteString(camelize(m.To.PkgName()))
-	b.WriteString(camelize(m.To.StructName()))
+	b.WriteString(camelizeFirst(m.To.PkgName()))
+	b.WriteString(camelizeFirst(m.To.StructName()))
 	return b.String()
 }
 
-func camelize(s string) string {
+func camelizeFirst(s string) string {
 	f := s[0]
 	if f < 0x61 || f > 0x7A {
 		return s
@@ -89,7 +89,7 @@ func camelize(s string) string {
 	return string(f-0x20) + s[1:]
 }
 
-func Write(w io.Writer, param TmplParam) error {
+func Run(w io.Writer, param TmplParam) error {
 	var buf bytes.Buffer
 	tmpl := template.Must(template.New("mapper").Parse(mapperTmpl))
 	if err := tmpl.Execute(&buf, param); err != nil {
