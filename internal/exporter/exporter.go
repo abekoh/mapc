@@ -47,18 +47,18 @@ func {{ .Name }}(inp {{ .FromType }}) {{ .ToType }} {
 {{- end }}
 `
 
-func NewTmplParam(m *pivot.Pivot, dstPkgName string) TmplParam {
-	fields := make([]Field, 0, len(m.Maps))
-	for _, mp := range m.Maps {
+func NewTmplParam(p *pivot.Pivot, dstPkgName string) TmplParam {
+	fields := make([]Field, 0, len(p.Maps))
+	for _, mp := range p.Maps {
 		fields = append(fields, Field{
 			From: mp.From.Name(),
 			To:   mp.To.Name(),
 		})
 	}
 	fc := Func{
-		Name:     funcName(m),
-		FromType: fmt.Sprintf("%s.%s", m.From.PkgName(), m.From.StructName()),
-		ToType:   fmt.Sprintf("%s.%s", m.To.PkgName(), m.To.StructName()),
+		Name:     funcName(p),
+		FromType: fmt.Sprintf("%s.%s", p.From.PkgName(), p.From.StructName()),
+		ToType:   fmt.Sprintf("%s.%s", p.To.PkgName(), p.To.StructName()),
 		Fields:   fields,
 	}
 	// FIXME
