@@ -14,14 +14,13 @@ func (v Var) Name() string {
 	return v.v.Name()
 }
 
-func newFieldPair(from, to Var) (pair FieldPair, ok bool) {
-	pair = FieldPair{
+func newFieldPair(from, to Var) (FieldPair, bool) {
+	pair := FieldPair{
 		From: from,
 		To:   to,
 	}
 	if from.v.Type().String() == to.v.Type().String() {
-		ok = true
-		return
+		return pair, true
 	}
 	switch from.v.Type().Underlying().(type) {
 	case *types.Basic:
@@ -31,12 +30,11 @@ func newFieldPair(from, to Var) (pair FieldPair, ok bool) {
 			pair.Caster = &Caster{
 				fmtString: fmt.Sprintf("%s(%%s)", to.v.Type().String()),
 			}
-			ok = true
-			return
+			return pair, true
 		}
-		return
+		return pair, false
 	default:
-		return
+		return pair, false
 	}
 }
 

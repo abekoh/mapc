@@ -102,6 +102,17 @@ func Test_newFieldPair(t *testing.T) {
 			},
 		},
 		{
+			name: "int64 -> int",
+			args: args{
+				from: loadField(t, From{}, "Int64"),
+				to:   loadField(t, To{}, "Int"),
+			},
+			wantExists: true,
+			wantCaster: &Caster{
+				fmtString: "int(%s)",
+			},
+		},
+		{
 			name: "struct -> struct",
 			args: args{
 				from: loadField(t, From{}, "Hoge"),
