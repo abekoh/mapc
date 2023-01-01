@@ -14,10 +14,9 @@ type Sample struct {
 	snake_case struct{}
 }
 
-func loadSampleStruct(t *testing.T) *Struct {
+func loadStruct(t *testing.T, target any) *Struct {
 	t.Helper()
-	structName := reflect.TypeOf(Sample{}).Name()
-
+	structName := reflect.TypeOf(target).Name()
 	pkgs, err := packages.Load(&packages.Config{
 		Mode:  packages.NeedName | packages.NeedSyntax | packages.NeedTypes | packages.NeedTypesInfo | packages.NeedDeps,
 		Tests: true,
@@ -28,7 +27,7 @@ func loadSampleStruct(t *testing.T) *Struct {
 	}
 	var pkg *packages.Package
 	for _, p := range pkgs {
-		if p.Name == "pivot" {
+		if p.ID == "github.com/abekoh/mapc/internal/pivot [github.com/abekoh/mapc/internal/pivot.test]" {
 			pkg = p
 			break
 		}
@@ -53,14 +52,59 @@ func loadSampleStruct(t *testing.T) *Struct {
 
 func TestStruct_tokenFieldMap(t *testing.T) {
 	t.Run("no tokenizer", func(t *testing.T) {
-		s := loadSampleStruct(t)
+		s := loadStruct(t, Sample{})
 		tokenizer.Initialize() // no tokenizers
 		got := s.tokenFieldMap()
-
 		expectedFields := []string{
 			"CapCamel",
+			"smallCamel",
+			"snake_case",
 		}
-
+		for _, expected := range expectedFields {
+			if _, ok := got[expected]; !ok {
+				t.Errorf("field '%s' is not found in got", expected)
+			}
+		}
+	})
+	t.Run("upperFirst", func(t *testing.T) {
+		s := loadStruct(t, Sample{})
+		tokenizer.Initialize(tokenizer.UpperFirst)
+		got := s.tokenFieldMap()
+		expectedFields := []string{
+			"CapCamel",
+			"SmallCamel",
+			"Snake_case",
+		}
+		for _, expected := range expectedFields {
+			if _, ok := got[expected]; !ok {
+				t.Errorf("field '%s' is not found in got", expected)
+			}
+		}
+	})
+	t.Run("snakeToCamel", func(t *testing.T) {
+		s := loadStruct(t, Sample{})
+		tokenizer.Initialize(tokenizer.SnakeToCamel)
+		got := s.tokenFieldMap()
+		expectedFields := []string{
+			"CapCamel",
+			"smallCamel",
+			"snakeCase",
+		}
+		for _, expected := range expectedFields {
+			if _, ok := got[expected]; !ok {
+				t.Errorf("field '%s' is not found in got", expected)
+			}
+		}
+	})
+	t.Run("snakeToCamel,upperFirst", func(t *testing.T) {
+		s := loadStruct(t, Sample{})
+		tokenizer.Initialize(tokenizer.SnakeToCamel, tokenizer.UpperFirst)
+		got := s.tokenFieldMap()
+		expectedFields := []string{
+			"CapCamel",
+			"SmallCamel",
+			"SnakeCase",
+		}
 		for _, expected := range expectedFields {
 			if _, ok := got[expected]; !ok {
 				t.Errorf("field '%s' is not found in got", expected)
