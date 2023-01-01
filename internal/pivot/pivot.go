@@ -5,17 +5,17 @@ import (
 	"go/types"
 )
 
-type Object struct {
+type Var struct {
 	v *types.Var
 }
 
-func (o Object) Name() string {
+func (o Var) Name() string {
 	return o.v.Name()
 }
 
 type FieldPair struct {
-	From Object
-	To   Object
+	From Var
+	To   Var
 }
 
 type Pivot struct {
@@ -25,11 +25,11 @@ type Pivot struct {
 }
 
 func match(from, to *Struct) *Pivot {
-	toFieldMap := make(map[string]Object)
+	toFieldMap := make(map[string]Var)
 	for i := 0; i < to.str.NumFields(); i++ {
 		f := to.str.Field(i)
 		// TODO: fix key
-		toFieldMap[f.Name()] = Object{v: f}
+		toFieldMap[f.Name()] = Var{v: f}
 	}
 
 	res := make([]FieldPair, 0)
@@ -37,7 +37,7 @@ func match(from, to *Struct) *Pivot {
 		fromField := from.str.Field(i)
 		// TODO: fix matching logic
 		if toObj, ok := toFieldMap[fromField.Name()]; ok {
-			res = append(res, FieldPair{Object{fromField}, toObj})
+			res = append(res, FieldPair{Var{fromField}, toObj})
 		}
 	}
 	return &Pivot{
