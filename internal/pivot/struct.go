@@ -18,7 +18,7 @@ type Struct struct {
 	param *StructParam
 }
 
-func (s Struct) PackageName() string {
+func (s Struct) PkgName() string {
 	return s.param.Pkg
 }
 
@@ -49,7 +49,7 @@ func findPkg(param StructParam) (*packages.Package, error) {
 	return nil, fmt.Errorf("package %s is not found in %s", param.Pkg, param.Dir)
 }
 
-func Lookup(param StructParam) (*Struct, error) {
+func newStruct(param StructParam) (*Struct, error) {
 	pkg, err := findPkg(param)
 	if err != nil {
 		return nil, fmt.Errorf("failed to find package: %w", err)

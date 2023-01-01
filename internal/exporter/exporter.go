@@ -57,8 +57,8 @@ func NewTmplParam(m *pivot.Pivot, dstPkgName string) TmplParam {
 	}
 	fc := Func{
 		Name:     funcName(m),
-		FromType: fmt.Sprintf("%s.%s", m.From.PackageName(), m.From.StructName()),
-		ToType:   fmt.Sprintf("%s.%s", m.To.PackageName(), m.To.StructName()),
+		FromType: fmt.Sprintf("%s.%s", m.From.PkgName(), m.From.StructName()),
+		ToType:   fmt.Sprintf("%s.%s", m.To.PkgName(), m.To.StructName()),
 		Fields:   fields,
 	}
 	// FIXME
@@ -76,7 +76,7 @@ func NewTmplParam(m *pivot.Pivot, dstPkgName string) TmplParam {
 func funcName(m *pivot.Pivot) string {
 	var b strings.Builder
 	b.WriteString("To")
-	b.WriteString(camelize(m.To.PackageName()))
+	b.WriteString(camelize(m.To.PkgName()))
 	b.WriteString(camelize(m.To.StructName()))
 	return b.String()
 }

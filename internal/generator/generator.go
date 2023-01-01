@@ -11,19 +11,14 @@ type Generator struct {
 }
 
 func (g Generator) Generate(w io.Writer, from, to pivot.StructParam) error {
-	fromStr, err := pivot.Lookup(from)
+	p, err := pivot.New(from, to)
 	if err != nil {
-		return fmt.Errorf("failed to lookup %+v: %w", fromStr, err)
+		return fmt.Errorf("failed to construct pivot: %w", err)
 	}
-	toStr, err := pivot.Lookup(to)
-	if err != nil {
-		return fmt.Errorf("failed to lookup %+v: %w", toStr, err)
-	}
-	//fmt.Printf("%+v, %+v", fromStr.String(), toStr.String())
-	m := pivot.Match(fromStr, toStr)
-	tmplParam := exporter.NewTmplParam(m, "ab")
+	// TODO: set dstPkgName
+	tmplParam := exporter.NewTmplParam(p, "ab")
 	if err := exporter.Write(w, tmplParam); err != nil {
-		return fmt.Errorf("failed to write: %w", err)
+		return fmt.Errorf("failed to export: %w", err)
 	}
 	return nil
 }

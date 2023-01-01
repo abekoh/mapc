@@ -1,6 +1,9 @@
 package pivot
 
-import "go/types"
+import (
+	"fmt"
+	"go/types"
+)
 
 type Object struct {
 	v *types.Var
@@ -21,7 +24,7 @@ type Pivot struct {
 	Maps []FieldPair
 }
 
-func Match(from, to *Struct) *Pivot {
+func match(from, to *Struct) *Pivot {
 	toFieldMap := make(map[string]Object)
 	for i := 0; i < to.str.NumFields(); i++ {
 		f := to.str.Field(i)
@@ -42,4 +45,16 @@ func Match(from, to *Struct) *Pivot {
 		To:   to,
 		Maps: res,
 	}
+}
+
+func New(from, to StructParam) (*Pivot, error) {
+	fromStr, err := newStruct(from)
+	if err != nil {
+		return nil, fmt.Errorf("failed to lookup %+v: %w", fromStr, err)
+	}
+	toStr, err := newStruct(to)
+	if err != nil {
+		return nil, fmt.Errorf("failed to lookup %+v: %w", toStr, err)
+	}
+	return match(fromStr, toStr), nil
 }
