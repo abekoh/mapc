@@ -2,6 +2,7 @@ package pivot
 
 import (
 	"fmt"
+	"github.com/abekoh/mapc/internal/tokenizer"
 	"go/types"
 )
 
@@ -29,15 +30,15 @@ func newWithMatch(from, to *Struct, distPkgName string) *Pivot {
 	toFieldMap := make(map[string]Var)
 	for i := 0; i < to.str.NumFields(); i++ {
 		f := to.str.Field(i)
-		// TODO: fix key
-		toFieldMap[f.Name()] = Var{v: f}
+		token := tokenizer.Tokenize(f.Name())
+		toFieldMap[token] = Var{v: f}
 	}
 
 	res := make([]FieldPair, 0)
 	for i := 0; i < from.str.NumFields(); i++ {
 		fromField := from.str.Field(i)
 		// TODO: fix matching logic
-		if toObj, ok := toFieldMap[fromField.Name()]; ok {
+		if toObj, ok := toFieldMap[tokenizer.Tokenize(fromField.Name())]; ok {
 			res = append(res, FieldPair{Var{fromField}, toObj})
 		}
 	}

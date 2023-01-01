@@ -9,12 +9,10 @@ var (
 
 type TokenizeFunc func(string) string
 
-func Register(inps ...TokenizeFunc) {
+func Initialize(funcs ...TokenizeFunc) {
 	mu.Lock()
 	defer mu.Unlock()
-	for _, inp := range inps {
-		tokenizers = append(tokenizers, inp)
-	}
+	tokenizers = funcs
 }
 
 func Tokenize(inp string) string {
