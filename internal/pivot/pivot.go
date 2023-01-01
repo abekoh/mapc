@@ -14,6 +14,8 @@ func (o Var) Name() string {
 	return o.v.Name()
 }
 
+type tokenFieldMap map[string]Var
+
 type FieldPair struct {
 	From Var
 	To   Var
@@ -27,18 +29,13 @@ type Pivot struct {
 }
 
 func newWithMatch(from, to *Struct, distPkgName string) *Pivot {
-	toFieldMap := make(map[string]Var)
-	for i := 0; i < to.str.NumFields(); i++ {
-		f := to.str.Field(i)
-		token := tokenizer.Tokenize(f.Name())
-		toFieldMap[token] = Var{v: f}
-	}
-
+	toTokenFieldMap := to.tokenFieldMap()
 	res := make([]FieldPair, 0)
 	for i := 0; i < from.str.NumFields(); i++ {
 		fromField := from.str.Field(i)
+		fromToken := tokenizer.Tokenize(fromField.Name())
 		// TODO: fix matching logic
-		if toObj, ok := toFieldMap[tokenizer.Tokenize(fromField.Name())]; ok {
+		if toObj, ok := toTokenFieldMap[fromToken]; ok {
 			res = append(res, FieldPair{Var{fromField}, toObj})
 		}
 	}

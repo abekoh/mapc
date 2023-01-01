@@ -3,6 +3,7 @@ package pivot
 import (
 	"errors"
 	"fmt"
+	"github.com/abekoh/mapc/internal/tokenizer"
 	"go/types"
 	"golang.org/x/tools/go/packages"
 )
@@ -68,4 +69,14 @@ func newStruct(param StructParam) (*Struct, error) {
 		return nil, fmt.Errorf("%s is not model", param.Struct)
 	}
 	return &Struct{pkg: pkg, str: str, structName: param.Struct}, nil
+}
+
+func (s Struct) tokenFieldMap() tokenFieldMap {
+	res := make(tokenFieldMap)
+	for i := 0; i < s.str.NumFields(); i++ {
+		f := s.str.Field(i)
+		token := tokenizer.Tokenize(f.Name())
+		res[token] = Var{v: f}
+	}
+	return res
 }
