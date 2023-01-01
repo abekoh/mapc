@@ -61,14 +61,9 @@ func NewTmplParam(p *pivot.Pivot, dstPkgName string) TmplParam {
 		ToType:   fmt.Sprintf("%s.%s", p.To.PkgName(), p.To.StructName()),
 		Fields:   fields,
 	}
-	// FIXME
-	pkgs := []string{
-		"github.com/abekoh/mapc/internal/cmd/testdata/a",
-		"github.com/abekoh/mapc/internal/cmd/testdata/b",
-	}
 	return TmplParam{
 		Pkg:        dstPkgName,
-		ImportPkgs: pkgs,
+		ImportPkgs: importPkgs(p),
 		Funcs:      []Func{fc},
 	}
 }
@@ -87,6 +82,17 @@ func camelizeFirst(s string) string {
 		return s
 	}
 	return string(f-0x20) + s[1:]
+}
+
+func importPkgs(p *pivot.Pivot) []string {
+	mp := make(map[string]struct{})
+	mp[p.From.PkgPath()] = struct{}{}
+	mp[p.To.PkgPath()] = struct{}{}
+	var res []string
+	for k := range mp {
+		res = append(res, k)
+	}
+	return res
 }
 
 func Run(w io.Writer, param TmplParam) error {
