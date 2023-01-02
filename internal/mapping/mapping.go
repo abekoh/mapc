@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/abekoh/mapc/internal/tokenizer"
 	"go/types"
+	"reflect"
 )
 
 type Var struct {
@@ -55,13 +56,13 @@ type FieldPair struct {
 }
 
 type Mapping struct {
-	From        *Struct
-	To          *Struct
+	From        *PkgStruct
+	To          *PkgStruct
 	Maps        []FieldPair
 	DistPkgName string
 }
 
-func newWithMatch(from, to *Struct, distPkgName string) *Mapping {
+func newWithMatch(from, to *PkgStruct, distPkgName string) *Mapping {
 	toTokenFieldMap := to.tokenFieldMap()
 	maps := match(from, toTokenFieldMap)
 	return &Mapping{
@@ -72,7 +73,7 @@ func newWithMatch(from, to *Struct, distPkgName string) *Mapping {
 	}
 }
 
-func match(from *Struct, toTokenFieldMap tokenFieldMap) []FieldPair {
+func match(from *PkgStruct, toTokenFieldMap tokenFieldMap) []FieldPair {
 	var res []FieldPair
 	for i := 0; i < from.str.NumFields(); i++ {
 		fromField := from.str.Field(i)
@@ -96,4 +97,14 @@ func NewOld(from, to StructParam, distPkgName string) (*Mapping, error) {
 		return nil, fmt.Errorf("failed to lookup %+v: %w", toStr, err)
 	}
 	return newWithMatch(fromStr, toStr, distPkgName), nil
+}
+
+func New(from, to any) (*Mapping, error) {
+	if reflect.TypeOf(from).Kind() != reflect.Struct {
+		return nil, fmt.Errorf("from is must be struct, got %T", from)
+	}
+	if reflect.TypeOf(to).Kind() != reflect.Struct {
+		return nil, fmt.Errorf("to is must be struct, got %T", to)
+	}
+	return nil, nil
 }

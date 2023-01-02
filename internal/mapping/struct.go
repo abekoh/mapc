@@ -14,25 +14,25 @@ type StructParam struct {
 	Struct string
 }
 
-type Struct struct {
+type PkgStruct struct {
 	pkg        *packages.Package
 	str        *types.Struct
 	structName string
 }
 
-func (s Struct) PkgName() string {
+func (s PkgStruct) PkgName() string {
 	return s.pkg.Name
 }
 
-func (s Struct) PkgPath() string {
+func (s PkgStruct) PkgPath() string {
 	return s.pkg.PkgPath
 }
 
-func (s Struct) StructName() string {
+func (s PkgStruct) StructName() string {
 	return s.structName
 }
 
-func (s Struct) Var(fieldName string) *types.Var {
+func (s PkgStruct) Var(fieldName string) *types.Var {
 	for i := 0; i < s.str.NumFields(); i++ {
 		if s.str.Field(i).Name() == fieldName {
 			return s.str.Field(i)
@@ -41,7 +41,7 @@ func (s Struct) Var(fieldName string) *types.Var {
 	return nil
 }
 
-func (s Struct) String() string {
+func (s PkgStruct) String() string {
 	return fmt.Sprintf("%+v", s.str.String())
 }
 
@@ -64,7 +64,7 @@ func findPkg(param StructParam) (*packages.Package, error) {
 	return nil, fmt.Errorf("package %s is not found in %s", param.Pkg, param.Dir)
 }
 
-func newStruct(param StructParam) (*Struct, error) {
+func newStruct(param StructParam) (*PkgStruct, error) {
 	pkg, err := findPkg(param)
 	if err != nil {
 		return nil, fmt.Errorf("failed to find package: %w", err)
@@ -77,10 +77,10 @@ func newStruct(param StructParam) (*Struct, error) {
 	if !ok {
 		return nil, fmt.Errorf("%s is not *types.struct", param.Struct)
 	}
-	return &Struct{pkg: pkg, str: str, structName: param.Struct}, nil
+	return &PkgStruct{pkg: pkg, str: str, structName: param.Struct}, nil
 }
 
-func (s Struct) tokenFieldMap() tokenFieldMap {
+func (s PkgStruct) tokenFieldMap() tokenFieldMap {
 	res := make(tokenFieldMap)
 	for i := 0; i < s.str.NumFields(); i++ {
 		f := s.str.Field(i)

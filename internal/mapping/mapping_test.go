@@ -36,7 +36,7 @@ func loadField(t *testing.T, str any, fieldName string) Var {
 
 func Test_match(t *testing.T) {
 	type args struct {
-		from            *Struct
+		from            *PkgStruct
 		toTokenFieldMap tokenFieldMap
 	}
 	tests := []struct {

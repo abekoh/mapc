@@ -14,7 +14,7 @@ type Sample struct {
 	snake_case struct{}
 }
 
-func loadStruct(t *testing.T, target any) *Struct {
+func loadStruct(t *testing.T, target any) *PkgStruct {
 	t.Helper()
 	structName := reflect.TypeOf(target).Name()
 	pkgs, err := packages.Load(&packages.Config{
@@ -43,7 +43,7 @@ func loadStruct(t *testing.T, target any) *Struct {
 	if !ok {
 		t.Fatal("failed to cast")
 	}
-	return &Struct{
+	return &PkgStruct{
 		pkg:        pkg,
 		str:        str,
 		structName: structName,
