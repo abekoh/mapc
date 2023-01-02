@@ -86,7 +86,7 @@ func match(from *Struct, toTokenFieldMap tokenFieldMap) []FieldPair {
 	return res
 }
 
-func New(from, to StructParam, distPkgName string) (*Mapping, error) {
+func NewOld(from, to StructParam, distPkgName string) (*Mapping, error) {
 	fromStr, err := newStruct(from)
 	if err != nil {
 		return nil, fmt.Errorf("failed to lookup %+v: %w", fromStr, err)

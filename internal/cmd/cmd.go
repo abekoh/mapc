@@ -22,7 +22,7 @@ func toStructParam(inp Param) mapping.StructParam {
 }
 
 func Generate(w io.Writer, from, to Param, distPkgName string) error {
-	p, err := mapping.New(toStructParam(from), toStructParam(to), distPkgName)
+	p, err := mapping.NewOld(toStructParam(from), toStructParam(to), distPkgName)
 	if err != nil {
 		return fmt.Errorf("failed to construct mapping: %w", err)
 	}
