@@ -14,6 +14,14 @@ type StructParam struct {
 	Struct string
 }
 
+type Struct interface {
+	PkgName() string
+	PkgPath() string
+	StructName() string
+	Var(fieldName string) *types.Var
+	String() string
+}
+
 type PkgStruct struct {
 	pkg        *packages.Package
 	str        *types.Struct
