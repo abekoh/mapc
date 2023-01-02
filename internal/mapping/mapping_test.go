@@ -1,4 +1,4 @@
-package pivot
+package mapping
 
 import (
 	"reflect"

@@ -3,7 +3,7 @@ package exporter
 import (
 	"bytes"
 	"fmt"
-	"github.com/abekoh/mapc/internal/pivot"
+	"github.com/abekoh/mapc/internal/mapping"
 	"go/format"
 	"html/template"
 	"io"
@@ -47,7 +47,7 @@ func {{ .Name }}(inp {{ .FromType }}) {{ .ToType }} {
 {{- end }}
 `
 
-func NewTmplParam(p *pivot.Pivot, dstPkgName string) TmplParam {
+func NewTmplParam(p *mapping.Mapping, dstPkgName string) TmplParam {
 	fields := make([]Field, 0, len(p.Maps))
 	for _, mp := range p.Maps {
 		fields = append(fields, Field{
@@ -68,7 +68,7 @@ func NewTmplParam(p *pivot.Pivot, dstPkgName string) TmplParam {
 	}
 }
 
-func funcName(p *pivot.Pivot) string {
+func funcName(p *mapping.Mapping) string {
 	var b strings.Builder
 	b.WriteString("To")
 	b.WriteString(camelizeFirst(p.To.PkgName()))
@@ -84,7 +84,7 @@ func camelizeFirst(s string) string {
 	return string(f-0x20) + s[1:]
 }
 
-func importPkgs(p *pivot.Pivot) []string {
+func importPkgs(p *mapping.Mapping) []string {
 	mp := make(map[string]struct{})
 	mp[p.From.PkgPath()] = struct{}{}
 	mp[p.To.PkgPath()] = struct{}{}

@@ -1,4 +1,4 @@
-package pivot
+package mapping
 
 import (
 	"github.com/abekoh/mapc/internal/tokenizer"
@@ -27,7 +27,7 @@ func loadStruct(t *testing.T, target any) *Struct {
 	}
 	var pkg *packages.Package
 	for _, p := range pkgs {
-		if p.ID == "github.com/abekoh/mapc/internal/pivot [github.com/abekoh/mapc/internal/pivot.test]" {
+		if p.ID == "github.com/abekoh/mapc/internal/mapping [github.com/abekoh/mapc/internal/mapping.test]" {
 			pkg = p
 			break
 		}

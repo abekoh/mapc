@@ -1,4 +1,4 @@
-package pivot
+package mapping
 
 import (
 	"fmt"
@@ -54,17 +54,17 @@ type FieldPair struct {
 	Caster *Caster
 }
 
-type Pivot struct {
+type Mapping struct {
 	From        *Struct
 	To          *Struct
 	Maps        []FieldPair
 	DistPkgName string
 }
 
-func newWithMatch(from, to *Struct, distPkgName string) *Pivot {
+func newWithMatch(from, to *Struct, distPkgName string) *Mapping {
 	toTokenFieldMap := to.tokenFieldMap()
 	maps := match(from, toTokenFieldMap)
-	return &Pivot{
+	return &Mapping{
 		From:        from,
 		To:          to,
 		Maps:        maps,
@@ -86,7 +86,7 @@ func match(from *Struct, toTokenFieldMap tokenFieldMap) []FieldPair {
 	return res
 }
 
-func New(from, to StructParam, distPkgName string) (*Pivot, error) {
+func New(from, to StructParam, distPkgName string) (*Mapping, error) {
 	fromStr, err := newStruct(from)
 	if err != nil {
 		return nil, fmt.Errorf("failed to lookup %+v: %w", fromStr, err)
