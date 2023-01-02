@@ -6,20 +6,24 @@ import (
 	"testing"
 )
 
+type TypedInt int
+
 type Hoge struct {
 	Fuga string
 }
 
 type From struct {
-	Int   int
-	Int64 int64
-	Hoge  Hoge
+	Int      int
+	Int64    int64
+	TypedInt TypedInt
+	Hoge     Hoge
 }
 
 type To struct {
-	Int   int
-	Int64 int64
-	Hoge  Hoge
+	Int      int
+	Int64    int64
+	TypedInt TypedInt
+	Hoge     Hoge
 }
 
 func loadStruct(t *testing.T, target any) *object.Struct {
