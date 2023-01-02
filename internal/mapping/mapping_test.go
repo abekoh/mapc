@@ -1,6 +1,7 @@
 package mapping
 
 import (
+	"github.com/abekoh/mapc/internal/object"
 	"reflect"
 	"testing"
 )
@@ -21,64 +22,42 @@ type To struct {
 	Hoge  Hoge
 }
 
-func loadField(t *testing.T, str any, fieldName string) Var {
+func loadStruct(t *testing.T, target any) *object.Struct {
+	t.Helper()
+
+	s, err := object.NewStruct(reflect.TypeOf(target))
+	if err != nil {
+		t.Fatal(err)
+	}
+	return s
+}
+
+func loadField(t *testing.T, str any, fieldName string) *object.Field {
 	t.Helper()
 
 	s := loadStruct(t, str)
-	f := s.Var(fieldName)
-	if f == nil {
+	var field *object.Field
+	for _, f := range s.Fields {
+		if f.Name() == fieldName {
+			field = &f
+			break
+		}
+	}
+	if field == nil {
 		t.Fatalf("field '%s' is not found", fieldName)
 	}
-	return Var{
-		v: f,
-	}
+	return field
 }
 
-func Test_match(t *testing.T) {
+func Test_newFieldPair1(t *testing.T) {
 	type args struct {
-		from            *PkgStruct
-		toTokenFieldMap tokenFieldMapOld
-	}
-	tests := []struct {
-		name         string
-		args         args
-		wantElements int
-	}{
-		{
-			name: "int -> int",
-			args: args{
-				from:            loadStruct(t, From{}),
-				toTokenFieldMap: tokenFieldMapOld{"Int": loadField(t, To{}, "Int")},
-			},
-			wantElements: 1,
-		},
-		{
-			name: "int64 -> int",
-			args: args{
-				from:            loadStruct(t, From{}),
-				toTokenFieldMap: tokenFieldMapOld{"Int64": loadField(t, To{}, "Int")},
-			},
-			wantElements: 1,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := match(tt.args.from, tt.args.toTokenFieldMap); len(got) != tt.wantElements {
-				t.Errorf("match() = %v, wantElements = %v", got, tt.wantElements)
-			}
-		})
-	}
-}
-
-func Test_newFieldPair(t *testing.T) {
-	type args struct {
-		from Var
-		to   Var
+		from *object.Field
+		to   *object.Field
 	}
 	tests := []struct {
 		name       string
 		args       args
-		wantExists bool
+		wantOk     bool
 		wantCaster *Caster
 	}{
 		{
@@ -87,49 +66,18 @@ func Test_newFieldPair(t *testing.T) {
 				from: loadField(t, From{}, "Int"),
 				to:   loadField(t, To{}, "Int"),
 			},
-			wantExists: true,
-			wantCaster: nil,
-		},
-		{
-			name: "int -> int64",
-			args: args{
-				from: loadField(t, From{}, "Int"),
-				to:   loadField(t, To{}, "Int64"),
-			},
-			wantExists: true,
-			wantCaster: &Caster{
-				fmtString: "int64(%s)",
-			},
-		},
-		{
-			name: "int64 -> int",
-			args: args{
-				from: loadField(t, From{}, "Int64"),
-				to:   loadField(t, To{}, "Int"),
-			},
-			wantExists: true,
-			wantCaster: &Caster{
-				fmtString: "int(%s)",
-			},
-		},
-		{
-			name: "struct -> struct",
-			args: args{
-				from: loadField(t, From{}, "Hoge"),
-				to:   loadField(t, To{}, "Hoge"),
-			},
-			wantExists: true,
+			wantOk:     true,
 			wantCaster: nil,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, got1 := newFieldPair(tt.args.from, tt.args.to)
-			if !reflect.DeepEqual(got.Caster, tt.wantCaster) {
-				t.Errorf("newFieldPair().Caster. got = %v, want %v", got.Caster, tt.wantCaster)
+			got, gotOk := newFieldPair(tt.args.from, tt.args.to)
+			if gotOk != tt.wantOk {
+				t.Errorf("newFieldPair() gotOk = %v, want %v", gotOk, tt.wantOk)
 			}
-			if got1 != tt.wantExists {
-				t.Errorf("newFieldPair() got1 = %v, want %v", got1, tt.wantExists)
+			if !reflect.DeepEqual(got.Caster, tt.wantCaster) {
+				t.Errorf("newFieldPair().Caster got = %v, want %v", got.Caster, tt.wantCaster)
 			}
 		})
 	}

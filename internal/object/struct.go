@@ -16,7 +16,7 @@ type Field struct {
 }
 
 func (f Field) Name() string {
-	return f.Name()
+	return f.f.Name
 }
 
 func NewStruct(t reflect.Type) (*Struct, error) {
@@ -24,7 +24,7 @@ func NewStruct(t reflect.Type) (*Struct, error) {
 		return nil, fmt.Errorf("kind must be struct, got %v", t.Kind())
 	}
 	var fs []Field
-	for i := 0; i < t.NumMethod(); i++ {
+	for i := 0; i < t.NumField(); i++ {
 		f := t.Field(i)
 		s := Field{f: &f}
 		fs = append(fs, s)

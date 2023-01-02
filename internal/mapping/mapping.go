@@ -57,15 +57,6 @@ type Mapper struct {
 
 type tokenFieldMap map[string]*object.Field
 
-func (m Mapper) newTokenFieldMap(s *object.Struct) tokenFieldMap {
-	r := make(tokenFieldMap)
-	for _, f := range s.Fields {
-		token := m.tzr.Tokenize(f.Name())
-		r[token] = &f
-	}
-	return r
-}
-
 func newFieldPair(from, to *object.Field) (FieldPair, bool) {
 	pair := FieldPair{
 		From: from,
@@ -107,6 +98,15 @@ func (m Mapper) Map(from, to any) (*Mapping, error) {
 		To:         toStr,
 		FieldPairs: fieldPairs,
 	}, nil
+}
+
+func (m Mapper) newTokenFieldMap(s *object.Struct) tokenFieldMap {
+	r := make(tokenFieldMap)
+	for _, f := range s.Fields {
+		token := m.tzr.Tokenize(f.Name())
+		r[token] = &f
+	}
+	return r
 }
 func (m Mapper) newFieldPairs(from *object.Struct, toTokenFieldMap tokenFieldMap) []FieldPair {
 	var r []FieldPair
