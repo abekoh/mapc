@@ -64,6 +64,12 @@ func newFieldPair(from, to *object.Field) (FieldPair, bool) {
 	}
 	fromKind, toKind := from.Kind(), to.Kind()
 	if fromKind == toKind {
+		if from.PkgPath() != "" && from.PkgPath() == to.PkgPath() {
+			pair.Caster = &Caster{
+				pkgPath:   from.PkgPath(),
+				fmtString: fmt.Sprintf("%s(%%s)", from.TypeName()),
+			}
+		}
 		return pair, true
 	}
 	switch fromKind {
@@ -82,6 +88,7 @@ func newFieldPair(from, to *object.Field) (FieldPair, bool) {
 }
 
 type Caster struct {
+	pkgPath   string
 	fmtString string
 }
 

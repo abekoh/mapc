@@ -13,17 +13,17 @@ type Hoge struct {
 }
 
 type From struct {
-	Int      int
-	Int64    int64
-	TypedInt TypedInt
-	Hoge     Hoge
+	Int   int
+	Int64 int64
+	TInt  TypedInt
+	Hoge  Hoge
 }
 
 type To struct {
-	Int      int
-	Int64    int64
-	TypedInt TypedInt
-	Hoge     Hoge
+	Int   int
+	Int64 int64
+	TInt  TypedInt
+	Hoge  Hoge
 }
 
 func loadStruct(t *testing.T, target any) *object.Struct {
@@ -81,7 +81,20 @@ func Test_newFieldPair1(t *testing.T) {
 			},
 			wantOk: true,
 			wantCaster: &Caster{
+				pkgPath:   "",
 				fmtString: "int64(%s)",
+			},
+		},
+		{
+			name: "TypedInt -> TypedInt",
+			args: args{
+				from: loadField(t, From{}, "TInt"),
+				to:   loadField(t, To{}, "TInt"),
+			},
+			wantOk: true,
+			wantCaster: &Caster{
+				pkgPath:   "github.com/abekoh/mapc/internal/mapping",
+				fmtString: "TypedInt(%s)",
 			},
 		},
 	}

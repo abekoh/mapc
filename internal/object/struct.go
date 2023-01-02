@@ -19,8 +19,16 @@ func (f Field) Name() string {
 	return f.f.Name
 }
 
+func (f Field) TypeName() string {
+	return f.f.Type.Name()
+}
+
 func (f Field) Kind() reflect.Kind {
 	return f.f.Type.Kind()
+}
+
+func (f Field) PkgPath() string {
+	return f.f.Type.PkgPath()
 }
 
 func NewStruct(t reflect.Type) (*Struct, error) {
