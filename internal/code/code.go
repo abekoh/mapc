@@ -3,12 +3,13 @@ package code
 import (
 	"fmt"
 	"os"
+
+	"github.com/dave/dst"
+	"github.com/dave/dst/decorator"
 )
 
 type File struct {
-	code    string
-	imports map[string]struct{}
-	mapping map[string]Mapping
+	file *dst.File
 }
 
 func NewFile(path string) (*File, error) {
@@ -16,13 +17,9 @@ func NewFile(path string) (*File, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to read file: %w", err)
 	}
-	code := string(f)
-	return &File{
-		code: code,
-	}, nil
-}
-
-type Mapping struct {
-	name string
-	code string
+	df, err := decorator.Parse(f)
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse file: %w", err)
+	}
+	return &File{file: df}, nil
 }
