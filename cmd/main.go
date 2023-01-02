@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"flag"
 	"fmt"
-	"github.com/abekoh/mapstructor/internal/cmd"
+	"github.com/abekoh/mapc/internal/cmd"
 	"log"
 	"strings"
 )
