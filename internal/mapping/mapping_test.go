@@ -37,7 +37,7 @@ func loadField(t *testing.T, str any, fieldName string) Var {
 func Test_match(t *testing.T) {
 	type args struct {
 		from            *PkgStruct
-		toTokenFieldMap tokenFieldMap
+		toTokenFieldMap tokenFieldMapOld
 	}
 	tests := []struct {
 		name         string
@@ -48,7 +48,7 @@ func Test_match(t *testing.T) {
 			name: "int -> int",
 			args: args{
 				from:            loadStruct(t, From{}),
-				toTokenFieldMap: tokenFieldMap{"Int": loadField(t, To{}, "Int")},
+				toTokenFieldMap: tokenFieldMapOld{"Int": loadField(t, To{}, "Int")},
 			},
 			wantElements: 1,
 		},
@@ -56,7 +56,7 @@ func Test_match(t *testing.T) {
 			name: "int64 -> int",
 			args: args{
 				from:            loadStruct(t, From{}),
-				toTokenFieldMap: tokenFieldMap{"Int64": loadField(t, To{}, "Int")},
+				toTokenFieldMap: tokenFieldMapOld{"Int64": loadField(t, To{}, "Int")},
 			},
 			wantElements: 1,
 		},

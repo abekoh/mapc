@@ -1,22 +1,17 @@
 package tokenizer
 
-import "sync"
-
-var (
-	mu         sync.RWMutex
+type Tokenizer struct {
 	tokenizers []TokenizeFunc
-)
+}
+
+func NewTokenizer(tokenizers ...TokenizeFunc) *Tokenizer {
+	return &Tokenizer{tokenizers: tokenizers}
+}
 
 type TokenizeFunc func(string) string
 
-func Initialize(funcs ...TokenizeFunc) {
-	mu.Lock()
-	defer mu.Unlock()
-	tokenizers = funcs
-}
-
-func Tokenize(inp string) string {
-	for _, tokenize := range tokenizers {
+func (t Tokenizer) Tokenize(inp string) string {
+	for _, tokenize := range t.tokenizers {
 		inp = tokenize(inp)
 	}
 	return inp

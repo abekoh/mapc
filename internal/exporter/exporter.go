@@ -47,23 +47,23 @@ func {{ .Name }}(inp {{ .FromType }}) {{ .ToType }} {
 {{- end }}
 `
 
-func NewTmplParam(p *mapping.Mapping, dstPkgName string) TmplParam {
-	fields := make([]Field, 0, len(p.Maps))
-	for _, mp := range p.Maps {
+func NewTmplParam(m *mapping.Mapping, dstPkgName string) TmplParam {
+	fields := make([]Field, 0, len(m.FieldPairs))
+	for _, mp := range m.FieldPairs {
 		fields = append(fields, Field{
 			From: mp.From.Name(),
 			To:   mp.To.Name(),
 		})
 	}
 	fc := Func{
-		Name:     funcName(p),
-		FromType: fmt.Sprintf("%s.%s", p.From.PkgName(), p.From.StructName()),
-		ToType:   fmt.Sprintf("%s.%s", p.To.PkgName(), p.To.StructName()),
+		Name:     funcName(m),
+		FromType: fmt.Sprintf("%s.%s", m.From.PkgName(), m.From.StructName()),
+		ToType:   fmt.Sprintf("%s.%s", m.To.PkgName(), m.To.StructName()),
 		Fields:   fields,
 	}
 	return TmplParam{
 		Pkg:        dstPkgName,
-		ImportPkgs: importPkgs(p),
+		ImportPkgs: importPkgs(m),
 		Funcs:      []Func{fc},
 	}
 }
