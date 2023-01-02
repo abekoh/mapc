@@ -69,6 +69,17 @@ func Test_newFieldPair1(t *testing.T) {
 			wantOk:     true,
 			wantCaster: nil,
 		},
+		{
+			name: "int -> int64",
+			args: args{
+				from: loadField(t, From{}, "Int"),
+				to:   loadField(t, To{}, "Int64"),
+			},
+			wantOk: true,
+			wantCaster: &Caster{
+				fmtString: "int64(%s)",
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

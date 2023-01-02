@@ -19,6 +19,10 @@ func (f Field) Name() string {
 	return f.f.Name
 }
 
+func (f Field) Kind() reflect.Kind {
+	return f.f.Type.Kind()
+}
+
 func NewStruct(t reflect.Type) (*Struct, error) {
 	if t.Kind() != reflect.Struct {
 		return nil, fmt.Errorf("kind must be struct, got %v", t.Kind())

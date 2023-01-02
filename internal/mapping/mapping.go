@@ -62,8 +62,23 @@ func newFieldPair(from, to *object.Field) (FieldPair, bool) {
 		From: from,
 		To:   to,
 	}
-	// TODO: logic
-	return pair, true
+	fromKind, toKind := from.Kind(), to.Kind()
+	if fromKind == toKind {
+		return pair, true
+	}
+	switch fromKind {
+	case reflect.Int:
+		switch toKind {
+		case reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+			pair.Caster = &Caster{
+				fmtString: fmt.Sprintf("%s(%%s)", toKind.String()),
+			}
+			return pair, true
+		default:
+		}
+	default:
+	}
+	return pair, false
 }
 
 type Caster struct {
