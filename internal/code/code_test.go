@@ -8,8 +8,8 @@ import (
 //go:embed testdata/mapper/mapper.go
 var mapperFile string
 
-func TestNewFile(t *testing.T) {
-	_, err := NewFile("testdata/mapper/mapper.go")
+func TestLoadFile(t *testing.T) {
+	_, err := LoadFile("testdata/mapper/mapper.go")
 	if err != nil {
 		t.Fatal(err)
 	}
