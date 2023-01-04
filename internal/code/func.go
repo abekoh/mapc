@@ -156,6 +156,7 @@ func NewFuncSand(m *mapping.Mapping) *Func {
 }
 
 func NewFunc(m *mapping.Mapping) *Func {
+	argIdent := genVar("from")
 	return &Func{
 		fc: &dst.FuncDecl{
 			Recv: nil,
@@ -163,13 +164,13 @@ func NewFunc(m *mapping.Mapping) *Func {
 			Type: &dst.FuncType{
 				Func:       false,
 				TypeParams: nil,
-				Params:     genParams(m.From),
+				Params:     genParams(m.From, argIdent),
 				Results:    genResult(m.To),
 				Decs:       dst.FuncTypeDecorations{},
 			},
 			Body: &dst.BlockStmt{
 				List: []dst.Stmt{
-					genReturn(m),
+					genReturn(m, argIdent),
 				},
 				RbraceHasNoPos: false,
 				Decs:           dst.BlockStmtDecorations{},
@@ -191,15 +192,12 @@ func genFuncName(m *mapping.Mapping) *dst.Ident {
 	return i
 }
 
-func genParams(fromStr *object.Struct) *dst.FieldList {
-	fromObj := dst.NewObj(dst.Var, "from")
-	from := dst.NewIdent("from")
-	from.Obj = fromObj
+func genParams(fromStr *object.Struct, argIdent *dst.Ident) *dst.FieldList {
 	return &dst.FieldList{
 		Opening: true,
 		List: []*dst.Field{
 			{
-				Names: []*dst.Ident{from},
+				Names: []*dst.Ident{cloneIdent(argIdent)},
 				Type:  genType(fromStr),
 				Tag:   nil,
 				Decs:  dst.FieldDecorations{},
@@ -233,11 +231,17 @@ func genType(str *object.Struct) *dst.Ident {
 	return i
 }
 
-func genReturn(m *mapping.Mapping) *dst.ReturnStmt {
+func genVar(name string) *dst.Ident {
+	o := dst.NewObj(dst.Var, name)
+	i := dst.NewIdent(name)
+	i.Obj = o
+	return i
+}
+
+func genReturn(m *mapping.Mapping, argIdent *dst.Ident) *dst.ReturnStmt {
 	var elts []dst.Expr
-	fromTyp := genType(m.From)
 	for _, fp := range m.FieldPairs {
-		elts = append(elts, genElt(&fp, cloneIdent(fromTyp)))
+		elts = append(elts, genElt(&fp, cloneIdent(argIdent)))
 	}
 	return &dst.ReturnStmt{
 		Results: []dst.Expr{
@@ -256,11 +260,20 @@ func genElt(fp *mapping.FieldPair, from *dst.Ident) *dst.KeyValueExpr {
 	return &dst.KeyValueExpr{
 		Key: dst.NewIdent(fp.To.Name()),
 		Value: &dst.SelectorExpr{
-			X:    from,
-			Sel:  dst.NewIdent(fp.From.Name()),
-			Decs: dst.SelectorExprDecorations{},
+			X:   from,
+			Sel: dst.NewIdent(fp.From.Name()),
+			Decs: dst.SelectorExprDecorations{
+				NodeDecs: dst.NodeDecs{
+					Before: dst.NewLine,
+				},
+			},
 		},
-		Decs: dst.KeyValueExprDecorations{},
+		Decs: dst.KeyValueExprDecorations{
+			NodeDecs: dst.NodeDecs{
+				Before: dst.NewLine,
+				After:  dst.NewLine,
+			},
+		},
 	}
 }
 
