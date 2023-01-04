@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	"github.com/abekoh/mapc/internal/mapping"
+	"github.com/abekoh/mapc/internal/object"
 	"github.com/dave/dst"
 )
 
@@ -18,7 +19,7 @@ func (f Func) Name() string {
 	return f.fc.Name.Name
 }
 
-func NewFunc(m *mapping.Mapping) *Func {
+func NewFuncSand(m *mapping.Mapping) *Func {
 	//name := m.Name()
 	funcNameObj := dst.NewObj(dst.Fun, "ToBUser")
 	funcName := dst.NewIdent("ToBUser")
@@ -152,6 +153,117 @@ func NewFunc(m *mapping.Mapping) *Func {
 		Decs: dst.FuncDeclDecorations{},
 	}
 	return &Func{fc: fc}
+}
+
+func NewFunc(m *mapping.Mapping) *Func {
+	funcName := genFuncName(m)
+	//retTyp := genType(m.To)
+	return &Func{
+		fc: &dst.FuncDecl{
+			Recv: nil,
+			Name: funcName,
+			Type: &dst.FuncType{
+				Func:       false,
+				TypeParams: nil,
+				Params:     genParams(m.From),
+				Results:    genResult(m.To),
+				Decs:       dst.FuncTypeDecorations{},
+			},
+			Body: &dst.BlockStmt{
+				List: []dst.Stmt{
+					genReturn(m),
+				},
+				RbraceHasNoPos: false,
+				Decs:           dst.BlockStmtDecorations{},
+			},
+			Decs: dst.FuncDeclDecorations{},
+		},
+	}
+}
+
+func cloneIdent(i *dst.Ident) *dst.Ident {
+	return dst.Clone(i).(*dst.Ident)
+}
+
+func genFuncName(m *mapping.Mapping) *dst.Ident {
+	name := m.Name()
+	o := dst.NewObj(dst.Fun, name)
+	i := dst.NewIdent(name)
+	i.Obj = o
+	return i
+}
+
+func genParams(fromStr *object.Struct) *dst.FieldList {
+	fromObj := dst.NewObj(dst.Var, "from")
+	from := dst.NewIdent("from")
+	from.Obj = fromObj
+	return &dst.FieldList{
+		Opening: true,
+		List: []*dst.Field{
+			{
+				Names: []*dst.Ident{from},
+				Type:  genType(fromStr),
+				Tag:   nil,
+				Decs:  dst.FieldDecorations{},
+			},
+		},
+		Closing: true,
+		Decs:    dst.FieldListDecorations{},
+	}
+}
+
+func genResult(toStr *object.Struct) *dst.FieldList {
+	return &dst.FieldList{
+		Opening: false,
+		List: []*dst.Field{
+			{
+				Names: nil,
+				Type:  genType(toStr),
+				Tag:   nil,
+				Decs:  dst.FieldDecorations{},
+			},
+		},
+		Closing: false,
+		Decs:    dst.FieldListDecorations{},
+	}
+}
+
+func genType(str *object.Struct) *dst.Ident {
+	o := dst.NewObj(dst.Typ, str.Name)
+	i := dst.NewIdent(str.Name)
+	i.Obj = o
+	return i
+}
+
+func genReturn(m *mapping.Mapping) *dst.ReturnStmt {
+	var elts []dst.Expr
+	fromTyp := genType(m.From)
+	for _, fp := range m.FieldPairs {
+		elts = append(elts, genElt(&fp, cloneIdent(fromTyp)))
+	}
+	return &dst.ReturnStmt{
+		Results: []dst.Expr{
+			&dst.CompositeLit{
+				Type:       genType(m.To),
+				Elts:       elts,
+				Incomplete: false,
+				Decs:       dst.CompositeLitDecorations{},
+			},
+		},
+		Decs: dst.ReturnStmtDecorations{},
+	}
+}
+
+func genElt(fp *mapping.FieldPair, from *dst.Ident) *dst.KeyValueExpr {
+	return &dst.KeyValueExpr{
+		Key: dst.NewIdent(fp.To.Name()),
+		Value: &dst.SelectorExpr{
+			X:    from,
+			Sel:  dst.NewIdent(fp.From.Name()),
+			Decs: dst.SelectorExprDecorations{},
+		},
+		Decs: dst.KeyValueExprDecorations{},
+	}
 }
 
 func (f Func) ReNew(m *mapping.Mapping) *Func {
