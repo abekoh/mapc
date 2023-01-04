@@ -44,7 +44,7 @@ func loadField(t *testing.T, str any, fieldName string) *object.Field {
 	var field *object.Field
 	for _, f := range s.Fields {
 		if f.Name() == fieldName {
-			field = &f
+			field = f
 			break
 		}
 	}
