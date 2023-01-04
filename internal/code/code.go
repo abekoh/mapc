@@ -32,12 +32,22 @@ func LoadFile(filePath, pkgPath string) (*File, error) {
 	return &File{dstFile: df, pkgPath: pkgPath}, nil
 }
 
-func New(pkgPath string) *File {
+func NewFile(pkgPath string) *File {
 	df := &dst.File{
 		Name:  dst.NewIdent(pkgName(pkgPath)),
 		Decls: []dst.Decl{},
 	}
 	return &File{dstFile: df, pkgPath: pkgPath}
+}
+
+func (f *File) Apply(fc *Func) {
+	existed, ok := f.findFuncDecl(fc.Name())
+	if ok {
+		existed = fc.fc
+	} else {
+		_ = existed
+		f.dstFile.Decls = append(f.dstFile.Decls, fc.fc)
+	}
 }
 
 func (f File) Write(w io.Writer) error {
@@ -48,18 +58,32 @@ func (f File) Write(w io.Writer) error {
 	return nil
 }
 
-func (f File) FindFunc(name string) (*Func, bool) {
+func (f File) findFuncDecl(name string) (*dst.FuncDecl, bool) {
 	for _, decl := range f.dstFile.Decls {
 		funcDecl, ok := decl.(*dst.FuncDecl)
 		if ok && funcDecl.Name != nil && funcDecl.Name.Name == name {
-			return &Func{fc: funcDecl}, true
+			return funcDecl, true
 		}
+	}
+	return nil, false
+}
+
+func (f File) FindFunc(name string) (*Func, bool) {
+	if d, ok := f.findFuncDecl(name); ok {
+		return &Func{fc: d}, true
 	}
 	return nil, false
 }
 
 type Func struct {
 	fc *dst.FuncDecl
+}
+
+func (f Func) Name() string {
+	if f.fc.Name == nil {
+		return ""
+	}
+	return f.fc.Name.Name
 }
 
 func emptyDecs() dst.IdentDecorations {

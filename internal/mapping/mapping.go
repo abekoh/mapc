@@ -57,6 +57,10 @@ type Mapper struct {
 	tzr *tokenizer.Tokenizer
 }
 
+func NewMapper() *Mapper {
+	return &Mapper{tzr: tokenizer.NewTokenizer()}
+}
+
 type tokenFieldMap map[string]*object.Field
 
 func newFieldPair(from, to *object.Field) (FieldPair, bool) {
