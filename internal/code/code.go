@@ -62,8 +62,115 @@ type Func struct {
 	fc *dst.FuncDecl
 }
 
+func emptyDecs() dst.IdentDecorations {
+	return dst.IdentDecorations{
+		NodeDecs: dst.NodeDecs{
+			Before: dst.None,
+			Start:  nil,
+			End:    nil,
+			After:  dst.None,
+		},
+		X: nil,
+	}
+}
+
 func NewFunc(m *mapping.Mapping) *Func {
-	return &Func{}
+	//name := m.Name()
+	fc := &dst.FuncDecl{
+		Recv: nil,
+		Name: &dst.Ident{
+			Name: "ToBUser",
+			Obj: &dst.Object{
+				Kind: dst.Fun,
+				Name: "ToBUser",
+				Decl: &dst.FuncDecl{
+					Recv: nil,
+					Name: nil, // parent
+					Type: nil,
+					Body: nil,
+					Decs: dst.FuncDeclDecorations{},
+				},
+				Type: nil,
+			},
+			Path: "",
+			Decs: dst.IdentDecorations{},
+		},
+		Type: &dst.FuncType{
+			Func:       true,
+			TypeParams: nil,
+			Params: &dst.FieldList{
+				Opening: true,
+				List: []*dst.Field{
+					{
+						Names: []*dst.Ident{
+							{
+								Name: "inp",
+								Obj: &dst.Object{
+									Kind: dst.Var,
+									Name: "inp",
+									Decl: nil, // will be inserted
+									Data: nil,
+									Type: nil,
+								},
+								Path: "",
+								Decs: dst.IdentDecorations{},
+							},
+						},
+						Type: &dst.Ident{
+							Name: "AUser",
+							Obj: &dst.Object{
+								Kind: dst.Typ,
+								Name: "AUser",
+								Decl: &dst.TypeSpec{
+									Name:       nil, // replace
+									TypeParams: nil,
+									Assign:     false,
+									Type:       nil,
+									Decs:       dst.TypeSpecDecorations{},
+								},
+								Data: nil,
+								Type: nil,
+							},
+							Path: "",
+							Decs: dst.IdentDecorations{},
+						},
+						Tag:  nil,
+						Decs: dst.FieldDecorations{},
+					},
+				},
+				Closing: true,
+				Decs:    dst.FieldListDecorations{},
+			},
+			Results: &dst.FieldList{
+				Opening: false,
+				List: []*dst.Field{
+					{
+						Names: nil,
+						Type: &dst.Ident{
+							Name: "BUser",
+							Obj: &dst.Object{
+								Kind: dst.Typ,
+								Name: "BUser",
+								Decl: nil, // insert
+								Data: nil,
+								Type: nil,
+							},
+							Path: "",
+							Decs: dst.IdentDecorations{},
+						},
+						Tag:  nil,
+						Decs: dst.FieldDecorations{},
+					},
+				},
+				Closing: false,
+				Decs:    dst.FieldListDecorations{},
+			},
+			Decs: dst.FuncTypeDecorations{},
+		},
+		Body: nil,
+		Decs: dst.FuncDeclDecorations{},
+	}
+	return &Func{fc: fc}
 }
 
 func pkgName(pkgPath string) string {
