@@ -305,7 +305,22 @@ func (f Func) ReNew(m *mapping.Mapping) (*Func, error) {
 			delete(feMap.m, key)
 		}
 	}
-	// TODO: check params, return type, etc...
+	for _, e := range feMap.sortedFieldExprList() {
+		resFieldExprs = append(resFieldExprs, e)
+	}
+	var resExprs []dst.Expr
+	var prevExpr *dst.KeyValueExpr
+	var nextComment string
+	for _, resFieldExpr := range resFieldExprs {
+		if resFieldExpr.isComment {
+			if prevExpr != nil {
+				// TODO
+			}
+		} else {
+			resExprs = append(resExprs, resFieldExpr.expr)
+			prevExpr = resFieldExpr.expr
+		}
+	}
 	return nil, errors.New("not implemented")
 }
 
@@ -331,8 +346,25 @@ type fieldExprs struct {
 
 func (fe *fieldExprs) inc() int {
 	r := fe.count
-	fe.count += 1
+	fe.count++
 	return r
+}
+
+func (fe fieldExprs) sortedFieldExprList() []*fieldExpr {
+	// FIXME
+	tmp := make(map[int]*fieldExpr)
+	for _, v := range fe.m {
+		tmp[v.index] = v
+	}
+	var res []*fieldExpr
+	i := 0
+	for len(res) != len(fe.m) {
+		if t, ok := tmp[i]; ok {
+			res = append(res, t)
+		}
+		i++
+	}
+	return res
 }
 
 func newFieldExprs(exprs []dst.Expr) *fieldExprs {
