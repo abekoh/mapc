@@ -27,7 +27,7 @@ func TestNew(t *testing.T) {
 
 	// check writing
 	var buf bytes.Buffer
-	if err := f.Write(&buf); err != nil {
+	if err := f.Fprint(&buf); err != nil {
 		t.Fatal(err)
 	}
 	expected := `package main
@@ -41,7 +41,7 @@ func TestNew(t *testing.T) {
 func TestFile_Write(t *testing.T) {
 	f := loadSample(t)
 	var buf bytes.Buffer
-	if err := f.Write(&buf); err != nil {
+	if err := f.Fprint(&buf); err != nil {
 		t.Fatal(err)
 	}
 	r := buf.String()

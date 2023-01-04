@@ -55,7 +55,7 @@ func (f *File) Apply(fc *Func) {
 	}
 }
 
-func (f File) Write(w io.Writer) error {
+func (f File) Fprint(w io.Writer) error {
 	r := decorator.NewRestorerWithImports(f.pkgPath, guess.New())
 	if err := r.Fprint(w, f.dstFile); err != nil {
 		return fmt.Errorf("failed to write: %w", err)

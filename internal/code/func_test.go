@@ -9,13 +9,11 @@ import (
 )
 
 type From struct {
-	Int   int
-	Int64 int64
+	Int int
 }
 
 type To struct {
-	Int   int
-	Int64 int64
+	Int int
 }
 
 func TestNewFunc(t *testing.T) {
@@ -24,11 +22,11 @@ func TestNewFunc(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	f := NewFile("main")
+	f := NewFile("github.com/abekoh/mapc/main")
 	fc := NewFunc(mp)
 	f.Apply(fc)
 	var buf bytes.Buffer
-	err = f.Write(&buf)
+	err = f.Fprint(&buf)
 	if err != nil {
 		t.Fatal(err)
 	}
