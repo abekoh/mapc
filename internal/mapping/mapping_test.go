@@ -54,7 +54,7 @@ func loadField(t *testing.T, str any, fieldName string) *object.Field {
 	return field
 }
 
-func Test_newFieldPair1(t *testing.T) {
+func Test_newFieldPair(t *testing.T) {
 	type args struct {
 		from *object.Field
 		to   *object.Field
