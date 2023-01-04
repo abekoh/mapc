@@ -276,7 +276,35 @@ func genElt(fp *mapping.FieldPair, from *dst.Ident) *dst.KeyValueExpr {
 }
 
 func (f Func) ReNew(m *mapping.Mapping) (*Func, error) {
-	//decl := dst.Clone(f.fc).(*dst.FuncDecl)
+	decl := dst.Clone(f.fc).(*dst.FuncDecl)
+	if decl.Body == nil || decl.Body.List == nil || len(decl.Body.List) == 0 {
+		return nil, errors.New("failed to find return statement")
+	}
+	retStmt, ok := decl.Body.List[len(decl.Body.List)-1].(*dst.ReturnStmt)
+	if !ok {
+		return nil, errors.New("failed cast to *dst.ReturnStmt")
+	}
+	if retStmt.Results == nil || len(retStmt.Results) == 0 {
+		return nil, errors.New("failed to get return results")
+	}
+	compLit, ok := retStmt.Results[0].(*dst.CompositeLit)
+	if !ok {
+		return nil, errors.New("failed to cast *dst.CompositeLit")
+	}
+	feMap := newFieldExprMap(compLit.Elts)
+	var resFieldExprs []*fieldExpr
+	for _, pair := range m.FieldPairs {
+		// TODO: get 'from ident' from params
+		fromIdent := genVar("from")
+		resFieldExprs = append(resFieldExprs, &fieldExpr{
+			expr: genElt(pair, fromIdent),
+		})
+
+		key := pair.To.Name()
+		if _, ok := feMap[key]; ok {
+			delete(feMap, key)
+		}
+	}
 	// TODO: check params, return type, etc...
 	return nil, errors.New("not implemented")
 }
