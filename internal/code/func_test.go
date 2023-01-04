@@ -56,7 +56,8 @@ func ToBUser(from AUser) BUser {
 		// Int: from.Int,
 		Str: from.Str,
 	}
-}`, "main")
+}
+`, "main")
 	if err != nil {
 		t.Fatal(err)
 	}
