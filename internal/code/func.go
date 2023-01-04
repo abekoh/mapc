@@ -1,6 +1,7 @@
 package code
 
 import (
+	"errors"
 	"strings"
 
 	"github.com/abekoh/mapc/internal/mapping"
@@ -276,7 +277,7 @@ func genElt(fp *mapping.FieldPair, from *dst.Ident) *dst.KeyValueExpr {
 func (f Func) ReNew(m *mapping.Mapping) (*Func, error) {
 	//decl := dst.Clone(f.fc).(*dst.FuncDecl)
 	// TODO: check params, return type, etc...
-	return nil, nil
+	return nil, errors.New("not implemented")
 }
 
 func pkgName(pkgPath string) string {
