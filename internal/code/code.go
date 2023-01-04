@@ -156,7 +156,7 @@ func NewFunc(m *mapping.Mapping) *Func {
 	el1 := &dst.KeyValueExpr{
 		Key: el1Key,
 		Value: &dst.SelectorExpr{
-			X:    inp,
+			X:    dst.Clone(inp).(dst.Expr),
 			Sel:  el1Sel,
 			Decs: dst.SelectorExprDecorations{},
 		},
@@ -168,7 +168,7 @@ func NewFunc(m *mapping.Mapping) *Func {
 	el2 := &dst.KeyValueExpr{
 		Key: el2Key,
 		Value: &dst.SelectorExpr{
-			X:    inp,
+			X:    dst.Clone(inp).(dst.Expr),
 			Sel:  el2Sel,
 			Decs: dst.SelectorExprDecorations{},
 		},
@@ -180,7 +180,7 @@ func NewFunc(m *mapping.Mapping) *Func {
 	el3 := &dst.KeyValueExpr{
 		Key: el3Key,
 		Value: &dst.SelectorExpr{
-			X:    inp,
+			X:    dst.Clone(inp).(dst.Expr),
 			Sel:  el3Sel,
 			Decs: dst.SelectorExprDecorations{},
 		},
@@ -192,7 +192,7 @@ func NewFunc(m *mapping.Mapping) *Func {
 	el4 := &dst.KeyValueExpr{
 		Key: el4Key,
 		Value: &dst.SelectorExpr{
-			X:    inp,
+			X:    dst.Clone(inp).(dst.Expr),
 			Sel:  el4Sel,
 			Decs: dst.SelectorExprDecorations{},
 		},
@@ -202,7 +202,7 @@ func NewFunc(m *mapping.Mapping) *Func {
 	ret := &dst.ReturnStmt{
 		Results: []dst.Expr{
 			&dst.CompositeLit{
-				Type: retTyp,
+				Type: dst.Clone(retTyp).(dst.Expr),
 				Elts: []dst.Expr{
 					el1,
 					el2,
