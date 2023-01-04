@@ -8,7 +8,7 @@ import (
 type Struct struct {
 	Name    string
 	PkgPath string
-	Fields  []Field
+	Fields  []*Field
 }
 
 type Field struct {
@@ -35,10 +35,10 @@ func NewStruct(t reflect.Type) (*Struct, error) {
 	if t.Kind() != reflect.Struct {
 		return nil, fmt.Errorf("kind must be struct, got %v", t.Kind())
 	}
-	var fs []Field
+	var fs []*Field
 	for i := 0; i < t.NumField(); i++ {
 		f := t.Field(i)
-		s := Field{f: &f}
+		s := &Field{f: &f}
 		fs = append(fs, s)
 	}
 	return &Struct{
