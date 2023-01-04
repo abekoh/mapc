@@ -154,6 +154,10 @@ func NewFunc(m *mapping.Mapping) *Func {
 	return &Func{fc: fc}
 }
 
+func (f Func) ReNew(m *mapping.Mapping) *Func {
+	return nil
+}
+
 func pkgName(pkgPath string) string {
 	sp := strings.Split(pkgPath, "/")
 	if len(sp) == 0 {
