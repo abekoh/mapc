@@ -5,6 +5,7 @@ import (
 	"go/token"
 	"io"
 	"os"
+	"strings"
 
 	"github.com/dave/dst"
 	"github.com/dave/dst/decorator"
@@ -32,7 +33,7 @@ func LoadFile(filePath, pkgPath string) (*File, error) {
 
 func New(pkgPath string) *File {
 	df := &dst.File{
-		Name:  dst.NewIdent(pkgPath),
+		Name:  dst.NewIdent(pkgName(pkgPath)),
 		Decls: []dst.Decl{},
 	}
 	return &File{dstFile: df, pkgPath: pkgPath}
@@ -44,4 +45,12 @@ func (f File) Write(w io.Writer) error {
 		return fmt.Errorf("failed to write: %w", err)
 	}
 	return nil
+}
+
+func pkgName(pkgPath string) string {
+	sp := strings.Split(pkgPath, "/")
+	if len(sp) == 0 {
+		return ""
+	}
+	return sp[len(sp)-1]
 }

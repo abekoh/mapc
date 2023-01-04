@@ -23,7 +23,7 @@ func TestLoadFile(t *testing.T) {
 }
 
 func TestNew(t *testing.T) {
-	f := New("main")
+	f := New("github.com/abekoh/mapc/main")
 
 	// check writing
 	var buf bytes.Buffer
