@@ -76,98 +76,135 @@ func emptyDecs() dst.IdentDecorations {
 
 func NewFunc(m *mapping.Mapping) *Func {
 	//name := m.Name()
+	funcNameObj := dst.NewObj(dst.Fun, "ToBUser")
+	funcName := dst.NewIdent("ToBUser")
+	funcName.Obj = funcNameObj
+
+	inpObj := dst.NewObj(dst.Var, "inp")
+	inp := dst.NewIdent("inp")
+	inp.Obj = inpObj
+	inpTypObj := dst.NewObj(dst.Typ, "AUser")
+	inpTyp := dst.NewIdent("AUser")
+	inpTyp.Obj = inpTypObj
+
+	params := &dst.FieldList{
+		Opening: true,
+		List: []*dst.Field{
+			{
+				Names: []*dst.Ident{inp},
+				Type:  inpTyp,
+				Tag:   nil,
+				Decs:  dst.FieldDecorations{},
+			},
+		},
+		Closing: true,
+		Decs:    dst.FieldListDecorations{},
+	}
+
+	retTypObj := dst.NewObj(dst.Typ, "BUser")
+	retTyp := dst.NewIdent("BUser")
+	retTyp.Obj = retTypObj
+
+	results := &dst.FieldList{
+		Opening: false,
+		List: []*dst.Field{
+			{
+				Names: nil,
+				Type:  retTyp,
+				Tag:   nil,
+				Decs:  dst.FieldDecorations{},
+			},
+		},
+		Closing: false,
+		Decs:    dst.FieldListDecorations{},
+	}
+
+	typ := &dst.FuncType{
+		Func:       false,
+		TypeParams: nil,
+		Params:     params,
+		Results:    results,
+		Decs:       dst.FuncTypeDecorations{},
+	}
+
+	el1Key := dst.NewIdent("ID")
+	el1Sel := dst.NewIdent("ID")
+	el1 := &dst.KeyValueExpr{
+		Key: el1Key,
+		Value: &dst.SelectorExpr{
+			X:    inp,
+			Sel:  el1Sel,
+			Decs: dst.SelectorExprDecorations{},
+		},
+		Decs: dst.KeyValueExprDecorations{},
+	}
+
+	el2Key := dst.NewIdent("Name")
+	el2Sel := dst.NewIdent("Name")
+	el2 := &dst.KeyValueExpr{
+		Key: el2Key,
+		Value: &dst.SelectorExpr{
+			X:    inp,
+			Sel:  el2Sel,
+			Decs: dst.SelectorExprDecorations{},
+		},
+		Decs: dst.KeyValueExprDecorations{},
+	}
+
+	el3Key := dst.NewIdent("Age")
+	el3Sel := dst.NewIdent("Age")
+	el3 := &dst.KeyValueExpr{
+		Key: el3Key,
+		Value: &dst.SelectorExpr{
+			X:    inp,
+			Sel:  el3Sel,
+			Decs: dst.SelectorExprDecorations{},
+		},
+		Decs: dst.KeyValueExprDecorations{},
+	}
+
+	el4Key := dst.NewIdent("RegisteredAt")
+	el4Sel := dst.NewIdent("RegisteredAt")
+	el4 := &dst.KeyValueExpr{
+		Key: el4Key,
+		Value: &dst.SelectorExpr{
+			X:    inp,
+			Sel:  el4Sel,
+			Decs: dst.SelectorExprDecorations{},
+		},
+		Decs: dst.KeyValueExprDecorations{},
+	}
+
+	ret := &dst.ReturnStmt{
+		Results: []dst.Expr{
+			&dst.CompositeLit{
+				Type: retTyp,
+				Elts: []dst.Expr{
+					el1,
+					el2,
+					el3,
+					el4,
+				},
+				Incomplete: false,
+				Decs:       dst.CompositeLitDecorations{},
+			},
+		},
+		Decs: dst.ReturnStmtDecorations{},
+	}
+
+	body := &dst.BlockStmt{
+		List: []dst.Stmt{
+			ret,
+		},
+		RbraceHasNoPos: false,
+		Decs:           dst.BlockStmtDecorations{},
+	}
+
 	fc := &dst.FuncDecl{
 		Recv: nil,
-		Name: &dst.Ident{
-			Name: "ToBUser",
-			Obj: &dst.Object{
-				Kind: dst.Fun,
-				Name: "ToBUser",
-				Decl: &dst.FuncDecl{
-					Recv: nil,
-					Name: nil, // parent
-					Type: nil,
-					Body: nil,
-					Decs: dst.FuncDeclDecorations{},
-				},
-				Type: nil,
-			},
-			Path: "",
-			Decs: dst.IdentDecorations{},
-		},
-		Type: &dst.FuncType{
-			Func:       true,
-			TypeParams: nil,
-			Params: &dst.FieldList{
-				Opening: true,
-				List: []*dst.Field{
-					{
-						Names: []*dst.Ident{
-							{
-								Name: "inp",
-								Obj: &dst.Object{
-									Kind: dst.Var,
-									Name: "inp",
-									Decl: nil, // will be inserted
-									Data: nil,
-									Type: nil,
-								},
-								Path: "",
-								Decs: dst.IdentDecorations{},
-							},
-						},
-						Type: &dst.Ident{
-							Name: "AUser",
-							Obj: &dst.Object{
-								Kind: dst.Typ,
-								Name: "AUser",
-								Decl: &dst.TypeSpec{
-									Name:       nil, // replace
-									TypeParams: nil,
-									Assign:     false,
-									Type:       nil,
-									Decs:       dst.TypeSpecDecorations{},
-								},
-								Data: nil,
-								Type: nil,
-							},
-							Path: "",
-							Decs: dst.IdentDecorations{},
-						},
-						Tag:  nil,
-						Decs: dst.FieldDecorations{},
-					},
-				},
-				Closing: true,
-				Decs:    dst.FieldListDecorations{},
-			},
-			Results: &dst.FieldList{
-				Opening: false,
-				List: []*dst.Field{
-					{
-						Names: nil,
-						Type: &dst.Ident{
-							Name: "BUser",
-							Obj: &dst.Object{
-								Kind: dst.Typ,
-								Name: "BUser",
-								Decl: nil, // insert
-								Data: nil,
-								Type: nil,
-							},
-							Path: "",
-							Decs: dst.IdentDecorations{},
-						},
-						Tag:  nil,
-						Decs: dst.FieldDecorations{},
-					},
-				},
-				Closing: false,
-				Decs:    dst.FieldListDecorations{},
-			},
-			Decs: dst.FuncTypeDecorations{},
-		},
-		Body: nil,
+		Name: funcName,
+		Type: typ,
+		Body: body,
 		Decs: dst.FuncDeclDecorations{},
 	}
 	return &Func{fc: fc}

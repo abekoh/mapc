@@ -22,8 +22,8 @@ type BUser struct {
 	RegisteredAt time.Time
 }
 
-// ToAUser is mapper from AUser into BUser
-func ToAUser(inp AUser) BUser {
+// ToBUser is mapper from AUser into BUser
+func ToBUser(inp AUser) BUser {
 	return BUser{
 		ID:           inp.ID,
 		Name:         inp.Name,
