@@ -6,6 +6,7 @@ import (
 	"github.com/google/uuid"
 )
 
+// AUser is source for mapping test
 type AUser struct {
 	ID           uuid.UUID
 	Name         string
@@ -13,6 +14,7 @@ type AUser struct {
 	RegisteredAt time.Time
 }
 
+// BUser is destination for mapping test
 type BUser struct {
 	ID           uuid.UUID
 	Name         string
@@ -20,6 +22,7 @@ type BUser struct {
 	RegisteredAt time.Time
 }
 
+// ToAUser is mapper from AUser into BUser
 func ToAUser(inp AUser) BUser {
 	return BUser{
 		ID:           inp.ID,
