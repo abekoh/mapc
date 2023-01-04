@@ -30,6 +30,14 @@ func LoadFile(filePath, pkgPath string) (*File, error) {
 	return &File{dstFile: df, pkgPath: pkgPath}, nil
 }
 
+func New(pkgPath string) *File {
+	df := &dst.File{
+		Name:  dst.NewIdent(pkgPath),
+		Decls: []dst.Decl{},
+	}
+	return &File{dstFile: df, pkgPath: pkgPath}
+}
+
 func (f File) Write(w io.Writer) error {
 	r := decorator.NewRestorerWithImports(f.pkgPath, guess.New())
 	if err := r.Fprint(w, f.dstFile); err != nil {

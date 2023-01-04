@@ -22,13 +22,30 @@ func TestLoadFile(t *testing.T) {
 	loadMapper(t)
 }
 
+func TestNew(t *testing.T) {
+	f := New("main")
+
+	// check writing
+	var buf bytes.Buffer
+	if err := f.Write(&buf); err != nil {
+		t.Fatal(err)
+	}
+	expected := `package main
+`
+	r := buf.String()
+	if r != expected {
+		t.Errorf("output is must be empty")
+	}
+}
+
 func TestFile_Write(t *testing.T) {
 	f := loadMapper(t)
 	var buf bytes.Buffer
 	if err := f.Write(&buf); err != nil {
 		t.Fatal(err)
 	}
-	if buf.String() != mapperRawFile {
-		t.Errorf("failed")
+	r := buf.String()
+	if r != mapperRawFile {
+		t.Errorf("output is not matched. expected: %s, got: %s", mapperRawFile, r)
 	}
 }
