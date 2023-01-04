@@ -1,34 +1,41 @@
 package code
 
 import (
-	"bytes"
-	"fmt"
 	"testing"
 
 	"github.com/abekoh/mapc/internal/mapping"
 )
 
-type From struct {
+type AUser struct {
 	Int int
 }
 
-type To struct {
+type BUser struct {
 	Int int
 }
 
 func TestNewFunc(t *testing.T) {
 	mapper := mapping.NewMapper()
-	mp, err := mapper.Map(From{}, To{})
+	mp, err := mapper.Map(AUser{}, BUser{})
 	if err != nil {
 		t.Fatal(err)
 	}
 	f := NewFile("github.com/abekoh/mapc/main")
 	fc := NewFunc(mp)
 	f.Apply(fc)
-	var buf bytes.Buffer
-	err = f.Fprint(&buf)
+	got, err := f.sPrint()
 	if err != nil {
 		t.Fatal(err)
 	}
-	fmt.Printf("%+v", buf.String())
+	expected := `package main
+
+func ToBUser(from AUser) BUser {
+	return BUser{
+		Int: from.Int,
+	}
+}
+`
+	if got != expected {
+		t.Errorf("not matched with expected.\n\nexpected:\n%s\n\ngot:\n%s", expected, got)
+	}
 }

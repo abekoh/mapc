@@ -1,6 +1,7 @@
 package code
 
 import (
+	"bytes"
 	"fmt"
 	"go/token"
 	"io"
@@ -55,12 +56,21 @@ func (f *File) Apply(fc *Func) {
 	}
 }
 
-func (f File) Fprint(w io.Writer) error {
+func (f File) Write(w io.Writer) error {
 	r := decorator.NewRestorerWithImports(f.pkgPath, guess.New())
 	if err := r.Fprint(w, f.dstFile); err != nil {
 		return fmt.Errorf("failed to write: %w", err)
 	}
 	return nil
+}
+
+func (f File) sPrint() (string, error) {
+	var buf bytes.Buffer
+	err := f.Write(&buf)
+	if err != nil {
+		return "", fmt.Errorf("failed to write to buffer: %w", err)
+	}
+	return buf.String(), nil
 }
 
 func (f File) findFuncDecl(name string) (*dst.FuncDecl, bool) {
