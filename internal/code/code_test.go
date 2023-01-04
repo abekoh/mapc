@@ -49,3 +49,12 @@ func TestFile_Write(t *testing.T) {
 		t.Errorf("output is not matched. expected: %s, got: %s", mapperRawFile, r)
 	}
 }
+
+func TestFile_FindFunc(t *testing.T) {
+	f := loadMapper(t)
+	funcName := "ToAUser"
+	_, ok := f.FindFunc(funcName)
+	if !ok {
+		t.Errorf("not found %s", funcName)
+	}
+}

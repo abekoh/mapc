@@ -47,6 +47,20 @@ func (f File) Write(w io.Writer) error {
 	return nil
 }
 
+func (f File) FindFunc(name string) (*Func, bool) {
+	for _, decl := range f.dstFile.Decls {
+		funcDecl, ok := decl.(*dst.FuncDecl)
+		if ok && funcDecl.Name != nil && funcDecl.Name.Name == name {
+			return &Func{fc: funcDecl}, true
+		}
+	}
+	return nil, false
+}
+
+type Func struct {
+	fc *dst.FuncDecl
+}
+
 func pkgName(pkgPath string) string {
 	sp := strings.Split(pkgPath, "/")
 	if len(sp) == 0 {
