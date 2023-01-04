@@ -242,7 +242,7 @@ func genVar(name string) *dst.Ident {
 func genReturn(m *mapping.Mapping, argIdent *dst.Ident) *dst.ReturnStmt {
 	var elts []dst.Expr
 	for _, fp := range m.FieldPairs {
-		elts = append(elts, genElt(&fp, cloneIdent(argIdent)))
+		elts = append(elts, genElt(fp, cloneIdent(argIdent)))
 	}
 	return &dst.ReturnStmt{
 		Results: []dst.Expr{

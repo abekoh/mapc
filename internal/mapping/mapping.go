@@ -63,8 +63,8 @@ func NewMapper() *Mapper {
 
 type tokenFieldMap map[string]*object.Field
 
-func newFieldPair(from, to *object.Field) (FieldPair, bool) {
-	pair := FieldPair{
+func newFieldPair(from, to *object.Field) (*FieldPair, bool) {
+	pair := &FieldPair{
 		From: from,
 		To:   to,
 	}
@@ -107,7 +107,7 @@ type FieldPair struct {
 type Mapping struct {
 	From       *object.Struct
 	To         *object.Struct
-	FieldPairs []FieldPair
+	FieldPairs []*FieldPair
 }
 
 func (m Mapping) Name() string {
@@ -141,8 +141,8 @@ func (m Mapper) newTokenFieldMap(s *object.Struct) tokenFieldMap {
 	}
 	return r
 }
-func (m Mapper) newFieldPairs(from *object.Struct, toTokenFieldMap tokenFieldMap) []FieldPair {
-	var r []FieldPair
+func (m Mapper) newFieldPairs(from *object.Struct, toTokenFieldMap tokenFieldMap) []*FieldPair {
+	var r []*FieldPair
 	for _, fromF := range from.Fields {
 		fromToken := m.tzr.Tokenize(fromF.Name())
 		if toF, ok := toTokenFieldMap[fromToken]; ok {
