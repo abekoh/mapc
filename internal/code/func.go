@@ -156,12 +156,10 @@ func NewFuncSand(m *mapping.Mapping) *Func {
 }
 
 func NewFunc(m *mapping.Mapping) *Func {
-	funcName := genFuncName(m)
-	//retTyp := genType(m.To)
 	return &Func{
 		fc: &dst.FuncDecl{
 			Recv: nil,
-			Name: funcName,
+			Name: genFuncName(m),
 			Type: &dst.FuncType{
 				Func:       false,
 				TypeParams: nil,
@@ -266,8 +264,8 @@ func genElt(fp *mapping.FieldPair, from *dst.Ident) *dst.KeyValueExpr {
 	}
 }
 
-func (f Func) ReNew(m *mapping.Mapping) *Func {
-	return nil
+func (f Func) ReNew(m *mapping.Mapping) (*Func, error) {
+	return nil, nil
 }
 
 func pkgName(pkgPath string) string {
