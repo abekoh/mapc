@@ -39,6 +39,15 @@ func LoadFile(filePath, pkgPath string) (*File, error) {
 	return &File{dstFile: df, pkgPath: pkgPath}, nil
 }
 
+func loadFileFromString(s, pkgPath string) (*File, error) {
+	dec := decorator.NewDecoratorWithImports(token.NewFileSet(), pkgPath, goast.New())
+	df, err := dec.Parse(s)
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse file: %w", err)
+	}
+	return &File{dstFile: df, pkgPath: pkgPath}, nil
+}
+
 func (f File) FindFunc(name string) (*Func, bool) {
 	if d, ok := f.findFuncDecl(name); ok {
 		return &Func{fc: d}, true

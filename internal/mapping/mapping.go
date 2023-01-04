@@ -136,8 +136,9 @@ func (m Mapper) Map(from, to any) (*Mapping, error) {
 func (m Mapper) newTokenFieldMap(s *object.Struct) tokenFieldMap {
 	r := make(tokenFieldMap)
 	for _, f := range s.Fields {
+		nf := f
 		token := m.tzr.Tokenize(f.Name())
-		r[token] = &f
+		r[token] = &nf
 	}
 	return r
 }
