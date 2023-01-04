@@ -1,9 +1,10 @@
 package mapping
 
 import (
-	"github.com/abekoh/mapc/internal/object"
 	"reflect"
 	"testing"
+
+	"github.com/abekoh/mapc/internal/object"
 )
 
 type TypedInt int
@@ -108,5 +109,18 @@ func Test_newFieldPair1(t *testing.T) {
 				t.Errorf("newFieldPair().Caster got = %v, want %v", got.Caster, tt.wantCaster)
 			}
 		})
+	}
+}
+
+func TestMapping_Name(t *testing.T) {
+	m := Mapping{
+		To: &object.Struct{
+			Name: "bUser",
+		},
+	}
+	expected := "ToBUser"
+	got := m.Name()
+	if got != expected {
+		t.Errorf("expected: %s, got: %s", expected, got)
 	}
 }

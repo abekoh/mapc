@@ -2,9 +2,11 @@ package mapping
 
 import (
 	"fmt"
+	"reflect"
+
 	"github.com/abekoh/mapc/internal/object"
 	"github.com/abekoh/mapc/internal/tokenizer"
-	"reflect"
+	"github.com/abekoh/mapc/internal/util"
 )
 
 //type Var struct {
@@ -102,6 +104,11 @@ type Mapping struct {
 	From       *object.Struct
 	To         *object.Struct
 	FieldPairs []FieldPair
+}
+
+func (m Mapping) Name() string {
+	// TODO: fix
+	return fmt.Sprintf("To%s", util.UpperFirst(m.To.Name))
 }
 
 func (m Mapper) Map(from, to any) (*Mapping, error) {

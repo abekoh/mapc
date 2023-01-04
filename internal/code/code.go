@@ -7,6 +7,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/abekoh/mapc/internal/mapping"
 	"github.com/dave/dst"
 	"github.com/dave/dst/decorator"
 	"github.com/dave/dst/decorator/resolver/goast"
@@ -59,6 +60,10 @@ func (f File) FindFunc(name string) (*Func, bool) {
 
 type Func struct {
 	fc *dst.FuncDecl
+}
+
+func NewFunc(m *mapping.Mapping) *Func {
+	return &Func{}
 }
 
 func pkgName(pkgPath string) string {
