@@ -2,6 +2,7 @@ package code
 
 import (
 	"errors"
+	"regexp"
 	"strings"
 
 	"github.com/abekoh/mapc/internal/mapping"
@@ -286,4 +287,52 @@ func pkgName(pkgPath string) string {
 		return ""
 	}
 	return sp[len(sp)-1]
+}
+
+type fieldExpr struct {
+	expr      *dst.KeyValueExpr
+	comment   string
+	isComment bool
+}
+
+func newFieldExprMap(exprs []dst.Expr) map[string]*fieldExpr {
+	res := make(map[string]*fieldExpr)
+	for _, expr := range exprs {
+		e, ok := expr.(*dst.KeyValueExpr)
+		if !ok {
+			continue
+		}
+		if e.Decorations() != nil && e.Decorations().Start != nil {
+			for _, comment := range e.Decorations().Start.All() {
+				key := commentToFieldExprKey(comment)
+				if key == "" {
+					continue
+				}
+				if _, ok := res[key]; !ok {
+					res[key] = &fieldExpr{
+						comment:   comment,
+						isComment: true,
+					}
+				}
+			}
+		}
+		if key, ok := e.Key.(*dst.Ident); ok {
+			nExpr := dst.Clone(e).(*dst.KeyValueExpr)
+			// reset comments
+			nExpr.Decs = dst.KeyValueExprDecorations{}
+			res[key.Name] = &fieldExpr{
+				expr: nExpr,
+			}
+		}
+	}
+	return res
+}
+
+func commentToFieldExprKey(comment string) string {
+	re := regexp.MustCompile("^\\/\\/\\s(.+):\\s.*$")
+	r := re.FindStringSubmatch(comment)
+	if len(r) == 2 {
+		return r[1]
+	}
+	return ""
 }
