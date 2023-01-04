@@ -53,8 +53,8 @@ func TestFunc_ReNew(t *testing.T) {
 
 func ToBUser(from AUser) BUser {
 	return BUser{
-		// Int: from.Int,
-		Str: from.Str,
+		Int: from.Int,
+		// Str: from.Str,
 	}
 }
 `, "main")

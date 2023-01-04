@@ -295,37 +295,50 @@ type fieldExpr struct {
 	isComment bool
 }
 
-func newFieldExprMap(exprs []dst.Expr) map[string]*fieldExpr {
-	res := make(map[string]*fieldExpr)
+type fieldExprMap map[string]*fieldExpr
+
+func newFieldExprMap(exprs []dst.Expr) fieldExprMap {
+	res := make(fieldExprMap)
 	for _, expr := range exprs {
 		e, ok := expr.(*dst.KeyValueExpr)
 		if !ok {
 			continue
 		}
-		if e.Decorations() != nil && e.Decorations().Start != nil {
-			for _, comment := range e.Decorations().Start.All() {
-				key := commentToFieldExprKey(comment)
-				if key == "" {
-					continue
-				}
-				if _, ok := res[key]; !ok {
-					res[key] = &fieldExpr{
-						comment:   comment,
-						isComment: true,
-					}
-				}
+		if e.Decorations() != nil {
+			if e.Decorations().Start != nil {
+				res.addFromComments(e.Decorations().Start.All())
+			}
+			if e.Decorations().End != nil {
+				res.addFromComments(e.Decorations().End.All())
 			}
 		}
-		if key, ok := e.Key.(*dst.Ident); ok {
-			nExpr := dst.Clone(e).(*dst.KeyValueExpr)
-			// reset comments
-			nExpr.Decs = dst.KeyValueExprDecorations{}
-			res[key.Name] = &fieldExpr{
-				expr: nExpr,
+		res.addKeyValueExpWithoutComment(e)
+	}
+	return res
+}
+
+func (m fieldExprMap) addFromComments(comments []string) {
+	for _, comment := range comments {
+		key := commentToFieldExprKey(comment)
+		if key == "" {
+			continue
+		}
+		if _, ok := m[key]; !ok {
+			m[key] = &fieldExpr{
+				comment:   comment,
+				isComment: true,
 			}
 		}
 	}
-	return res
+}
+func (m fieldExprMap) addKeyValueExpWithoutComment(e *dst.KeyValueExpr) {
+	if key, ok := e.Key.(*dst.Ident); ok {
+		nExpr := dst.Clone(e).(*dst.KeyValueExpr)
+		nExpr.Decs = dst.KeyValueExprDecorations{}
+		m[key.Name] = &fieldExpr{
+			expr: nExpr,
+		}
+	}
 }
 
 func commentToFieldExprKey(comment string) string {
