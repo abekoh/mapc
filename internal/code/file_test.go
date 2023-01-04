@@ -52,7 +52,7 @@ func TestFile_Write(t *testing.T) {
 
 func TestFile_FindFunc(t *testing.T) {
 	f := loadSample(t)
-	funcName := "ToAUser"
+	funcName := "ToBUser"
 	_, ok := f.FindFunc(funcName)
 	if !ok {
 		t.Errorf("not found %s", funcName)
