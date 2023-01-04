@@ -291,7 +291,7 @@ func (f Func) ReNew(m *mapping.Mapping) (*Func, error) {
 	if !ok {
 		return nil, errors.New("failed to cast *dst.CompositeLit")
 	}
-	feMap := newFieldExprMap(compLit.Elts)
+	feMap := newFieldExprs(compLit.Elts)
 	var resFieldExprs []*fieldExpr
 	for _, pair := range m.FieldPairs {
 		// TODO: get 'from ident' from params
@@ -301,8 +301,8 @@ func (f Func) ReNew(m *mapping.Mapping) (*Func, error) {
 		})
 
 		key := pair.To.Name()
-		if _, ok := feMap[key]; ok {
-			delete(feMap, key)
+		if _, ok := feMap.m[key]; ok {
+			delete(feMap.m, key)
 		}
 	}
 	// TODO: check params, return type, etc...
@@ -318,15 +318,28 @@ func pkgName(pkgPath string) string {
 }
 
 type fieldExpr struct {
+	index     int
 	expr      *dst.KeyValueExpr
 	comment   string
 	isComment bool
 }
 
-type fieldExprMap map[string]*fieldExpr
+type fieldExprs struct {
+	m     map[string]*fieldExpr
+	count int
+}
 
-func newFieldExprMap(exprs []dst.Expr) fieldExprMap {
-	res := make(fieldExprMap)
+func (fe *fieldExprs) inc() int {
+	r := fe.count
+	fe.count += 1
+	return r
+}
+
+func newFieldExprs(exprs []dst.Expr) *fieldExprs {
+	res := &fieldExprs{
+		m:     make(map[string]*fieldExpr),
+		count: 0,
+	}
 	for _, expr := range exprs {
 		e, ok := expr.(*dst.KeyValueExpr)
 		if !ok {
@@ -345,26 +358,28 @@ func newFieldExprMap(exprs []dst.Expr) fieldExprMap {
 	return res
 }
 
-func (m fieldExprMap) addFromComments(comments []string) {
+func (fe *fieldExprs) addFromComments(comments []string) {
 	for _, comment := range comments {
 		key := commentToFieldExprKey(comment)
 		if key == "" {
 			continue
 		}
-		if _, ok := m[key]; !ok {
-			m[key] = &fieldExpr{
+		if _, ok := fe.m[key]; !ok {
+			fe.m[key] = &fieldExpr{
+				index:     fe.inc(),
 				comment:   comment,
 				isComment: true,
 			}
 		}
 	}
 }
-func (m fieldExprMap) addKeyValueExpWithoutComment(e *dst.KeyValueExpr) {
+func (fe *fieldExprs) addKeyValueExpWithoutComment(e *dst.KeyValueExpr) {
 	if key, ok := e.Key.(*dst.Ident); ok {
 		nExpr := dst.Clone(e).(*dst.KeyValueExpr)
 		nExpr.Decs = dst.KeyValueExprDecorations{}
-		m[key.Name] = &fieldExpr{
-			expr: nExpr,
+		fe.m[key.Name] = &fieldExpr{
+			index: fe.inc(),
+			expr:  nExpr,
 		}
 	}
 }
