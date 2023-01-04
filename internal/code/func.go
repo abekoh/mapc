@@ -260,13 +260,9 @@ func genElt(fp *mapping.FieldPair, from *dst.Ident) *dst.KeyValueExpr {
 	return &dst.KeyValueExpr{
 		Key: dst.NewIdent(fp.To.Name()),
 		Value: &dst.SelectorExpr{
-			X:   from,
-			Sel: dst.NewIdent(fp.From.Name()),
-			Decs: dst.SelectorExprDecorations{
-				NodeDecs: dst.NodeDecs{
-					Before: dst.NewLine,
-				},
-			},
+			X:    from,
+			Sel:  dst.NewIdent(fp.From.Name()),
+			Decs: dst.SelectorExprDecorations{},
 		},
 		Decs: dst.KeyValueExprDecorations{
 			NodeDecs: dst.NodeDecs{
