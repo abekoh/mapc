@@ -291,12 +291,12 @@ func (f Func) ReNew(m *mapping.Mapping) (*Func, error) {
 	if !ok {
 		return nil, errors.New("failed to cast *dst.CompositeLit")
 	}
-	feMap := newFieldExprs(compLit.Elts)
-	var resFieldExprs []*fieldExpr
+	feMap := newFieldExprsOLD(compLit.Elts)
+	var resFieldExprs []*fieldExprOLD
 	for _, pair := range m.FieldPairs {
 		// TODO: get 'from ident' from params
 		fromIdent := genVar("from")
-		resFieldExprs = append(resFieldExprs, &fieldExpr{
+		resFieldExprs = append(resFieldExprs, &fieldExprOLD{
 			expr: genElt(pair, fromIdent),
 		})
 
@@ -332,31 +332,31 @@ func pkgName(pkgPath string) string {
 	return sp[len(sp)-1]
 }
 
-type fieldExpr struct {
+type fieldExprOLD struct {
 	index     int
 	expr      *dst.KeyValueExpr
 	comment   string
 	isComment bool
 }
 
-type fieldExprs struct {
-	m     map[string]*fieldExpr
+type fieldExprsOLD struct {
+	m     map[string]*fieldExprOLD
 	count int
 }
 
-func (fe *fieldExprs) inc() int {
+func (fe *fieldExprsOLD) inc() int {
 	r := fe.count
 	fe.count++
 	return r
 }
 
-func (fe fieldExprs) sortedFieldExprList() []*fieldExpr {
+func (fe fieldExprsOLD) sortedFieldExprList() []*fieldExprOLD {
 	// FIXME
-	tmp := make(map[int]*fieldExpr)
+	tmp := make(map[int]*fieldExprOLD)
 	for _, v := range fe.m {
 		tmp[v.index] = v
 	}
-	var res []*fieldExpr
+	var res []*fieldExprOLD
 	i := 0
 	for len(res) != len(fe.m) {
 		if t, ok := tmp[i]; ok {
@@ -367,9 +367,9 @@ func (fe fieldExprs) sortedFieldExprList() []*fieldExpr {
 	return res
 }
 
-func newFieldExprs(exprs []dst.Expr) *fieldExprs {
-	res := &fieldExprs{
-		m:     make(map[string]*fieldExpr),
+func newFieldExprsOLD(exprs []dst.Expr) *fieldExprsOLD {
+	res := &fieldExprsOLD{
+		m:     make(map[string]*fieldExprOLD),
 		count: 0,
 	}
 	for _, expr := range exprs {
@@ -390,14 +390,14 @@ func newFieldExprs(exprs []dst.Expr) *fieldExprs {
 	return res
 }
 
-func (fe *fieldExprs) addFromComments(comments []string) {
+func (fe *fieldExprsOLD) addFromComments(comments []string) {
 	for _, comment := range comments {
 		key := commentToFieldExprKey(comment)
 		if key == "" {
 			continue
 		}
 		if _, ok := fe.m[key]; !ok {
-			fe.m[key] = &fieldExpr{
+			fe.m[key] = &fieldExprOLD{
 				index:     fe.inc(),
 				comment:   comment,
 				isComment: true,
@@ -405,11 +405,11 @@ func (fe *fieldExprs) addFromComments(comments []string) {
 		}
 	}
 }
-func (fe *fieldExprs) addKeyValueExpWithoutComment(e *dst.KeyValueExpr) {
+func (fe *fieldExprsOLD) addKeyValueExpWithoutComment(e *dst.KeyValueExpr) {
 	if key, ok := e.Key.(*dst.Ident); ok {
 		nExpr := dst.Clone(e).(*dst.KeyValueExpr)
 		nExpr.Decs = dst.KeyValueExprDecorations{}
-		fe.m[key.Name] = &fieldExpr{
+		fe.m[key.Name] = &fieldExprOLD{
 			index: fe.inc(),
 			expr:  nExpr,
 		}
