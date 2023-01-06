@@ -25,7 +25,7 @@ type Caster struct {
 	fc string
 }
 
-type MapExpr struct {
+type Expr struct {
 	from string
 	to   string
 }
@@ -36,13 +36,13 @@ type Function struct {
 	fromTyp  *Typ
 	toTyp    *Typ
 	withErr  bool
-	mapExprs []*MapExpr
+	mapExprs []*Expr
 }
 
 func NewFunction(m *mapping.Mapping) *Function {
-	var mapExprs []*MapExpr
+	var exprs []*Expr
 	for _, p := range m.FieldPairs {
-		mapExprs = append(mapExprs, &MapExpr{
+		exprs = append(exprs, &Expr{
 			from: p.From.Name(),
 			to:   p.To.Name(),
 		})
@@ -53,7 +53,7 @@ func NewFunction(m *mapping.Mapping) *Function {
 		fromTyp:  &Typ{pkgPath: m.From.PkgPath},
 		toTyp:    &Typ{pkgPath: m.To.PkgPath},
 		withErr:  false,
-		mapExprs: mapExprs,
+		mapExprs: exprs,
 	}
 }
 
@@ -137,9 +137,9 @@ func genResult(toTyp *Typ) *dst.FieldList {
 	}
 }
 
-func genReturn(toTyp *Typ, argIdent *dst.Ident, mapExprs []*MapExpr) *dst.ReturnStmt {
+func genReturn(toTyp *Typ, argIdent *dst.Ident, exprs []*Expr) *dst.ReturnStmt {
 	var elts []dst.Expr
-	for _, e := range mapExprs {
+	for _, e := range exprs {
 		elts = append(elts, genElt(e, cloneIdent(argIdent)))
 	}
 	return &dst.ReturnStmt{
@@ -155,12 +155,12 @@ func genReturn(toTyp *Typ, argIdent *dst.Ident, mapExprs []*MapExpr) *dst.Return
 	}
 }
 
-func genElt(fp *MapExpr, from *dst.Ident) *dst.KeyValueExpr {
+func genElt(e *Expr, from *dst.Ident) *dst.KeyValueExpr {
 	return &dst.KeyValueExpr{
-		Key: dst.NewIdent(fp.to),
+		Key: dst.NewIdent(e.to),
 		Value: &dst.SelectorExpr{
 			X:    from,
-			Sel:  dst.NewIdent(fp.from),
+			Sel:  dst.NewIdent(e.from),
 			Decs: dst.SelectorExprDecorations{},
 		},
 		Decs: dst.KeyValueExprDecorations{
