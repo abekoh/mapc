@@ -1,6 +1,8 @@
 package function
 
 import (
+	"regexp"
+
 	"github.com/dave/dst"
 )
 
@@ -79,4 +81,25 @@ func (c CommentedFieldMapper) DstExpr(_ string) (dst.Expr, bool) {
 
 func (c CommentedFieldMapper) Comment() (string, bool) {
 	return c.comment, true
+}
+
+func ParseComments(comments ...string) (res FieldMapperList) {
+	for _, c := range comments {
+		if key := commentToKey(c); key != "" {
+			res = append(res, &CommentedFieldMapper{
+				to:      key,
+				comment: c,
+			})
+		}
+	}
+	return
+}
+
+func commentToKey(comment string) string {
+	re := regexp.MustCompile("^\\/\\/\\s(.+):\\s.*$")
+	r := re.FindStringSubmatch(comment)
+	if len(r) == 2 {
+		return r[1]
+	}
+	return ""
 }

@@ -83,6 +83,38 @@ func NewFromDecl(pkgPath string, d *dst.FuncDecl) (*Function, error) {
 		return nil, fmt.Errorf("failed to cast result type")
 	}
 	res.toTyp = &Typ{pkgPath: getPkgPath(resultTyp)}
+
+	if len(d.Body.List) != 1 {
+		return nil, fmt.Errorf("length of body must be 1")
+	}
+	body, ok := d.Body.List[0].(*dst.ReturnStmt)
+	if !ok {
+		return nil, fmt.Errorf("body must be ReturnStmt")
+	}
+	if len(body.Results) != 1 {
+		return nil, fmt.Errorf("length of body.Results must be 1")
+	}
+	res.mapExprs = FieldMapperList{}
+	for _, expr := range body.Results {
+		res.mapExprs = append(res.mapExprs, ParseComments(expr.Decorations().Start.All()...)...)
+		kvExpr, ok := body.Results[0].(*dst.KeyValueExpr)
+		if !ok {
+			return nil, fmt.Errorf("body.Results[*] must be KeyValueExpr")
+		}
+		keyIdent, ok := kvExpr.Key.(*dst.Ident)
+		if !ok {
+			return nil, fmt.Errorf("key must be Ident")
+		}
+		selectorExpr, ok := kvExpr.Value.(*dst.SelectorExpr)
+		if !ok {
+			return nil, fmt.Errorf("value must be SelectorExpr")
+		}
+		res.mapExprs = append(res.mapExprs, &SimpleFieldMapper{
+			from: selectorExpr.Sel.Name,
+			to:   keyIdent.Name,
+		})
+		res.mapExprs = append(res.mapExprs, ParseComments(expr.Decorations().End.All()...)...)
+	}
 	return res, nil
 }
 
