@@ -30,7 +30,6 @@ type Function struct {
 	argName  string
 	fromTyp  *Typ
 	toTyp    *Typ
-	withErr  bool
 	mapExprs FieldMapperList
 }
 
@@ -47,9 +46,44 @@ func NewFromMapping(m *mapping.Mapping) *Function {
 		argName:  "from",
 		fromTyp:  &Typ{pkgPath: m.From.PkgPath},
 		toTyp:    &Typ{pkgPath: m.To.PkgPath},
-		withErr:  false,
 		mapExprs: exprs,
 	}
+}
+
+func NewFromDecl(pkgPath string, d *dst.FuncDecl) (*Function, error) {
+	getPkgPath := func(ident *dst.Ident) string {
+		if ident.Path == "" {
+			return pkgPath
+		}
+		return ident.Path
+	}
+	res := &Function{}
+	res.name = d.Name.Name
+	if len(d.Type.Params.List) != 1 {
+		return nil, fmt.Errorf("length of params must be 1")
+	}
+
+	paramField := d.Type.Params.List[0]
+	if len(paramField.Names) != 1 {
+		return nil, fmt.Errorf("length of names must be 1")
+	}
+	res.argName = paramField.Names[0].Name
+	paramTyp, ok := paramField.Type.(*dst.Ident)
+	if !ok {
+		return nil, fmt.Errorf("failed to cast param type")
+	}
+	res.fromTyp = &Typ{pkgPath: getPkgPath(paramTyp)}
+
+	if len(d.Type.Results.List) != 1 {
+		return nil, fmt.Errorf("length of results must be 1")
+	}
+	resultField := d.Type.Results.List[0]
+	resultTyp, ok := resultField.Type.(*dst.Ident)
+	if !ok {
+		return nil, fmt.Errorf("failed to cast result type")
+	}
+	res.toTyp = &Typ{pkgPath: getPkgPath(resultTyp)}
+	return res, nil
 }
 
 func (f Function) Decl() (*dst.FuncDecl, error) {
