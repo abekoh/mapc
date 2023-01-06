@@ -1,4 +1,4 @@
-package mapexpr
+package function
 
 import (
 	"fmt"
@@ -25,24 +25,19 @@ type Caster struct {
 	fc string
 }
 
-type Expr struct {
-	from string
-	to   string
-}
-
 type Function struct {
 	name     string
 	argName  string
 	fromTyp  *Typ
 	toTyp    *Typ
 	withErr  bool
-	mapExprs []*Expr
+	mapExprs FieldMapperList
 }
 
 func NewFunction(m *mapping.Mapping) *Function {
-	var exprs []*Expr
+	var exprs FieldMapperList
 	for _, p := range m.FieldPairs {
-		exprs = append(exprs, &Expr{
+		exprs = append(exprs, &SimpleFieldMapper{
 			from: p.From.Name(),
 			to:   p.To.Name(),
 		})
@@ -137,37 +132,17 @@ func genResult(toTyp *Typ) *dst.FieldList {
 	}
 }
 
-func genReturn(toTyp *Typ, argIdent *dst.Ident, exprs []*Expr) *dst.ReturnStmt {
-	var elts []dst.Expr
-	for _, e := range exprs {
-		elts = append(elts, genElt(e, cloneIdent(argIdent)))
+func genReturn(toTyp *Typ, argIdent *dst.Ident, exprs FieldMapperList) *dst.ReturnStmt {
+	elts, comments := exprs.DstExprs(argIdent)
+	lit := &dst.CompositeLit{
+		Type:       genType(toTyp),
+		Elts:       elts,
+		Incomplete: false,
+		Decs:       dst.CompositeLitDecorations{},
 	}
+	lit.Decorations().Start.Append(comments...)
 	return &dst.ReturnStmt{
-		Results: []dst.Expr{
-			&dst.CompositeLit{
-				Type:       genType(toTyp),
-				Elts:       elts,
-				Incomplete: false,
-				Decs:       dst.CompositeLitDecorations{},
-			},
-		},
-		Decs: dst.ReturnStmtDecorations{},
-	}
-}
-
-func genElt(e *Expr, from *dst.Ident) *dst.KeyValueExpr {
-	return &dst.KeyValueExpr{
-		Key: dst.NewIdent(e.to),
-		Value: &dst.SelectorExpr{
-			X:    from,
-			Sel:  dst.NewIdent(e.from),
-			Decs: dst.SelectorExprDecorations{},
-		},
-		Decs: dst.KeyValueExprDecorations{
-			NodeDecs: dst.NodeDecs{
-				Before: dst.NewLine,
-				After:  dst.NewLine,
-			},
-		},
+		Results: []dst.Expr{lit},
+		Decs:    dst.ReturnStmtDecorations{},
 	}
 }
