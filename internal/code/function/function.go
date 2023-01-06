@@ -34,9 +34,9 @@ type Function struct {
 }
 
 func NewFromMapping(m *mapping.Mapping) *Function {
-	var exprs FieldMapperList
+	var fieldMappers FieldMapperList
 	for _, p := range m.FieldPairs {
-		exprs = append(exprs, &SimpleFieldMapper{
+		fieldMappers = append(fieldMappers, &SimpleFieldMapper{
 			from: p.From.Name(),
 			to:   p.To.Name(),
 		})
@@ -46,7 +46,7 @@ func NewFromMapping(m *mapping.Mapping) *Function {
 		argName:  "from",
 		fromTyp:  &Typ{pkgPath: m.From.PkgPath},
 		toTyp:    &Typ{pkgPath: m.To.PkgPath},
-		mapExprs: exprs,
+		mapExprs: fieldMappers,
 	}
 }
 
