@@ -53,20 +53,19 @@ func NewFunction(m *mapping.Mapping) *Function {
 }
 
 func (f Function) Decl() (*dst.FuncDecl, error) {
-	argIdent := genVar(f.argName)
 	return &dst.FuncDecl{
 		Recv: nil,
 		Name: genFuncName(f.name),
 		Type: &dst.FuncType{
 			Func:       false,
 			TypeParams: nil,
-			Params:     genParams(f.fromTyp, argIdent),
+			Params:     genParams(f.fromTyp, f.argName),
 			Results:    genResult(f.toTyp),
 			Decs:       dst.FuncTypeDecorations{},
 		},
 		Body: &dst.BlockStmt{
 			List: []dst.Stmt{
-				genReturn(f.toTyp, argIdent, f.mapExprs),
+				genReturn(f.toTyp, f.argName, f.mapExprs),
 			},
 			RbraceHasNoPos: false,
 			Decs:           dst.BlockStmtDecorations{},
@@ -89,10 +88,6 @@ func genType(typ *Typ) *dst.Ident {
 	return i
 }
 
-func cloneIdent(i *dst.Ident) *dst.Ident {
-	return dst.Clone(i).(*dst.Ident)
-}
-
 func genVar(name string) *dst.Ident {
 	o := dst.NewObj(dst.Var, name)
 	i := dst.NewIdent(name)
@@ -100,12 +95,12 @@ func genVar(name string) *dst.Ident {
 	return i
 }
 
-func genParams(fromTyp *Typ, argIdent *dst.Ident) *dst.FieldList {
+func genParams(fromTyp *Typ, arg string) *dst.FieldList {
 	return &dst.FieldList{
 		Opening: true,
 		List: []*dst.Field{
 			{
-				Names: []*dst.Ident{cloneIdent(argIdent)},
+				Names: []*dst.Ident{genVar(arg)},
 				Type:  genType(fromTyp),
 				Tag:   nil,
 				Decs:  dst.FieldDecorations{},
@@ -132,8 +127,8 @@ func genResult(toTyp *Typ) *dst.FieldList {
 	}
 }
 
-func genReturn(toTyp *Typ, argIdent *dst.Ident, exprs FieldMapperList) *dst.ReturnStmt {
-	elts, comments := exprs.DstExprs(argIdent)
+func genReturn(toTyp *Typ, arg string, exprs FieldMapperList) *dst.ReturnStmt {
+	elts, comments := exprs.DstExprs(arg)
 	lit := &dst.CompositeLit{
 		Type:       genType(toTyp),
 		Elts:       elts,

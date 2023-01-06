@@ -7,15 +7,15 @@ import (
 type FieldMapper interface {
 	From() string
 	To() string
-	DstExpr(argIdent *dst.Ident) (dst.Expr, bool)
+	DstExpr(arg string) (dst.Expr, bool)
 	Comment() (string, bool)
 }
 
 type FieldMapperList []FieldMapper
 
-func (fl FieldMapperList) DstExprs(argIdent *dst.Ident) (exprs []dst.Expr, comments []string) {
+func (fl FieldMapperList) DstExprs(arg string) (exprs []dst.Expr, comments []string) {
 	for _, f := range fl {
-		if e, ok := f.DstExpr(cloneIdent(argIdent)); ok {
+		if e, ok := f.DstExpr(arg); ok {
 			e.Decorations().Start.Append(comments...)
 			comments = []string{}
 			exprs = append(exprs, e)
@@ -39,11 +39,11 @@ func (s SimpleFieldMapper) To() string {
 	return s.to
 }
 
-func (s SimpleFieldMapper) DstExpr(argIdent *dst.Ident) (dst.Expr, bool) {
+func (s SimpleFieldMapper) DstExpr(arg string) (dst.Expr, bool) {
 	return &dst.KeyValueExpr{
 		Key: dst.NewIdent(s.to),
 		Value: &dst.SelectorExpr{
-			X:    argIdent,
+			X:    genVar(arg),
 			Sel:  dst.NewIdent(s.from),
 			Decs: dst.SelectorExprDecorations{},
 		},
@@ -73,7 +73,7 @@ func (c CommentedFieldMapper) To() string {
 	return c.to
 }
 
-func (c CommentedFieldMapper) DstExpr(ident *dst.Ident) (dst.Expr, bool) {
+func (c CommentedFieldMapper) DstExpr(_ string) (dst.Expr, bool) {
 	return nil, false
 }
 
