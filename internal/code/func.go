@@ -276,51 +276,50 @@ func genElt(fp *mapping.FieldPair, from *dst.Ident) *dst.KeyValueExpr {
 }
 
 func (f Func) ReNew(m *mapping.Mapping) (*Func, error) {
-	decl := dst.Clone(f.fc).(*dst.FuncDecl)
-	if decl.Body == nil || decl.Body.List == nil || len(decl.Body.List) == 0 {
-		return nil, errors.New("failed to find return statement")
-	}
-	retStmt, ok := decl.Body.List[len(decl.Body.List)-1].(*dst.ReturnStmt)
-	if !ok {
-		return nil, errors.New("failed cast to *dst.ReturnStmt")
-	}
-	if retStmt.Results == nil || len(retStmt.Results) == 0 {
-		return nil, errors.New("failed to get return results")
-	}
-	compLit, ok := retStmt.Results[0].(*dst.CompositeLit)
-	if !ok {
-		return nil, errors.New("failed to cast *dst.CompositeLit")
-	}
-	feMap := newFieldExprsOLD(compLit.Elts)
-	var resFieldExprs []*fieldExprOLD
-	for _, pair := range m.FieldPairs {
-		// TODO: get 'from ident' from params
-		fromIdent := genVar("from")
-		resFieldExprs = append(resFieldExprs, &fieldExprOLD{
-			expr: genElt(pair, fromIdent),
-		})
-
-		key := pair.To.Name()
-		if _, ok := feMap.m[key]; ok {
-			delete(feMap.m, key)
-		}
-	}
-	for _, e := range feMap.sortedFieldExprList() {
-		resFieldExprs = append(resFieldExprs, e)
-	}
-	var resExprs []dst.Expr
-	var prevExpr *dst.KeyValueExpr
-	var nextComment string
-	for _, resFieldExpr := range resFieldExprs {
-		if resFieldExpr.isComment {
-			if prevExpr != nil {
-				// TODO
-			}
-		} else {
-			resExprs = append(resExprs, resFieldExpr.expr)
-			prevExpr = resFieldExpr.expr
-		}
-	}
+	//decl := dst.Clone(f.fc).(*dst.FuncDecl)
+	//if decl.Body == nil || decl.Body.List == nil || len(decl.Body.List) == 0 {
+	//	return nil, errors.New("failed to find return statement")
+	//}
+	//retStmt, ok := decl.Body.List[len(decl.Body.List)-1].(*dst.ReturnStmt)
+	//if !ok {
+	//	return nil, errors.New("failed cast to *dst.ReturnStmt")
+	//}
+	//if retStmt.Results == nil || len(retStmt.Results) == 0 {
+	//	return nil, errors.New("failed to get return results")
+	//}
+	//compLit, ok := retStmt.Results[0].(*dst.CompositeLit)
+	//if !ok {
+	//	return nil, errors.New("failed to cast *dst.CompositeLit")
+	//}
+	//eFieldExprs := newStructFieldExprs(compLit.Elts)
+	//var resFieldExprList []*structFieldExpr
+	//for _, pair := range m.FieldPairs {
+	//	// TODO: get 'from ident' from params
+	//	fromIdent := genVar("from")
+	//	resFieldExprList = append(resFieldExprList, &structFieldExpr{
+	//		expr: genElt(pair, fromIdent),
+	//	})
+	//	key := pair.To.Name()
+	//	if _, ok := eFieldExprs.m[key]; ok {
+	//		eFieldExprs.m[key].used = true
+	//	}
+	//}
+	//for _, e := range eFieldExprs.sortedFieldExprList() {
+	//	resFieldExprs = append(resFieldExprs, e)
+	//}
+	//var resExprs []dst.Expr
+	//var prevExpr *dst.KeyValueExpr
+	//var nextComment string
+	//for _, resFieldExpr := range resFieldExprs {
+	//	if resFieldExpr.isComment {
+	//		if prevExpr != nil {
+	//			// TODO
+	//		}
+	//	} else {
+	//		resExprs = append(resExprs, resFieldExpr.expr)
+	//		prevExpr = resFieldExpr.expr
+	//	}
+	//}
 	return nil, errors.New("not implemented")
 }
 
@@ -332,87 +331,81 @@ func pkgName(pkgPath string) string {
 	return sp[len(sp)-1]
 }
 
-type fieldExprOLD struct {
-	index     int
+type structFieldExpr struct {
 	expr      *dst.KeyValueExpr
 	comment   string
 	isComment bool
+	used      bool
+	next      *structFieldExpr
 }
 
-type fieldExprsOLD struct {
-	m     map[string]*fieldExprOLD
-	count int
+type structFieldExprs struct {
+	m        map[string]*structFieldExpr
+	ordering []*structFieldExpr
 }
 
-func (fe *fieldExprsOLD) inc() int {
-	r := fe.count
-	fe.count++
-	return r
-}
-
-func (fe fieldExprsOLD) sortedFieldExprList() []*fieldExprOLD {
-	// FIXME
-	tmp := make(map[int]*fieldExprOLD)
-	for _, v := range fe.m {
-		tmp[v.index] = v
-	}
-	var res []*fieldExprOLD
-	i := 0
-	for len(res) != len(fe.m) {
-		if t, ok := tmp[i]; ok {
-			res = append(res, t)
-		}
-		i++
-	}
-	return res
-}
-
-func newFieldExprsOLD(exprs []dst.Expr) *fieldExprsOLD {
-	res := &fieldExprsOLD{
-		m:     make(map[string]*fieldExprOLD),
-		count: 0,
+func newStructFieldExprs(exprs []dst.Expr) *structFieldExprs {
+	res := &structFieldExprs{
+		m:        make(map[string]*structFieldExpr),
+		ordering: make([]*structFieldExpr, 0),
 	}
 	for _, expr := range exprs {
-		e, ok := expr.(*dst.KeyValueExpr)
+		keyValueExpr, ok := expr.(*dst.KeyValueExpr)
 		if !ok {
 			continue
 		}
-		if e.Decorations() != nil {
-			if e.Decorations().Start != nil {
-				res.addFromComments(e.Decorations().Start.All())
+		if keyValueExpr.Decorations() != nil {
+			if keyValueExpr.Decorations().Start != nil {
+				res.addComments(keyValueExpr.Decorations().Start.All())
 			}
-			if e.Decorations().End != nil {
-				res.addFromComments(e.Decorations().End.All())
+			if keyValueExpr.Decorations().End != nil {
+				res.addComments(keyValueExpr.Decorations().End.All())
 			}
 		}
-		res.addKeyValueExpWithoutComment(e)
+		res.addKeyValueExp(keyValueExpr)
 	}
 	return res
 }
 
-func (fe *fieldExprsOLD) addFromComments(comments []string) {
+func (ste *structFieldExprs) last() *structFieldExpr {
+	if len(ste.ordering) == 0 {
+		return nil
+	}
+	return ste.ordering[len(ste.ordering)-1]
+}
+
+func (ste *structFieldExprs) addComments(comments []string) {
 	for _, comment := range comments {
-		key := commentToFieldExprKey(comment)
-		if key == "" {
+		k := commentToFieldExprKey(comment)
+		if k == "" {
 			continue
 		}
-		if _, ok := fe.m[key]; !ok {
-			fe.m[key] = &fieldExprOLD{
-				index:     fe.inc(),
+		if _, ok := ste.m[k]; !ok {
+			res := &structFieldExpr{
 				comment:   comment,
 				isComment: true,
 			}
+			ste.m[k] = res
+			if last := ste.last(); last != nil {
+				last.next = res
+			}
+			ste.ordering = append(ste.ordering, res)
 		}
 	}
 }
-func (fe *fieldExprsOLD) addKeyValueExpWithoutComment(e *dst.KeyValueExpr) {
+
+func (ste *structFieldExprs) addKeyValueExp(e *dst.KeyValueExpr) {
 	if key, ok := e.Key.(*dst.Ident); ok {
-		nExpr := dst.Clone(e).(*dst.KeyValueExpr)
-		nExpr.Decs = dst.KeyValueExprDecorations{}
-		fe.m[key.Name] = &fieldExprOLD{
-			index: fe.inc(),
-			expr:  nExpr,
+		clonedE := dst.Clone(e).(*dst.KeyValueExpr)
+		clonedE.Decs = dst.KeyValueExprDecorations{}
+		res := &structFieldExpr{
+			expr: clonedE,
 		}
+		ste.m[key.Name] = res
+		if last := ste.last(); last != nil {
+			last.next = res
+		}
+		ste.ordering = append(ste.ordering, res)
 	}
 }
 
