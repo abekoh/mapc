@@ -19,19 +19,19 @@ import (
 //	structName string
 //}
 //
-//func (s PkgStruct) PkgName() string {
+//function (s PkgStruct) PkgName() string {
 //	return s.pkg.Name
 //}
 //
-//func (s PkgStruct) PkgPath() string {
+//function (s PkgStruct) PkgPath() string {
 //	return s.pkg.PkgPath
 //}
 //
-//func (s PkgStruct) StructName() string {
+//function (s PkgStruct) StructName() string {
 //	return s.structName
 //}
 //
-//func (s PkgStruct) Var(fieldName string) *types.Var {
+//function (s PkgStruct) Var(fieldName string) *types.Var {
 //	for i := 0; i < s.str.NumFields(); i++ {
 //		if s.str.Field(i).Name() == fieldName {
 //			return s.str.Field(i)
@@ -40,11 +40,11 @@ import (
 //	return nil
 //}
 //
-//func (s PkgStruct) String() string {
+//function (s PkgStruct) String() string {
 //	return fmt.Sprintf("%+v", s.str.String())
 //}
 //
-//func findPkg(param StructParam) (*packages.Package, error) {
+//function findPkg(param StructParam) (*packages.Package, error) {
 //	pkgs, err := packages.Load(&packages.Config{
 //		Mode: packages.NeedName | packages.NeedSyntax | packages.NeedTypes | packages.NeedTypesInfo | packages.NeedDeps,
 //		Dir:  param.Dir,
@@ -63,7 +63,7 @@ import (
 //	return nil, fmt.Errorf("package %s is not found in %s", param.Pkg, param.Dir)
 //}
 //
-//func (s PkgStruct) tokenFieldMap() tokenFieldMapOld {
+//function (s PkgStruct) tokenFieldMap() tokenFieldMapOld {
 //	res := make(tokenFieldMapOld)
 //	for i := 0; i < s.str.NumFields(); i++ {
 //		f := s.str.Field(i)
@@ -73,7 +73,7 @@ import (
 //	return res
 //}
 //
-//func newStruct(param StructParam) (*PkgStruct, error) {
+//function newStruct(param StructParam) (*PkgStruct, error) {
 //	pkg, err := findPkg(param)
 //	if err != nil {
 //		return nil, fmt.Errorf("failed to find package: %w", err)

@@ -13,7 +13,7 @@ import (
 //	v *types.Var
 //}
 //
-//func (v Var) Name() string {
+//function (v Var) Name() string {
 //	return v.v.Name()
 //}
 //
@@ -21,7 +21,7 @@ import (
 //	v *types.Var
 //}
 
-//func newFieldPair(from, to Var) (FieldPairOld, bool) {
+//function newFieldPair(from, to Var) (FieldPairOld, bool) {
 //	pair := FieldPairOld{
 //		From: from,
 //		To:   to,
@@ -45,7 +45,7 @@ import (
 //	}
 //}
 //
-//func isCastableBasicInfo(i types.BasicInfo) bool {
+//function isCastableBasicInfo(i types.BasicInfo) bool {
 //	return i&(types.IsBoolean|types.IsInteger|types.IsUnsigned|types.IsFloat|types.IsComplex) > 0
 //}
 //

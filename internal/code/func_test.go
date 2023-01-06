@@ -31,7 +31,7 @@ func TestNewFunc(t *testing.T) {
 	}
 	expected := `package main
 
-func ToBUser(from AUser) BUser {
+function ToBUser(from AUser) BUser {
 	return BUser{
 		Int: from.Int,
 		Str: from.Str,
@@ -51,7 +51,7 @@ func TestFunc_ReNew(t *testing.T) {
 	}
 	f, err := loadFileFromString(`package main
 
-func ToBUser(from AUser) BUser {
+function ToBUser(from AUser) BUser {
 	return BUser{
 		Int: from.Int,
 		// Str: from.Str,
@@ -63,7 +63,7 @@ func ToBUser(from AUser) BUser {
 	}
 	existedFc, ok := f.FindFunc("ToBUser")
 	if !ok {
-		t.Fatal("target func is not found")
+		t.Fatal("target function is not found")
 	}
 	gotFc, err := existedFc.ReNew(mp)
 	if err != nil {
@@ -76,7 +76,7 @@ func ToBUser(from AUser) BUser {
 	}
 	expected := `package main
 
-func ToBUser(from AUser) BUser {
+function ToBUser(from AUser) BUser {
 	return BUser{
 		// Int: from.Int,
 		Str: from.Str,
