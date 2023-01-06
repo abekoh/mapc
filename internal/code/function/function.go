@@ -34,7 +34,7 @@ type Function struct {
 	mapExprs FieldMapperList
 }
 
-func NewFunction(m *mapping.Mapping) *Function {
+func NewFromMapping(m *mapping.Mapping) *Function {
 	var exprs FieldMapperList
 	for _, p := range m.FieldPairs {
 		exprs = append(exprs, &SimpleFieldMapper{
