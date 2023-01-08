@@ -1,5 +1,12 @@
 package util
 
+import (
+	"os"
+	"path/filepath"
+
+	"golang.org/x/mod/modfile"
+)
+
 func UpperFirst(inp string) string {
 	f := inp[0]
 	if f < 0x61 || f > 0x7A {
@@ -32,4 +39,31 @@ func Prepend[T any](x []T, y T) []T {
 	copy(x[1:], x)
 	x[0] = y
 	return x
+}
+
+func RootPkgPath() (rootDirPath string, rootPkgPath string, err error) {
+	modFileName := "go.mod"
+	wd, err := os.Getwd()
+	if err != nil {
+		return
+	}
+	dirPath := filepath.Dir(wd)
+	for dirPath != "/" && dirPath != "." {
+		info, fErr := os.Stat(filepath.Join(dirPath, modFileName))
+		if fErr == nil && !info.IsDir() {
+			rootDirPath = dirPath
+			break
+		}
+		dirPath = filepath.Dir(dirPath)
+	}
+	f, err := os.ReadFile(filepath.Join(dirPath, modFileName))
+	if err != nil {
+		return
+	}
+	modFile, err := modfile.Parse(modFileName, f, nil)
+	if err != nil {
+		return
+	}
+	rootPkgPath = modFile.Module.Mod.Path
+	return
 }

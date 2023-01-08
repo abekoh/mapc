@@ -58,6 +58,7 @@ func (m MapC) Generate() (res GeneratedList, errs []error) {
 			errs = append(errs, fmt.Errorf("failed to map: %w", err))
 			continue
 		}
+		_ = mapping
 		//f := code.NewFile()
 		//if pair.option.OutPath != "" {
 		//	// TODO: auto complete pkgPath

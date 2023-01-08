@@ -2,6 +2,8 @@ package mapc_test
 
 import (
 	"bytes"
+	"os"
+	"path/filepath"
 	"testing"
 	"time"
 
@@ -46,4 +48,11 @@ func TestMapC(t *testing.T) {
 		assert.Equal(t, `
 `, buf.String())
 	}
+}
+
+func TestPath(t *testing.T) {
+	f, _ := os.Getwd()
+	t.Log(f)
+	t.Log(filepath.Base(f))
+	t.Log(filepath.Dir(f))
 }
