@@ -76,21 +76,12 @@ func NewMapping(from, to any, fieldMappers []FieldMapper) (*Mapping, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to construct struct: %w", err)
 	}
-	toFieldMap := newFieldMap(toStr)
-	fieldPairs := m.newFieldPairs(fromStr, toFieldMap)
+	fieldPairs := newFieldPairs(fromStr, toStr, fieldMappers)
 	return &Mapping{
 		From:       fromStr,
 		To:         toStr,
 		FieldPairs: fieldPairs,
 	}, nil
-}
-
-func newFieldMap(s *object.Struct) fieldMap {
-	r := make(fieldMap)
-	for _, f := range s.Fields {
-		r[f.Name()] = f
-	}
-	return r
 }
 
 func newFieldPairs(from, to *object.Struct, fieldMappers []FieldMapper) []*FieldPair {
