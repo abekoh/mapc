@@ -2,7 +2,6 @@ package mapc_test
 
 import (
 	"bytes"
-	"reflect"
 	"testing"
 	"time"
 
@@ -51,27 +50,16 @@ func TestMapC(t *testing.T) {
 	}
 }
 
-type TypeMapperFunc[T, U any] func(T) U
-
-func (tm TypeMapperFunc[T, U]) Map(inp any) any {
-	return tm(inp.(T))
+type Caster interface {
+	PkgPath() string
 }
 
-type TypeMapper interface {
-	Map(any) any
+type BuiltinCaster struct {
 }
+
+type TypeMap map[mapc.Typ]map[mapc.Typ]Caster
 
 func TestTypeMapper(t *testing.T) {
-	mappers := []TypeMapper{
-		TypeMapperFunc[string, string](func(i string) string {
-			return i
-		}),
-		TypeMapperFunc[int, int64](func(i int) int64 {
-			return int64(i)
-		}),
-	}
-	for _, m := range mappers {
-		r := reflect.TypeOf(m)
-		_ = r
-	}
+	typMap := make(TypeMap)
+	typMap[mapc.Int][mapc.Int64] = &BuiltinCaster{}
 }

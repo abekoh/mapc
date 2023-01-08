@@ -31,6 +31,10 @@ func (f Field) PkgPath() string {
 	return f.f.Type.PkgPath()
 }
 
+func (f Field) IsSameTypeAndPkgWith(x *Field) bool {
+	return f.Kind() == x.Kind() && f.PkgPath() == x.PkgPath()
+}
+
 func NewStruct(t reflect.Type) (*Struct, error) {
 	if t.Kind() != reflect.Struct {
 		return nil, fmt.Errorf("kind must be struct, got %v", t.Kind())
@@ -46,4 +50,8 @@ func NewStruct(t reflect.Type) (*Struct, error) {
 		PkgPath: t.PkgPath(),
 		Fields:  fs,
 	}, nil
+}
+
+type Typ struct {
+	PkgPath string
 }

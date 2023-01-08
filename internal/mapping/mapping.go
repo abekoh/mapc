@@ -82,6 +82,13 @@ func (m Mapper) newFieldPairs(from, to *object.Struct) []*FieldPair {
 }
 
 func (m Mapper) newFieldPair(from, to *object.Field) (*FieldPair, bool) {
+	pair := &FieldPair{
+		From: from,
+		To:   to,
+	}
+	if from.IsSameTypeAndPkgWith(to) {
+		return pair, true
+	}
 	panic("todo: impl")
 }
 
