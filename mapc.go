@@ -48,6 +48,12 @@ func (m MapC) Generate() (res GeneratedList, errs []error) {
 	for _, pair := range m.pairs {
 		if pair.option == nil {
 			errs = append(errs, fmt.Errorf("option is nil. from=%T, to=%T", pair.from, pair.to))
+			continue
+		}
+		// TODO: validate with Option's method
+		if pair.option.OutPath == "" {
+			errs = append(errs, fmt.Errorf("OutPath is empty"))
+			continue
 		}
 		mapper := mapping.Mapper{
 			FieldMappers: pair.option.FieldMappers,
@@ -58,13 +64,9 @@ func (m MapC) Generate() (res GeneratedList, errs []error) {
 			errs = append(errs, fmt.Errorf("failed to map: %w", err))
 			continue
 		}
-		_ = mapping
-		//f := code.NewFile()
-		//if pair.option.OutPath != "" {
-		//	// TODO: auto complete pkgPath
-		//	f, err := code.LoadFile(pair.option.OutPath, "")
-		//	errs = append(errs, fmt.Errorf("failed load file: %w", err))
-		//}
+		pkgPath := util.PkgPathFromFilePath(pair.option.OutPath)
+		_ = pkgPath
+		//f := code.NewFile(pkgPath)
 	}
 	return
 }
