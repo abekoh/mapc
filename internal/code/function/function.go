@@ -2,7 +2,6 @@ package function
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/abekoh/mapc/internal/mapping"
 	"github.com/abekoh/mapc/internal/util"
@@ -10,15 +9,17 @@ import (
 )
 
 type Typ struct {
+	name    string
 	pkgPath string
 }
 
 func (t Typ) Name() string {
-	sp := strings.Split(t.pkgPath, "/")
-	if len(sp) == 0 {
-		return ""
-	}
-	return sp[len(sp)-1]
+	//sp := strings.Split(t.pkgPath, "/")
+	//if len(sp) == 0 {
+	//	return ""
+	//}
+	//return sp[len(sp)-1]
+	return t.name
 }
 
 type Caster struct {
@@ -48,8 +49,8 @@ func NewFromMapping(m *mapping.Mapping) *Function {
 	return &Function{
 		name:     fmt.Sprintf("To%s", util.UpperFirst(m.To.Name)),
 		argName:  "from",
-		fromTyp:  &Typ{pkgPath: m.From.PkgPath},
-		toTyp:    &Typ{pkgPath: m.To.PkgPath},
+		fromTyp:  &Typ{name: m.From.Name, pkgPath: m.From.PkgPath},
+		toTyp:    &Typ{name: m.To.Name, pkgPath: m.To.PkgPath},
 		mapExprs: fieldMappers,
 	}
 }
@@ -155,6 +156,7 @@ func genType(typ *Typ) *dst.Ident {
 	o := dst.NewObj(dst.Typ, typ.Name())
 	i := dst.NewIdent(typ.Name())
 	i.Obj = o
+	i.Path = typ.pkgPath
 	return i
 }
 
