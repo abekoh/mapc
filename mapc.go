@@ -85,7 +85,7 @@ func (m MapC) NewGroup() *Group {
 	return &Group{
 		MapC:   &m,
 		parent: nil,
-		option: Option{},
+		option: nil,
 	}
 }
 
