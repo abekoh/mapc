@@ -41,7 +41,7 @@ func Prepend[T any](x []T, y T) []T {
 	return x
 }
 
-func RootPkgPath() (rootDirPath string, rootPkgPath string, err error) {
+func RootPath() (rootDirPath string, rootPkgPath string, err error) {
 	modFileName := "go.mod"
 	wd, err := os.Getwd()
 	if err != nil {
