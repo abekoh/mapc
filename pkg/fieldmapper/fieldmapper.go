@@ -1,4 +1,4 @@
-package mapc
+package fieldmapper
 
 import (
 	"strings"

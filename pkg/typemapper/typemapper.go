@@ -1,8 +1,6 @@
-package mapc
+package typemapper
 
 import (
-	"reflect"
-
 	"github.com/abekoh/mapc/internal/object"
 )
 
@@ -27,9 +25,9 @@ func (m MapTypeMapper) Map(from, to object.Typ) (Caster, bool) {
 }
 
 var DefaultTypeMappers = TypeMappers{
-	MapTypeMapper{
-		object.NewTyp(reflect.TypeOf("")): map[object.Typ]&BuiltinCaster{Typ: object.NewTyp()},
-	},
+	//MapTypeMapper{
+	//	//object.NewTyp(reflect.TypeOf("")): map[object.Typ]&BuiltinCaster{Typ: object.NewTyp()},
+	//},
 	//Int: map[Typ]Caster{
 	//	Int16: &BuiltinCaster{Typ: Int16},
 	//	Int32: &BuiltinCaster{Typ: Int32},

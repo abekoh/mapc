@@ -8,6 +8,8 @@ import (
 
 	"github.com/abekoh/mapc/internal/code"
 	"github.com/abekoh/mapc/internal/util"
+	"github.com/abekoh/mapc/pkg/fieldmapper"
+	"github.com/abekoh/mapc/pkg/typemapper"
 )
 
 type MapC struct {
@@ -30,8 +32,8 @@ type pair struct {
 type Option struct {
 	FuncName     string
 	OutPath      string
-	FieldMappers []FieldMapper
-	TypeMappers  []TypeMapper
+	FieldMappers []fieldmapper.FieldMapper
+	TypeMappers  []typemapper.TypeMapper
 }
 
 type Generated struct {

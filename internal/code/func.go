@@ -6,8 +6,8 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/abekoh/mapc"
-	//"github.com/abekoh/mapc"
+	"github.com/abekoh/mapc/internal/mapping"
+
 	"github.com/abekoh/mapc/internal/object"
 	"github.com/abekoh/mapc/internal/util"
 	"github.com/dave/dst"
@@ -24,7 +24,7 @@ func (f Func) Name() string {
 	return f.fc.Name.Name
 }
 
-func NewFuncSand(m *mapc.Mapping) *Func {
+func NewFuncSand(m *mapping.Mapping) *Func {
 	//name := m.Name()
 	funcNameObj := dst.NewObj(dst.Fun, "ToBUser")
 	funcName := dst.NewIdent("ToBUser")
@@ -160,7 +160,7 @@ func NewFuncSand(m *mapc.Mapping) *Func {
 	return &Func{fc: fc}
 }
 
-func NewFunc(m *mapc.Mapping) *Func {
+func NewFunc(m *mapping.Mapping) *Func {
 	argIdent := genVar("from")
 	return &Func{
 		fc: &dst.FuncDecl{
@@ -189,7 +189,7 @@ func cloneIdent(i *dst.Ident) *dst.Ident {
 	return dst.Clone(i).(*dst.Ident)
 }
 
-func genFuncName(m *mapc.Mapping) *dst.Ident {
+func genFuncName(m *mapping.Mapping) *dst.Ident {
 	name := fmt.Sprintf("To%s", util.UpperFirst(m.To.Name))
 	o := dst.NewObj(dst.Fun, name)
 	i := dst.NewIdent(name)
@@ -243,7 +243,7 @@ func genVar(name string) *dst.Ident {
 	return i
 }
 
-func genReturn(m *mapc.Mapping, argIdent *dst.Ident) *dst.ReturnStmt {
+func genReturn(m *mapping.Mapping, argIdent *dst.Ident) *dst.ReturnStmt {
 	var elts []dst.Expr
 	for _, fp := range m.FieldPairs {
 		elts = append(elts, genElt(fp, cloneIdent(argIdent)))
@@ -261,7 +261,7 @@ func genReturn(m *mapc.Mapping, argIdent *dst.Ident) *dst.ReturnStmt {
 	}
 }
 
-func genElt(fp *mapc.FieldPair, from *dst.Ident) *dst.KeyValueExpr {
+func genElt(fp *mapping.FieldPair, from *dst.Ident) *dst.KeyValueExpr {
 	return &dst.KeyValueExpr{
 		Key: dst.NewIdent(fp.To.Name()),
 		Value: &dst.SelectorExpr{
@@ -278,7 +278,7 @@ func genElt(fp *mapc.FieldPair, from *dst.Ident) *dst.KeyValueExpr {
 	}
 }
 
-func (f Func) ReNew(m *mapc.Mapping) (*Func, error) {
+func (f Func) ReNew(m *mapping.Mapping) (*Func, error) {
 	//decl := dst.Clone(f.fc).(*dst.FuncDecl)
 	//if decl.Body == nil || decl.Body.List == nil || len(decl.Body.List) == 0 {
 	//	return nil, errors.New("failed to find return statement")
