@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/abekoh/mapc/internal/code"
+	"github.com/abekoh/mapc/internal/mapping"
 	"github.com/abekoh/mapc/internal/util"
 )
 
@@ -20,17 +21,16 @@ type Group struct {
 	parent *Group
 	option *Option
 }
-type FieldMapper func(string) string
 
-type TypeMapperFunc[T, U any] func(T) U
+type FieldMapper mapping.FieldMapper
 
-func (tm TypeMapperFunc[T, U]) Map(inp any) any {
-	return tm(inp)
+type TypeMapperFunc[T, U any] mapping.TypeMapperFunc[T, U]
+
+func (f TypeMapperFunc[T, U]) Map(inp any) any {
+	return f(inp)
 }
 
-type TypeMapper interface {
-	Map(any) any
-}
+type TypeMapper mapping.TypeMapper
 
 type pair struct {
 	from   any
