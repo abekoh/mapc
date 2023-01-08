@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/abekoh/mapc/internal/code"
+	"github.com/abekoh/mapc/internal/mapping"
 	"github.com/abekoh/mapc/internal/util"
 )
 
@@ -129,6 +130,17 @@ func (g *Group) Register(from, to any, options ...*Option) {
 	})
 }
 
-func (m MapC) Generate() (GeneratedList, []error) {
-	return GeneratedList{}, []error{}
+func (m MapC) Generate() (res GeneratedList, errs []error) {
+	for _, pair := range m.pairs {
+		if pair.option != nil {
+			errs = append(errs, fmt.Errorf("option is nil. from=%T, to=%T", pair.from, pair.to))
+		}
+		//mp := mapping.NewMapper()
+		//if pair.option.OutPath != "" {
+		//	// TODO: pkgPath
+		//	f, err := code.LoadFile(pair.option.OutPath, "")
+		//	errs = append(errs, fmt.Errorf("failed load file: %w", err))
+		//}
+	}
+	return
 }
