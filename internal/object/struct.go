@@ -19,6 +19,10 @@ func (f Field) Name() string {
 	return f.f.Name
 }
 
+func (f Field) Typ() *Typ {
+	return &Typ{t: f.f.Type}
+}
+
 func (f Field) TypeName() string {
 	return f.f.Type.Name()
 }
@@ -53,5 +57,9 @@ func NewStruct(t reflect.Type) (*Struct, error) {
 }
 
 type Typ struct {
-	PkgPath string
+	t reflect.Type
+}
+
+func NewTyp(t reflect.Type) *Typ {
+	return &Typ{t: t}
 }

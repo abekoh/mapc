@@ -2,6 +2,7 @@ package mapc_test
 
 import (
 	"bytes"
+	"reflect"
 	"testing"
 	"time"
 
@@ -50,16 +51,11 @@ func TestMapC(t *testing.T) {
 	}
 }
 
-type Caster interface {
-	PkgPath() string
-}
-
-type BuiltinCaster struct {
-}
-
-type TypeMap map[mapc.Typ]map[mapc.Typ]Caster
+type TypedInt int
 
 func TestTypeMapper(t *testing.T) {
-	typMap := make(TypeMap)
-	typMap[mapc.Int][mapc.Int64] = &BuiltinCaster{}
+	a := 1
+	b := TypedInt(2)
+	t.Logf("%v", reflect.TypeOf(a).AssignableTo(reflect.TypeOf(b)))
+	t.Logf("%v", reflect.TypeOf(a).ConvertibleTo(reflect.TypeOf(b)))
 }

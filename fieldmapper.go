@@ -1,6 +1,14 @@
 package mapc
 
-import "strings"
+import (
+	"strings"
+)
+
+type FieldMapper func(string) string
+
+var DefaultFieldMappers = []FieldMapper{
+	Identify,
+}
 
 func Identify(inp string) string {
 	return inp
