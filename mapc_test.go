@@ -33,6 +33,7 @@ type BUser struct {
 func TestMapC(t *testing.T) {
 	m := mapc.New()
 	m.Register(AUser{}, BUser{}, &mapc.Option{
+		OutPath: "src/foo/bar.go",
 		FieldMappers: []fieldmapper.FieldMapper{
 			&fieldmapper.UpperFirst{},
 		},

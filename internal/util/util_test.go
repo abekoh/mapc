@@ -17,9 +17,9 @@ func Test_rootPath(t *testing.T) {
 	assert.Equal(t, "github.com/abekoh/mapc", rootPkgPath)
 }
 
-func TestPkgPathFromFilePath(t *testing.T) {
+func TestPkgPathFromRelativePath(t *testing.T) {
 	RootDirPath = "/home/abekoh/repos/mapc"
 	RootPkgPath = "github.com/abekoh/mapc"
-	got := PkgPathFromFilePath("/home/abekoh/src/github.com/abekoh/mapc/src/mapping/mapper.go")
-	assert.Equal(t, "github.com/abekoh/mapc/src/mapping", got)
+	assert.Equal(t, "github.com/abekoh/mapc/pkg/mapping", PkgPathFromRelativePath("pkg/mapping/mapper.go"))
+	assert.Equal(t, "github.com/abekoh/mapc/pkg/mapping", PkgPathFromRelativePath("pkg/mapping"))
 }

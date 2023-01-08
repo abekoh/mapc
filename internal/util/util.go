@@ -58,12 +58,13 @@ func rootPath() (rootDirPath string, rootPkgPath string, err error) {
 	return
 }
 
-func PkgPathFromFilePath(filePath string) string {
-	if !strings.HasPrefix(filePath, RootDirPath) {
-		return ""
+func PkgPathFromRelativePath(relativePath string) string {
+	ext := filepath.Ext(relativePath)
+	if ext == "" {
+		return filepath.Join(RootPkgPath, relativePath)
+	} else {
+		return filepath.Join(RootPkgPath, filepath.Dir(relativePath))
 	}
-	// TODO: not work when RootPkgPath like: `github.com/abekoh/mapc/foo/bar.test`
-	return filepath.Join(RootPkgPath, filePath[len(RootDirPath):])
 }
 
 func UpperFirst(inp string) string {
