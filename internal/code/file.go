@@ -7,6 +7,7 @@ import (
 	"io"
 	"os"
 
+	"github.com/abekoh/mapc/internal/code/function"
 	"github.com/abekoh/mapc/internal/util"
 	"github.com/dave/dst"
 	"github.com/dave/dst/decorator"
@@ -49,21 +50,31 @@ func loadFileFromString(s, pkgPath string) (*File, error) {
 	return &File{dstFile: df, pkgPath: pkgPath}, nil
 }
 
-func (f File) FindFunc(name string) (*Func, bool) {
-	if d, ok := f.findFuncDecl(name); ok {
-		return &Func{fc: d}, true
+func (f File) FindFunc(name string) (*function.Function, bool) {
+	d, ok := f.findFuncDecl(name)
+	if !ok {
+		return nil, false
 	}
-	return nil, false
+	fn, err := function.NewFromDecl(f.pkgPath, d)
+	if err != nil {
+		return nil, false
+	}
+	return fn, true
 }
 
-func (f *File) Apply(fc *Func) {
-	existed, ok := f.findFuncDecl(fc.Name())
+func (f *File) Apply(fn *function.Function) error {
+	existed, ok := f.findFuncDecl(fn.Name())
+	d, err := fn.Decl()
+	if err != nil {
+		return fmt.Errorf("failed to dst.FuncDecl: %w", err)
+	}
 	if ok {
-		existed = fc.fc
+		existed = d
 	} else {
 		_ = existed
-		f.dstFile.Decls = append(f.dstFile.Decls, fc.fc)
+		f.dstFile.Decls = append(f.dstFile.Decls, d)
 	}
+	return nil
 }
 
 func (f File) Write(w io.Writer) error {

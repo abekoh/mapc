@@ -33,6 +33,10 @@ type Function struct {
 	mapExprs FieldMapperList
 }
 
+func (f Function) Name() string {
+	return f.name
+}
+
 func NewFromMapping(m *mapping.Mapping) *Function {
 	var fieldMappers FieldMapperList
 	for _, p := range m.FieldPairs {
