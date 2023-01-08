@@ -74,7 +74,7 @@ func (m MapC) Generate() (res GeneratedList, errs []error) {
 			errs = append(errs, fmt.Errorf("failed to apply: %w", err))
 			continue
 		}
-		g := Generated{
+		g := &Generated{
 			filePath: pair.option.OutPath,
 			codeFile: f,
 		}
@@ -150,7 +150,7 @@ func (g Group) extendOptions() []*Option {
 
 type Generated struct {
 	filePath string
-	codeFile code.File
+	codeFile *code.File
 }
 
 type GeneratedList []*Generated
