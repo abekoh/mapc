@@ -2,6 +2,7 @@ package mapc_test
 
 import (
 	"bytes"
+	"reflect"
 	"testing"
 	"time"
 
@@ -53,7 +54,7 @@ func TestMapC(t *testing.T) {
 type TypeMapperFunc[T, U any] func(T) U
 
 func (tm TypeMapperFunc[T, U]) Map(inp any) any {
-	return tm(inp)
+	return tm(inp.(T))
 }
 
 type TypeMapper interface {
@@ -69,5 +70,8 @@ func TestTypeMapper(t *testing.T) {
 			return int64(i)
 		}),
 	}
-	_ = mappers
+	for _, m := range mappers {
+		r := reflect.TypeOf(m)
+		_ = r
+	}
 }

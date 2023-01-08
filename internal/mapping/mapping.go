@@ -12,7 +12,7 @@ type FieldMapper func(string) string
 type TypeMapperFunc[T, U any] func(T) U
 
 func (f TypeMapperFunc[T, U]) Map(inp any) any {
-	return f(inp)
+	return f(inp.(T))
 }
 
 type TypeMapper interface {
