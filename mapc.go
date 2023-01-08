@@ -7,19 +7,24 @@ import (
 	"os"
 
 	"github.com/abekoh/mapc/internal/code"
+	"github.com/abekoh/mapc/internal/util"
 )
 
 type MapC struct {
-	pairs  []pair
-	option Option
+	pairs []pair
 }
 
+type Group struct {
+	*MapC
+	parent *Group
+	option *Option
+}
 type FieldMapper func(string) string
 
 type pair struct {
 	from   any
 	to     any
-	option Option
+	option *Option
 }
 
 type Option struct {
@@ -55,33 +60,65 @@ func (g Generated) Save() error {
 	return nil
 }
 
-func (o Option) override(opts ...Option) Option {
+func (o Option) override(opts ...*Option) *Option {
 	for _, opt := range opts {
+		if opt == nil {
+			continue
+		}
 		// TODO: to be more simple
 		if len(opt.OutPath) != 0 {
 			o.OutPath = opt.OutPath
 		}
 	}
-	return o
+	return &o
 }
 
 func New() *MapC {
 	return &MapC{
 		pairs: []pair{},
-		option: Option{
-			FuncName:     "",
-			OutPath:      "",
-			FieldMappers: []FieldMapper{},
-		},
 	}
 }
 
-func (m *MapC) Global(opt Option) {
-	m.option = opt
+func (m MapC) NewGroup() *Group {
+	return &Group{
+		MapC:   &m,
+		parent: nil,
+		option: Option{},
+	}
+}
+
+func (g Group) NewGroup() *Group {
+	return &Group{
+		MapC:   g.MapC,
+		parent: &g,
+		option: &Option{},
+	}
 }
 
 func (m *MapC) Register(from, to any, options ...*Option) {
-	m.pairs = append(m.pairs, pair{from: from, to: to})
+	m.pairs = append(m.pairs, pair{
+		from:   from,
+		to:     to,
+		option: (&Option{}).override(options...),
+	})
+}
+
+func (g *Group) Register(from, to any, options ...*Option) {
+	var opts []*Option
+	opts = append(opts, options...)
+	targetG := g
+	for {
+		if targetG == nil {
+			break
+		}
+		util.Prepend(opts, targetG.option)
+		targetG = targetG.parent
+	}
+	g.MapC.pairs = append(g.MapC.pairs, pair{
+		from:   from,
+		to:     to,
+		option: (&Option{}).override(opts...),
+	})
 }
 
 func (m MapC) Generate() (GeneratedList, []error) {

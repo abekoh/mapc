@@ -25,3 +25,11 @@ func (q *Queue[T]) Pop() (T, bool) {
 	q.elements = q.elements[1:]
 	return r, true
 }
+
+func Prepend[T any](x []T, y T) []T {
+	var zero T
+	x = append(x, zero)
+	copy(x[1:], x)
+	x[0] = y
+	return x
+}
