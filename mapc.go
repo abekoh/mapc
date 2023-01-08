@@ -70,7 +70,6 @@ type pair struct {
 }
 
 type Option struct {
-	FuncName     string
 	OutPath      string
 	FieldMappers []fieldmapper.FieldMapper
 	TypeMappers  []typemapper.TypeMapper
@@ -81,10 +80,12 @@ func (o Option) override(opts ...*Option) *Option {
 		if opt == nil {
 			continue
 		}
-		// TODO: to be more simple
+		// TODO: simplify
 		if len(opt.OutPath) != 0 {
 			o.OutPath = opt.OutPath
 		}
+		o.FieldMappers = append(o.FieldMappers, opt.FieldMappers...)
+		o.TypeMappers = append(o.TypeMappers, opt.TypeMappers...)
 	}
 	return &o
 }
