@@ -7,6 +7,7 @@ import (
 	"io"
 	"os"
 
+	"github.com/abekoh/mapc/internal/util"
 	"github.com/dave/dst"
 	"github.com/dave/dst/decorator"
 	"github.com/dave/dst/decorator/resolver/goast"
@@ -20,7 +21,7 @@ type File struct {
 
 func NewFile(pkgPath string) *File {
 	df := &dst.File{
-		Name:  dst.NewIdent(pkgName(pkgPath)),
+		Name:  dst.NewIdent(util.PkgName(pkgPath)),
 		Decls: []dst.Decl{},
 	}
 	return &File{dstFile: df, pkgPath: pkgPath}

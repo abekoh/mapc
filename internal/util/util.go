@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"golang.org/x/mod/modfile"
 )
@@ -86,4 +87,12 @@ func Prepend[T any](x []T, y T) []T {
 	copy(x[1:], x)
 	x[0] = y
 	return x
+}
+
+func PkgName(pkgPath string) string {
+	sp := strings.Split(pkgPath, "/")
+	if len(sp) == 0 {
+		return ""
+	}
+	return sp[len(sp)-1]
 }

@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"regexp"
-	"strings"
 
 	"github.com/abekoh/mapc/internal/mapping"
 
@@ -324,14 +323,6 @@ func (f Func) ReNew(m *mapping.Mapping) (*Func, error) {
 	//	}
 	//}
 	return nil, errors.New("not implemented")
-}
-
-func pkgName(pkgPath string) string {
-	sp := strings.Split(pkgPath, "/")
-	if len(sp) == 0 {
-		return ""
-	}
-	return sp[len(sp)-1]
 }
 
 type structFieldExpr struct {
