@@ -17,7 +17,7 @@ type Caster struct {
 	fc string
 }
 
-type Function struct {
+type Func struct {
 	name     string
 	argName  string
 	fromTyp  *Typ
@@ -25,11 +25,11 @@ type Function struct {
 	mapExprs FieldMapperList
 }
 
-func (f Function) Name() string {
+func (f Func) Name() string {
 	return f.name
 }
 
-func NewFromMapping(m *mapping.Mapping) *Function {
+func NewFromMapping(m *mapping.Mapping) *Func {
 	var fieldMappers FieldMapperList
 	for _, p := range m.FieldPairs {
 		fieldMappers = append(fieldMappers, &SimpleFieldMapper{
@@ -37,7 +37,7 @@ func NewFromMapping(m *mapping.Mapping) *Function {
 			to:   p.To.Name(),
 		})
 	}
-	return &Function{
+	return &Func{
 		name:     fmt.Sprintf("To%s", util.UpperFirst(m.To.Name)),
 		argName:  "x",
 		fromTyp:  &Typ{name: m.From.Name, pkgPath: m.From.PkgPath},
@@ -46,14 +46,14 @@ func NewFromMapping(m *mapping.Mapping) *Function {
 	}
 }
 
-func NewFromDecl(pkgPath string, d *dst.FuncDecl) (*Function, error) {
+func NewFromDecl(pkgPath string, d *dst.FuncDecl) (*Func, error) {
 	getPkgPath := func(ident *dst.Ident) string {
 		if ident.Path == "" {
 			return pkgPath
 		}
 		return ident.Path
 	}
-	res := &Function{}
+	res := &Func{}
 	res.name = d.Name.Name
 	if len(d.Type.Params.List) != 1 {
 		return nil, fmt.Errorf("length of params must be 1")
@@ -114,7 +114,7 @@ func NewFromDecl(pkgPath string, d *dst.FuncDecl) (*Function, error) {
 	return res, nil
 }
 
-func (f Function) Decl() (*dst.FuncDecl, error) {
+func (f Func) Decl() (*dst.FuncDecl, error) {
 	return &dst.FuncDecl{
 		Recv: nil,
 		Name: genFuncName(f.name),

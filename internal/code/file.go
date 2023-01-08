@@ -50,7 +50,7 @@ func loadFileFromString(s, pkgPath string) (*File, error) {
 	return &File{dstFile: df, pkgPath: pkgPath}, nil
 }
 
-func (f File) FindFunc(name string) (*function.Function, bool) {
+func (f File) FindFunc(name string) (*function.Func, bool) {
 	d, ok := f.findFuncDecl(name)
 	if !ok {
 		return nil, false
@@ -62,7 +62,7 @@ func (f File) FindFunc(name string) (*function.Function, bool) {
 	return fn, true
 }
 
-func (f *File) Apply(fn *function.Function) error {
+func (f *File) Apply(fn *function.Func) error {
 	existed, ok := f.findFuncDecl(fn.Name())
 	d, err := fn.Decl()
 	if err != nil {
