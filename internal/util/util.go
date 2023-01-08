@@ -34,7 +34,10 @@ func rootPath() (rootDirPath string, rootPkgPath string, err error) {
 	for dirPath != "/" && dirPath != "." {
 		info, fErr := os.Stat(filepath.Join(dirPath, modFileName))
 		if fErr == nil && !info.IsDir() {
-			rootDirPath = dirPath
+			rootDirPath, err = filepath.Abs(dirPath)
+			if err != nil {
+				return
+			}
 			break
 		}
 		dirPath = filepath.Dir(dirPath)
@@ -53,6 +56,13 @@ func rootPath() (rootDirPath string, rootPkgPath string, err error) {
 	}
 	rootPkgPath = modFile.Module.Mod.Path
 	return
+}
+
+func PkgPathFromFilePath(filePath string) string {
+	if !strings.HasPrefix(filePath, RootDirPath) {
+		return ""
+	}
+	return filepath.Join(RootPkgPath, filePath[len(RootDirPath):])
 }
 
 func UpperFirst(inp string) string {
