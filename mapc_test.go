@@ -8,26 +8,20 @@ import (
 	"github.com/abekoh/mapc"
 	"github.com/abekoh/mapc/internal/util"
 	"github.com/google/uuid"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 // AUser is source for mapping test
 type AUser struct {
-	ID           uuid.UUID
-	Name         string
-	Age          int
-	RegisteredAt time.Time
+	id           uuid.UUID
+	name         string
+	age          int
+	registeredAt time.Time
 }
 
 // BUser is destination for mapping test
 type BUser struct {
-	ID           uuid.UUID
-	Name         string
-	Age          int
-	RegisteredAt time.Time
-}
-
-// CUser is destination for mapping test
-type CUser struct {
 	ID           uuid.UUID
 	Name         string
 	Age          int
@@ -45,15 +39,13 @@ func TestMapC(t *testing.T) {
 	})
 	gs, errs := m.Generate()
 	for _, err := range errs {
-		if err != nil {
-			t.Fatal(err)
-		}
+		require.Nil(t, err)
 	}
 	for _, g := range gs {
 		var buf bytes.Buffer
 		err := g.Write(&buf)
-		if err != nil {
-			t.Fatal(err)
-		}
+		require.Nil(t, err)
+		assert.Equal(t, `
+`, buf.String())
 	}
 }
