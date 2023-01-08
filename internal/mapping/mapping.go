@@ -34,7 +34,7 @@ type FieldPair struct {
 
 type Mapper struct {
 	FieldMappers []FieldMapper
-	TypeMapper   []TypeMapper
+	TypeMappers  []TypeMapper
 }
 
 type Mapping struct {
@@ -79,6 +79,10 @@ func (m Mapper) newFieldPairs(from, to *object.Struct) []*FieldPair {
 		}
 	}
 	return pairs
+}
+
+func (m Mapper) newFieldPair(from, to *object.Field) (*FieldPair, bool) {
+	panic("todo: impl")
 }
 
 func (m Mapper) newFieldPairOLD(from, to *object.Field) (*FieldPair, bool) {
