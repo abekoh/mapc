@@ -2,11 +2,13 @@ package code
 
 import (
 	"errors"
+	"fmt"
 	"regexp"
 	"strings"
 
 	"github.com/abekoh/mapc/internal/mapping"
 	"github.com/abekoh/mapc/internal/object"
+	"github.com/abekoh/mapc/internal/util"
 	"github.com/dave/dst"
 )
 
@@ -187,7 +189,7 @@ func cloneIdent(i *dst.Ident) *dst.Ident {
 }
 
 func genFuncName(m *mapping.Mapping) *dst.Ident {
-	name := m.Name()
+	name := fmt.Sprintf("To%s", util.UpperFirst(m.To.Name))
 	o := dst.NewObj(dst.Fun, name)
 	i := dst.NewIdent(name)
 	i.Obj = o
