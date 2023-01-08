@@ -81,8 +81,8 @@ func New() *MapC {
 	return &MapC{
 		pairs: []pair{},
 		option: &Option{
-			FieldMappers: fieldmapper.DefaultFieldMappers,
-			TypeMappers:  typemapper.DefaultTypeMappers,
+			FieldMappers: fieldmapper.Default,
+			TypeMappers:  typemapper.Default,
 		},
 	}
 }
@@ -107,7 +107,7 @@ func (m *MapC) Register(from, to any, options ...*Option) {
 	m.pairs = append(m.pairs, pair{
 		from:   from,
 		to:     to,
-		option: (&Option{}).override(options...),
+		option: (m.option).override(options...),
 	})
 }
 
@@ -137,7 +137,7 @@ func (g *Group) Register(from, to any, options ...*Option) {
 
 func (m MapC) Generate() (res GeneratedList, errs []error) {
 	for _, pair := range m.pairs {
-		if pair.option != nil {
+		if pair.option == nil {
 			errs = append(errs, fmt.Errorf("option is nil. from=%T, to=%T", pair.from, pair.to))
 		}
 		mp := mapping.Mapper{

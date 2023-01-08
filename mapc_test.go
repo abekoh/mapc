@@ -30,7 +30,7 @@ type BUser struct {
 
 func TestMapC(t *testing.T) {
 	m := mapc.New()
-	m.Register(AUser{}, BUser{}, &mapc.Option{})
+	m.Register(AUser{}, BUser{})
 	gs, errs := m.Generate()
 	for _, err := range errs {
 		require.Nil(t, err)

@@ -47,7 +47,7 @@ func (m MapTypeMapper) Map(from, to object.Typ) (Caster, bool) {
 	return c, true
 }
 
-var DefaultTypeMappers = TypeMappers{
+var Default = TypeMappers{
 	&AssignMapper{},
 	&ConvertMapper{},
 }

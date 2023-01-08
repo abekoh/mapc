@@ -6,7 +6,7 @@ import (
 
 type FieldMapper func(string) string
 
-var DefaultFieldMappers = []FieldMapper{
+var Default = []FieldMapper{
 	Identify,
 }
 
