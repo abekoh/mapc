@@ -49,11 +49,16 @@ func (m MapC) Generate() (res GeneratedList, errs []error) {
 		if pair.option == nil {
 			errs = append(errs, fmt.Errorf("option is nil. from=%T, to=%T", pair.from, pair.to))
 		}
-		mp := mapping.Mapper{
+		mapper := mapping.Mapper{
 			FieldMappers: pair.option.FieldMappers,
 			TypeMappers:  pair.option.TypeMappers,
 		}
-		_ = mp
+		mapping, err := mapper.NewMapping(pair.from, pair.to)
+		if err != nil {
+			errs = append(errs, fmt.Errorf("failed to map: %w", err))
+			continue
+		}
+		//f := code.NewFile()
 		//if pair.option.OutPath != "" {
 		//	// TODO: auto complete pkgPath
 		//	f, err := code.LoadFile(pair.option.OutPath, "")
