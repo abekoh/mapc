@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/abekoh/mapc"
+	"github.com/abekoh/mapc/pkg/fieldmapper"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -29,7 +30,11 @@ type BUser struct {
 
 func TestMapC(t *testing.T) {
 	m := mapc.New()
-	m.Register(AUser{}, BUser{}, &mapc.Option{})
+	m.Register(AUser{}, BUser{}, &mapc.Option{
+		FieldMappers: []fieldmapper.FieldMapper{
+			&fieldmapper.UpperFirst{},
+		},
+	})
 	gs, errs := m.Generate()
 	for _, err := range errs {
 		require.Nil(t, err)
