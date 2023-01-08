@@ -48,7 +48,7 @@ func TestMapC(t *testing.T) {
 		require.Nil(t, err)
 		assert.Equal(t, `package foo
 
-func ToBUser(x BUser) BUser {
+func ToBUser(x AUser) BUser {
 	return BUser{
 		Name:         x.name,
 		Age:          x.age,
