@@ -4,8 +4,6 @@ import (
 	"github.com/abekoh/mapc/internal/object"
 )
 
-type TypeMappers []TypeMapper
-
 type TypeMapper interface {
 	Map(from, to *object.Typ) (Caster, bool)
 }
@@ -47,7 +45,7 @@ func (m MapTypeMapper) Map(from, to object.Typ) (Caster, bool) {
 	return c, true
 }
 
-var Default = TypeMappers{
+var Default = []TypeMapper{
 	&AssignMapper{},
 	&ConvertMapper{},
 }
