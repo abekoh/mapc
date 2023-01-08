@@ -46,7 +46,15 @@ func TestMapC(t *testing.T) {
 		var buf bytes.Buffer
 		err := g.Write(&buf)
 		require.Nil(t, err)
-		assert.Equal(t, `
+		assert.Equal(t, `package foo
+
+func ToBUser(x BUser) BUser {
+	return BUser{
+		Name:         x.name,
+		Age:          x.age,
+		RegisteredAt: x.registeredAt,
+	}
+}
 `, buf.String())
 	}
 }
