@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/abekoh/mapc/internal/code"
+	"github.com/abekoh/mapc/internal/code/function"
 	"github.com/abekoh/mapc/internal/mapping"
 	"github.com/abekoh/mapc/internal/util"
 	"github.com/abekoh/mapc/pkg/fieldmapper"
@@ -65,8 +66,19 @@ func (m MapC) Generate() (res GeneratedList, errs []error) {
 			continue
 		}
 		pkgPath := util.PkgPathFromFilePath(pair.option.OutPath)
-		_ = pkgPath
-		//f := code.NewFile(pkgPath)
+		// TODO: cache file
+		f := code.NewFile(pkgPath)
+		fn := function.NewFromMapping(mapping)
+		err = f.Apply(fn)
+		if err != nil {
+			errs = append(errs, fmt.Errorf("failed to apply: %w", err))
+			continue
+		}
+		g := Generated{
+			filePath: pair.option.OutPath,
+			codeFile: f,
+		}
+		res = append(res, g)
 	}
 	return
 }
