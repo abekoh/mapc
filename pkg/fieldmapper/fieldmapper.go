@@ -22,6 +22,7 @@ func UpperFirst(x string) string {
 	return string(f-0x20) + x[1:]
 }
 
+func SnakeToCamel(x string) string {
 	var b strings.Builder
 	sp := strings.Split(x, "_")
 	if len(sp) == 1 {
