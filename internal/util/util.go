@@ -62,6 +62,7 @@ func PkgPathFromFilePath(filePath string) string {
 	if !strings.HasPrefix(filePath, RootDirPath) {
 		return ""
 	}
+	// TODO: not work when RootPkgPath like: `github.com/abekoh/mapc/foo/bar.test`
 	return filepath.Join(RootPkgPath, filePath[len(RootDirPath):])
 }
 
