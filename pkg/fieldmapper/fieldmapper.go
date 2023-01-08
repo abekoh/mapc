@@ -10,23 +10,22 @@ var DefaultFieldMappers = []FieldMapper{
 	Identify,
 }
 
-func Identify(inp string) string {
-	return inp
+func Identify(x string) string {
+	return x
 }
 
-func UpperFirst(inp string) string {
-	f := inp[0]
+func UpperFirst(x string) string {
+	f := x[0]
 	if f < 0x61 || f > 0x7A {
-		return inp
+		return x
 	}
-	return string(f-0x20) + inp[1:]
+	return string(f-0x20) + x[1:]
 }
 
-func SnakeToCamel(inp string) string {
 	var b strings.Builder
-	sp := strings.Split(inp, "_")
+	sp := strings.Split(x, "_")
 	if len(sp) == 1 {
-		return inp
+		return x
 	}
 	for i, s := range sp {
 		if i != 0 {

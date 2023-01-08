@@ -79,8 +79,11 @@ func (o Option) override(opts ...*Option) *Option {
 
 func New() *MapC {
 	return &MapC{
-		pairs:  []pair{},
-		option: nil,
+		pairs: []pair{},
+		option: &Option{
+			FieldMappers: fieldmapper.DefaultFieldMappers,
+			TypeMappers:  typemapper.DefaultTypeMappers,
+		},
 	}
 }
 
