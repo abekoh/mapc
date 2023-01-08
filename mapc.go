@@ -11,7 +11,8 @@ import (
 )
 
 type MapC struct {
-	pairs []pair
+	pairs  []pair
+	option *Option
 }
 
 type Group struct {
@@ -75,7 +76,8 @@ func (o Option) override(opts ...*Option) *Option {
 
 func New() *MapC {
 	return &MapC{
-		pairs: []pair{},
+		pairs:  []pair{},
+		option: nil,
 	}
 }
 
@@ -103,10 +105,9 @@ func (m *MapC) Register(from, to any, options ...*Option) {
 	})
 }
 
-func (g *Group) Register(from, to any, options ...*Option) {
+func (g Group) extendOptions() []*Option {
 	var opts []*Option
-	opts = append(opts, options...)
-	targetG := g
+	targetG := &g
 	for {
 		if targetG == nil {
 			break
@@ -114,6 +115,13 @@ func (g *Group) Register(from, to any, options ...*Option) {
 		util.Prepend(opts, targetG.option)
 		targetG = targetG.parent
 	}
+	util.Prepend(opts, g.MapC.option)
+	return opts
+}
+
+func (g *Group) Register(from, to any, options ...*Option) {
+	opts := g.extendOptions()
+	opts = append(opts, options...)
 	g.MapC.pairs = append(g.MapC.pairs, pair{
 		from:   from,
 		to:     to,
