@@ -2,7 +2,10 @@ module github.com/abekoh/mapc
 
 go 1.19
 
-require github.com/dave/dst v0.27.2
+require (
+	github.com/dave/dst v0.27.2
+	github.com/google/uuid v1.3.0
+)
 
 require (
 	golang.org/x/mod v0.6.0-dev.0.20220419223038-86c51ed26bb4 // indirect
