@@ -10,16 +10,16 @@ import (
 )
 
 type MapC struct {
-	pairs     []pair
-	globalOpt Option
+	pairs  []pair
+	option Option
 }
 
 type FieldMapper func(string) string
 
 type pair struct {
-	from any
-	to   any
-	opt  Option
+	from   any
+	to     any
+	option Option
 }
 
 type Option struct {
@@ -66,11 +66,18 @@ func (o Option) override(opts ...Option) Option {
 }
 
 func New() *MapC {
-	return &MapC{}
+	return &MapC{
+		pairs: []pair{},
+		option: Option{
+			FuncName:     "",
+			OutPath:      "",
+			FieldMappers: []FieldMapper{},
+		},
+	}
 }
 
 func (m *MapC) Global(opt Option) {
-	m.globalOpt = opt
+	m.option = opt
 }
 
 func (m *MapC) Register(from, to any, options ...*Option) {
