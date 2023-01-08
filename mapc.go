@@ -7,7 +7,6 @@ import (
 	"os"
 
 	"github.com/abekoh/mapc/internal/code"
-	"github.com/abekoh/mapc/internal/mapping"
 	"github.com/abekoh/mapc/internal/util"
 )
 

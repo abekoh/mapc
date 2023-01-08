@@ -6,52 +6,9 @@ import (
 
 	"github.com/abekoh/mapc/internal/object"
 	"github.com/abekoh/mapc/internal/tokenizer"
-	"github.com/abekoh/mapc/internal/util"
 )
 
-//type Var struct {
-//	v *types.Var
-//}
-//
-//function (v Var) Name() string {
-//	return v.v.Name()
-//}
-//
-//type Var2 struct {
-//	v *types.Var
-//}
-
-//function newFieldPair(from, to Var) (FieldPairOld, bool) {
-//	pair := FieldPairOld{
-//		From: from,
-//		To:   to,
-//	}
-//	if from.v.Type().String() == to.v.Type().String() {
-//		return pair, true
-//	}
-//	switch from.v.Type().Underlying().(type) {
-//	case *types.Basic:
-//		fromBasic := from.v.Type().Underlying().(*types.Basic)
-//		toBasic := to.v.Type().Underlying().(*types.Basic)
-//		if isCastableBasicInfo(fromBasic.Info()) && fromBasic.Info() == toBasic.Info() {
-//			pair.Caster = &Caster{
-//				fmtString: fmt.Sprintf("%s(%%s)", to.v.Type().String()),
-//			}
-//			return pair, true
-//		}
-//		return pair, false
-//	default:
-//		return pair, false
-//	}
-//}
-//
-//function isCastableBasicInfo(i types.BasicInfo) bool {
-//	return i&(types.IsBoolean|types.IsInteger|types.IsUnsigned|types.IsFloat|types.IsComplex) > 0
-//}
-//
-//type tokenFieldMapOld map[string]Var
-
-// new
+type FieldMapper func(string) string
 
 type Mapper struct {
 	tzr *tokenizer.Tokenizer
@@ -61,7 +18,7 @@ func NewMapper() *Mapper {
 	return &Mapper{tzr: tokenizer.NewTokenizer()}
 }
 
-type tokenFieldMap map[string]*object.Field
+type fieldMap map[string]*object.Field
 
 func newFieldPair(from, to *object.Field) (*FieldPair, bool) {
 	pair := &FieldPair{
@@ -110,12 +67,7 @@ type Mapping struct {
 	FieldPairs []*FieldPair
 }
 
-func (m Mapping) Name() string {
-	// TODO: fix
-	return fmt.Sprintf("To%s", util.UpperFirst(m.To.Name))
-}
-
-func (m Mapper) Map(from, to any) (*Mapping, error) {
+func NewMapping(from, to any, fieldMappers []FieldMapper) (*Mapping, error) {
 	fromStr, err := object.NewStruct(reflect.TypeOf(from))
 	if err != nil {
 		return nil, fmt.Errorf("failed to construct struct: %w", err)
@@ -124,8 +76,8 @@ func (m Mapper) Map(from, to any) (*Mapping, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to construct struct: %w", err)
 	}
-	toTokenFieldMap := m.newTokenFieldMap(toStr)
-	fieldPairs := m.newFieldPairs(fromStr, toTokenFieldMap)
+	toFieldMap := newFieldMap(toStr)
+	fieldPairs := m.newFieldPairs(fromStr, toFieldMap)
 	return &Mapping{
 		From:       fromStr,
 		To:         toStr,
@@ -133,23 +85,31 @@ func (m Mapper) Map(from, to any) (*Mapping, error) {
 	}, nil
 }
 
-func (m Mapper) newTokenFieldMap(s *object.Struct) tokenFieldMap {
-	r := make(tokenFieldMap)
+func newFieldMap(s *object.Struct) fieldMap {
+	r := make(fieldMap)
 	for _, f := range s.Fields {
-		token := m.tzr.Tokenize(f.Name())
-		r[token] = f
+		r[f.Name()] = f
 	}
 	return r
 }
-func (m Mapper) newFieldPairs(from *object.Struct, toTokenFieldMap tokenFieldMap) []*FieldPair {
-	var r []*FieldPair
-	for _, fromF := range from.Fields {
-		fromToken := m.tzr.Tokenize(fromF.Name())
-		if toF, ok := toTokenFieldMap[fromToken]; ok {
-			if pair, ok := newFieldPair(fromF, toF); ok {
-				r = append(r, pair)
+
+func newFieldPairs(from, to *object.Struct, fieldMappers []FieldMapper) []*FieldPair {
+	toFieldMap := make(fieldMap)
+	for _, field := range to.Fields {
+		toFieldMap[field.Name()] = field
+	}
+
+	var pairs []*FieldPair
+	for _, fromField := range from.Fields {
+		for _, mapper := range fieldMappers {
+			key := mapper(fromField.Name())
+			if toField, ok := toFieldMap[key]; ok {
+				if pair, ok := newFieldPair(fromField, toField); ok {
+					pairs = append(pairs, pair)
+					break
+				}
 			}
 		}
 	}
-	return r
+	return pairs
 }

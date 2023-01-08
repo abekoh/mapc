@@ -18,7 +18,7 @@ type BUser struct {
 
 func TestNewFunc(t *testing.T) {
 	mapper := mapping.NewMapper()
-	mp, err := mapper.Map(AUser{}, BUser{})
+	mp, err := mapper.NewMapping(AUser{}, BUser{})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -45,7 +45,7 @@ function ToBUser(from AUser) BUser {
 
 func TestFunc_ReNew(t *testing.T) {
 	mapper := mapping.NewMapper()
-	mp, err := mapper.Map(AUser{}, BUser{})
+	mp, err := mapper.NewMapping(AUser{}, BUser{})
 	if err != nil {
 		t.Fatal(err)
 	}

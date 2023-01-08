@@ -111,16 +111,3 @@ func Test_newFieldPair(t *testing.T) {
 		})
 	}
 }
-
-func TestMapping_Name(t *testing.T) {
-	m := Mapping{
-		To: &object.Struct{
-			Name: "bUser",
-		},
-	}
-	expected := "ToBUser"
-	got := m.Name()
-	if got != expected {
-		t.Errorf("expected: %s, got: %s", expected, got)
-	}
-}

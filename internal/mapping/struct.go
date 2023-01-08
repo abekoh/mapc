@@ -63,7 +63,7 @@ import (
 //	return nil, fmt.Errorf("package %s is not found in %s", param.Pkg, param.Dir)
 //}
 //
-//function (s PkgStruct) tokenFieldMap() tokenFieldMapOld {
+//function (s PkgStruct) fieldMap() tokenFieldMapOld {
 //	res := make(tokenFieldMapOld)
 //	for i := 0; i < s.str.NumFields(); i++ {
 //		f := s.str.Field(i)
