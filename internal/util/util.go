@@ -30,7 +30,7 @@ func rootPath() (rootDirPath string, rootPkgPath string, err error) {
 	if err != nil {
 		return
 	}
-	dirPath := filepath.Dir(wd)
+	dirPath := wd
 	for dirPath != "/" && dirPath != "." {
 		info, fErr := os.Stat(filepath.Join(dirPath, modFileName))
 		if fErr == nil && !info.IsDir() {
