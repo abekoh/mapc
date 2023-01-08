@@ -13,15 +13,6 @@ type Typ struct {
 	pkgPath string
 }
 
-func (t Typ) Name() string {
-	//sp := strings.Split(t.pkgPath, "/")
-	//if len(sp) == 0 {
-	//	return ""
-	//}
-	//return sp[len(sp)-1]
-	return t.name
-}
-
 type Caster struct {
 	fc string
 }
@@ -48,7 +39,7 @@ func NewFromMapping(m *mapping.Mapping) *Function {
 	}
 	return &Function{
 		name:     fmt.Sprintf("To%s", util.UpperFirst(m.To.Name)),
-		argName:  "from",
+		argName:  "x",
 		fromTyp:  &Typ{name: m.From.Name, pkgPath: m.From.PkgPath},
 		toTyp:    &Typ{name: m.To.Name, pkgPath: m.To.PkgPath},
 		mapExprs: fieldMappers,
@@ -153,8 +144,8 @@ func genFuncName(s string) *dst.Ident {
 }
 
 func genType(typ *Typ) *dst.Ident {
-	o := dst.NewObj(dst.Typ, typ.Name())
-	i := dst.NewIdent(typ.Name())
+	o := dst.NewObj(dst.Typ, typ.name)
+	i := dst.NewIdent(typ.name)
 	i.Obj = o
 	i.Path = typ.pkgPath
 	return i

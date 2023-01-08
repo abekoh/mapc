@@ -48,8 +48,10 @@ func TestMapC(t *testing.T) {
 		require.Nil(t, err)
 		assert.Equal(t, `package foo
 
-func ToBUser(x AUser) BUser {
-	return BUser{
+import "github.com/abekoh/mapc_test"
+
+func ToBUser(x mapc_test.AUser) mapc_test.BUser {
+	return mapc_test.BUser{
 		Name:         x.name,
 		Age:          x.age,
 		RegisteredAt: x.registeredAt,
