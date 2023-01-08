@@ -54,7 +54,7 @@ func (m Mapper) newFieldPairs(from, to *object.Struct) []*FieldPair {
 	var pairs []*FieldPair
 	for _, fromField := range from.Fields {
 		for _, fieldMapper := range m.FieldMappers {
-			key := fieldMapper(fromField.Name())
+			key := fieldMapper.Map(fromField.Name())
 			if toField, ok := toFieldMap[key]; ok {
 				if pair, ok := m.newFieldPair(fromField, toField); ok {
 					pairs = append(pairs, pair)

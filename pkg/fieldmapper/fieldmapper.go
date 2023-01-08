@@ -2,27 +2,33 @@ package fieldmapper
 
 import (
 	"strings"
+
+	"github.com/abekoh/mapc/internal/util"
 )
 
-type FieldMapper func(string) string
-
-var Default = []FieldMapper{
-	Identify,
+type FieldMapper interface {
+	Map(string) string
 }
 
-func Identify(x string) string {
+var Default = []FieldMapper{
+	&Identify{},
+}
+
+type Identify struct{}
+
+func (i Identify) Map(x string) string {
 	return x
 }
 
-func UpperFirst(x string) string {
-	f := x[0]
-	if f < 0x61 || f > 0x7A {
-		return x
-	}
-	return string(f-0x20) + x[1:]
+type UpperFirst struct{}
+
+func (u UpperFirst) Map(x string) string {
+	return util.UpperFirst(x)
 }
 
-func SnakeToCamel(x string) string {
+type SnakeToCamel struct{}
+
+func (s SnakeToCamel) Map(x string) string {
 	var b strings.Builder
 	sp := strings.Split(x, "_")
 	if len(sp) == 1 {
@@ -30,7 +36,7 @@ func SnakeToCamel(x string) string {
 	}
 	for i, s := range sp {
 		if i != 0 {
-			s = UpperFirst(s)
+			s = util.UpperFirst(s)
 		}
 		b.WriteString(s)
 	}
