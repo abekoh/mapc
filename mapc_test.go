@@ -48,7 +48,21 @@ type TypedInt int
 
 func TestTypeMapper(t *testing.T) {
 	a := 1
-	b := TypedInt(2)
-	t.Logf("%v", reflect.TypeOf(a).AssignableTo(reflect.TypeOf(b)))
-	t.Logf("%v", reflect.TypeOf(a).ConvertibleTo(reflect.TypeOf(b)))
+	b := int64(2)
+	c := TypedInt(3)
+	d := "4"
+	e := mapc.TypedInt2(5)
+	rs := []reflect.Type{
+		reflect.TypeOf(a),
+		reflect.TypeOf(b),
+		reflect.TypeOf(c),
+		reflect.TypeOf(d),
+		reflect.TypeOf(e),
+	}
+	for _, x := range rs {
+		for _, y := range rs {
+			//t.Logf("assign %v -> %v: %v", x, y, x.AssignableTo(y))
+			t.Logf("convert %v -> %v: %v", x, y, x.ConvertibleTo(y))
+		}
+	}
 }

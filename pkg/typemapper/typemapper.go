@@ -10,6 +10,29 @@ type TypeMapper interface {
 	Map(from, to object.Typ) (Caster, bool)
 }
 
+type AssignMapper struct {
+}
+
+func (a AssignMapper) Map(from, to object.Typ) (Caster, bool) {
+	if from.AssignableTo(to) {
+		return &NopCaster{}, true
+	}
+	return nil, false
+}
+
+type ConvertMapper struct {
+}
+
+func (c ConvertMapper) Map(from, to object.Typ) (Caster, bool) {
+	if from.ConvertibleTo(to) {
+		return &SimpleCaster{
+			pkgPath: to.PkgPath(),
+			fun:     to.Name(),
+		}, true
+	}
+	return nil, false
+}
+
 type MapTypeMapper map[object.Typ]map[object.Typ]Caster
 
 func (m MapTypeMapper) Map(from, to object.Typ) (Caster, bool) {
@@ -25,14 +48,8 @@ func (m MapTypeMapper) Map(from, to object.Typ) (Caster, bool) {
 }
 
 var DefaultTypeMappers = TypeMappers{
-	//MapTypeMapper{
-	//	//object.NewTyp(reflect.TypeOf("")): map[object.Typ]&BuiltinCaster{Typ: object.NewTyp()},
-	//},
-	//Int: map[Typ]Caster{
-	//	Int16: &BuiltinCaster{Typ: Int16},
-	//	Int32: &BuiltinCaster{Typ: Int32},
-	//	Int64: &BuiltinCaster{Typ: Int64},
-	//},
+	&AssignMapper{},
+	&ConvertMapper{},
 }
 
 type Caster interface {
@@ -40,32 +57,25 @@ type Caster interface {
 	Fun() string
 }
 
-type BuiltinCaster struct {
-	Typ BuiltinTyp
-}
+type NopCaster struct{}
 
-func (b BuiltinCaster) PkgPath() string {
+func (n NopCaster) PkgPath() string {
 	return ""
 }
 
-func (b BuiltinCaster) Fun() string {
-	return b.Typ.Name()
-}
-
-type BuiltinTyp string
-
-const (
-	Int   BuiltinTyp = "int"
-	Int8  BuiltinTyp = "int8"
-	Int16 BuiltinTyp = "int16"
-	Int32 BuiltinTyp = "int32"
-	Int64 BuiltinTyp = "int64"
-)
-
-func (bt BuiltinTyp) PkgPath() string {
+func (n NopCaster) Fun() string {
 	return ""
 }
 
-func (bt BuiltinTyp) Name() string {
-	return string(bt)
+type SimpleCaster struct {
+	pkgPath string
+	fun     string
+}
+
+func (s SimpleCaster) PkgPath() string {
+	return s.pkgPath
+}
+
+func (s SimpleCaster) Fun() string {
+	return s.fun
 }

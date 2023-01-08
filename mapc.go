@@ -145,3 +145,5 @@ func (m MapC) Generate() (res GeneratedList, errs []error) {
 	}
 	return
 }
+
+type TypedInt2 int
