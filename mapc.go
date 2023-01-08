@@ -18,10 +18,49 @@ type MapC struct {
 	option *Option
 }
 
-type Group struct {
-	*MapC
-	parent *Group
-	option *Option
+func New() *MapC {
+	return &MapC{
+		pairs: []pair{},
+		option: &Option{
+			FieldMappers: fieldmapper.Default,
+			TypeMappers:  typemapper.Default,
+		},
+	}
+}
+
+func (m *MapC) Register(from, to any, options ...*Option) {
+	m.pairs = append(m.pairs, pair{
+		from:   from,
+		to:     to,
+		option: (m.option).override(options...),
+	})
+}
+
+func (m MapC) NewGroup() *Group {
+	return &Group{
+		MapC:   &m,
+		parent: nil,
+		option: nil,
+	}
+}
+
+func (m MapC) Generate() (res GeneratedList, errs []error) {
+	for _, pair := range m.pairs {
+		if pair.option == nil {
+			errs = append(errs, fmt.Errorf("option is nil. from=%T, to=%T", pair.from, pair.to))
+		}
+		mp := mapping.Mapper{
+			FieldMappers: pair.option.FieldMappers,
+			TypeMappers:  pair.option.TypeMappers,
+		}
+		_ = mp
+		//if pair.option.OutPath != "" {
+		//	// TODO: auto complete pkgPath
+		//	f, err := code.LoadFile(pair.option.OutPath, "")
+		//	errs = append(errs, fmt.Errorf("failed load file: %w", err))
+		//}
+	}
+	return
 }
 
 type pair struct {
@@ -35,6 +74,57 @@ type Option struct {
 	OutPath      string
 	FieldMappers []fieldmapper.FieldMapper
 	TypeMappers  []typemapper.TypeMapper
+}
+
+func (o Option) override(opts ...*Option) *Option {
+	for _, opt := range opts {
+		if opt == nil {
+			continue
+		}
+		// TODO: to be more simple
+		if len(opt.OutPath) != 0 {
+			o.OutPath = opt.OutPath
+		}
+	}
+	return &o
+}
+
+type Group struct {
+	*MapC
+	parent *Group
+	option *Option
+}
+
+func (g Group) NewGroup() *Group {
+	return &Group{
+		MapC:   g.MapC,
+		parent: &g,
+		option: &Option{},
+	}
+}
+
+func (g *Group) Register(from, to any, options ...*Option) {
+	opts := g.extendOptions()
+	opts = append(opts, options...)
+	g.MapC.pairs = append(g.MapC.pairs, pair{
+		from:   from,
+		to:     to,
+		option: (&Option{}).override(opts...),
+	})
+}
+
+func (g Group) extendOptions() []*Option {
+	var opts []*Option
+	targetG := &g
+	for {
+		if targetG == nil {
+			break
+		}
+		util.Prepend(opts, targetG.option)
+		targetG = targetG.parent
+	}
+	util.Prepend(opts, g.MapC.option)
+	return opts
 }
 
 type Generated struct {
@@ -63,95 +153,3 @@ func (g Generated) Save() error {
 	}
 	return nil
 }
-
-func (o Option) override(opts ...*Option) *Option {
-	for _, opt := range opts {
-		if opt == nil {
-			continue
-		}
-		// TODO: to be more simple
-		if len(opt.OutPath) != 0 {
-			o.OutPath = opt.OutPath
-		}
-	}
-	return &o
-}
-
-func New() *MapC {
-	return &MapC{
-		pairs: []pair{},
-		option: &Option{
-			FieldMappers: fieldmapper.Default,
-			TypeMappers:  typemapper.Default,
-		},
-	}
-}
-
-func (m MapC) NewGroup() *Group {
-	return &Group{
-		MapC:   &m,
-		parent: nil,
-		option: nil,
-	}
-}
-
-func (g Group) NewGroup() *Group {
-	return &Group{
-		MapC:   g.MapC,
-		parent: &g,
-		option: &Option{},
-	}
-}
-
-func (m *MapC) Register(from, to any, options ...*Option) {
-	m.pairs = append(m.pairs, pair{
-		from:   from,
-		to:     to,
-		option: (m.option).override(options...),
-	})
-}
-
-func (g Group) extendOptions() []*Option {
-	var opts []*Option
-	targetG := &g
-	for {
-		if targetG == nil {
-			break
-		}
-		util.Prepend(opts, targetG.option)
-		targetG = targetG.parent
-	}
-	util.Prepend(opts, g.MapC.option)
-	return opts
-}
-
-func (g *Group) Register(from, to any, options ...*Option) {
-	opts := g.extendOptions()
-	opts = append(opts, options...)
-	g.MapC.pairs = append(g.MapC.pairs, pair{
-		from:   from,
-		to:     to,
-		option: (&Option{}).override(opts...),
-	})
-}
-
-func (m MapC) Generate() (res GeneratedList, errs []error) {
-	for _, pair := range m.pairs {
-		if pair.option == nil {
-			errs = append(errs, fmt.Errorf("option is nil. from=%T, to=%T", pair.from, pair.to))
-		}
-		mp := mapping.Mapper{
-			FieldMappers: pair.option.FieldMappers,
-			TypeMappers:  pair.option.TypeMappers,
-		}
-		_ = mp
-		//if pair.option.OutPath != "" {
-		//	// TODO: auto complete pkgPath
-		//	f, err := code.LoadFile(pair.option.OutPath, "")
-		//	errs = append(errs, fmt.Errorf("failed load file: %w", err))
-		//}
-	}
-	return
-}
-
-type TypedInt2 int
