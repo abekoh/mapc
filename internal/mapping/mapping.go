@@ -5,18 +5,9 @@ import (
 	"reflect"
 
 	"github.com/abekoh/mapc/internal/object"
-	"github.com/abekoh/mapc/internal/tokenizer"
 )
 
 type FieldMapper func(string) string
-
-type Mapper struct {
-	tzr *tokenizer.Tokenizer
-}
-
-func NewMapper() *Mapper {
-	return &Mapper{tzr: tokenizer.NewTokenizer()}
-}
 
 type fieldMap map[string]*object.Field
 
