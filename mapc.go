@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/abekoh/mapc/internal/code"
+	"github.com/abekoh/mapc/internal/mapping"
 	"github.com/abekoh/mapc/internal/util"
 	"github.com/abekoh/mapc/pkg/fieldmapper"
 	"github.com/abekoh/mapc/pkg/typemapper"
@@ -136,9 +137,13 @@ func (m MapC) Generate() (res GeneratedList, errs []error) {
 		if pair.option != nil {
 			errs = append(errs, fmt.Errorf("option is nil. from=%T, to=%T", pair.from, pair.to))
 		}
-		//mp := mapping.NewMapper()
+		mp := mapping.Mapper{
+			FieldMappers: pair.option.FieldMappers,
+			TypeMappers:  pair.option.TypeMappers,
+		}
+		_ = mp
 		//if pair.option.OutPath != "" {
-		//	// TODO: pkgPath
+		//	// TODO: auto complete pkgPath
 		//	f, err := code.LoadFile(pair.option.OutPath, "")
 		//	errs = append(errs, fmt.Errorf("failed load file: %w", err))
 		//}

@@ -7,13 +7,13 @@ import (
 type TypeMappers []TypeMapper
 
 type TypeMapper interface {
-	Map(from, to object.Typ) (Caster, bool)
+	Map(from, to *object.Typ) (Caster, bool)
 }
 
 type AssignMapper struct {
 }
 
-func (a AssignMapper) Map(from, to object.Typ) (Caster, bool) {
+func (a AssignMapper) Map(from, to *object.Typ) (Caster, bool) {
 	if from.AssignableTo(to) {
 		return &NopCaster{}, true
 	}
@@ -23,7 +23,7 @@ func (a AssignMapper) Map(from, to object.Typ) (Caster, bool) {
 type ConvertMapper struct {
 }
 
-func (c ConvertMapper) Map(from, to object.Typ) (Caster, bool) {
+func (c ConvertMapper) Map(from, to *object.Typ) (Caster, bool) {
 	if from.ConvertibleTo(to) {
 		return &SimpleCaster{
 			pkgPath: to.PkgPath(),

@@ -72,10 +72,10 @@ func (t Typ) Name() string {
 	return t.t.Name()
 }
 
-func (t Typ) AssignableTo(to Typ) bool {
+func (t Typ) AssignableTo(to *Typ) bool {
 	return t.t.AssignableTo(to.t)
 }
 
-func (t Typ) ConvertibleTo(to Typ) bool {
+func (t Typ) ConvertibleTo(to *Typ) bool {
 	return t.t.ConvertibleTo(to.t)
 }

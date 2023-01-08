@@ -67,12 +67,14 @@ func (m Mapper) newFieldPairs(from, to *object.Struct) []*FieldPair {
 }
 
 func (m Mapper) newFieldPair(from, to *object.Field) (*FieldPair, bool) {
-	pair := &FieldPair{
-		From: from,
-		To:   to,
+	for _, typeMapper := range m.TypeMappers {
+		if caster, ok := typeMapper.Map(from.Typ(), to.Typ()); ok {
+			return &FieldPair{
+				From:   from,
+				To:     to,
+				Caster: caster,
+			}, true
+		}
 	}
-	if from.IsSameTypeAndPkgWith(to) {
-		return pair, true
-	}
-	panic("todo: impl")
+	return nil, false
 }
