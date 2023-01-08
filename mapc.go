@@ -1,9 +1,20 @@
 package mapc
 
+import (
+	"bytes"
+	"fmt"
+	"io"
+	"os"
+
+	"github.com/abekoh/mapc/internal/code"
+)
+
 type MapC struct {
 	pairs     []pair
 	globalOpt Option
 }
+
+type FieldMapper func(string) string
 
 type pair struct {
 	from any
@@ -12,7 +23,36 @@ type pair struct {
 }
 
 type Option struct {
-	OutPath string
+	FuncName     string
+	OutPath      string
+	FieldMappers []FieldMapper
+}
+
+type Generated struct {
+	filePath string
+	codeFile code.File
+}
+
+type GeneratedList []*Generated
+
+func (g Generated) Write(w io.Writer) error {
+	return g.codeFile.Write(w)
+}
+
+func (g Generated) Save() error {
+	f, err := os.OpenFile(g.filePath, os.O_RDWR|os.O_CREATE, 0755)
+	if err != nil {
+		return fmt.Errorf("failed to save: %w", err)
+	}
+	defer f.Close()
+	var buf bytes.Buffer
+	if err := g.codeFile.Write(&buf); err != nil {
+		return fmt.Errorf("failed to save: %w", err)
+	}
+	if _, err := f.Write(buf.Bytes()); err != nil {
+		return fmt.Errorf("failed to save: %w", err)
+	}
+	return nil
 }
 
 func (o Option) override(opts ...Option) Option {
@@ -29,14 +69,14 @@ func New() *MapC {
 	return &MapC{}
 }
 
-func (mc *MapC) Global(opt Option) {
-	mc.globalOpt = opt
+func (m *MapC) Global(opt Option) {
+	m.globalOpt = opt
 }
 
-func (mc *MapC) Register(from, to any, options ...Option) {
-	mc.pairs = append(mc.pairs, pair{from: from, to: to})
+func (m *MapC) Register(from, to any, options ...*Option) {
+	m.pairs = append(m.pairs, pair{from: from, to: to})
 }
 
-func (mc MapC) Generate() (errs []error) {
-	return
+func (m MapC) Generate() (GeneratedList, []error) {
+	return GeneratedList{}, []error{}
 }
