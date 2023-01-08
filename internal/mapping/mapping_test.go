@@ -103,10 +103,10 @@ func Test_newFieldPair(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			got, gotOk := newFieldPair(tt.args.from, tt.args.to)
 			if gotOk != tt.wantOk {
-				t.Errorf("newFieldPair() gotOk = %v, want %v", gotOk, tt.wantOk)
+				t.Errorf("newFieldPairOLD() gotOk = %v, want %v", gotOk, tt.wantOk)
 			}
 			if !reflect.DeepEqual(got.Caster, tt.wantCaster) {
-				t.Errorf("newFieldPair().Caster got = %v, want %v", got.Caster, tt.wantCaster)
+				t.Errorf("newFieldPairOLD().Caster got = %v, want %v", got.Caster, tt.wantCaster)
 			}
 		})
 	}

@@ -71,7 +71,7 @@ func (m Mapper) newFieldPairs(from, to *object.Struct) []*FieldPair {
 		for _, fieldMapper := range m.FieldMappers {
 			key := fieldMapper(fromField.Name())
 			if toField, ok := toFieldMap[key]; ok {
-				if pair, ok := m.newFieldPair(fromField, toField); ok {
+				if pair, ok := m.newFieldPairOLD(fromField, toField); ok {
 					pairs = append(pairs, pair)
 					break
 				}
@@ -81,7 +81,7 @@ func (m Mapper) newFieldPairs(from, to *object.Struct) []*FieldPair {
 	return pairs
 }
 
-func (m Mapper) newFieldPair(from, to *object.Field) (*FieldPair, bool) {
+func (m Mapper) newFieldPairOLD(from, to *object.Field) (*FieldPair, bool) {
 	pair := &FieldPair{
 		From: from,
 		To:   to,
