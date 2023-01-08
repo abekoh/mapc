@@ -7,7 +7,6 @@ import (
 	"io"
 	"os"
 
-	"github.com/abekoh/mapc/internal/code/function"
 	"github.com/abekoh/mapc/internal/util"
 	"github.com/dave/dst"
 	"github.com/dave/dst/decorator"
@@ -50,19 +49,19 @@ func loadFileFromString(s, pkgPath string) (*File, error) {
 	return &File{dstFile: df, pkgPath: pkgPath}, nil
 }
 
-func (f File) FindFunc(name string) (*function.Func, bool) {
+func (f File) FindFunc(name string) (*Func, bool) {
 	d, ok := f.findFuncDecl(name)
 	if !ok {
 		return nil, false
 	}
-	fn, err := function.NewFromDecl(f.pkgPath, d)
+	fn, err := NewFromDecl(f.pkgPath, d)
 	if err != nil {
 		return nil, false
 	}
 	return fn, true
 }
 
-func (f *File) Apply(fn *function.Func) error {
+func (f *File) Apply(fn *Func) error {
 	existed, ok := f.findFuncDecl(fn.Name())
 	d, err := fn.Decl()
 	if err != nil {
