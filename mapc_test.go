@@ -49,3 +49,25 @@ func TestMapC(t *testing.T) {
 `, buf.String())
 	}
 }
+
+type TypeMapperFunc[T, U any] func(T) U
+
+func (tm TypeMapperFunc[T, U]) Map(inp any) any {
+	return tm(inp)
+}
+
+type TypeMapper interface {
+	Map(any) any
+}
+
+func TestTypeMapper(t *testing.T) {
+	mappers := []TypeMapper{
+		TypeMapperFunc[string, string](func(i string) string {
+			return i
+		}),
+		TypeMapperFunc[int, int64](func(i int) int64 {
+			return int64(i)
+		}),
+	}
+	_ = mappers
+}

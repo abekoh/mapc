@@ -22,6 +22,16 @@ type Group struct {
 }
 type FieldMapper func(string) string
 
+type TypeMapperFunc[T, U any] func(T) U
+
+func (tm TypeMapperFunc[T, U]) Map(inp any) any {
+	return tm(inp)
+}
+
+type TypeMapper interface {
+	Map(any) any
+}
+
 type pair struct {
 	from   any
 	to     any
@@ -32,6 +42,7 @@ type Option struct {
 	FuncName     string
 	OutPath      string
 	FieldMappers []FieldMapper
+	TypeMappers  []TypeMapper
 }
 
 type Generated struct {
