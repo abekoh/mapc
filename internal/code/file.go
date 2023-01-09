@@ -1,7 +1,6 @@
 package code
 
 import (
-	"bytes"
 	"fmt"
 	"go/token"
 	"io"
