@@ -79,3 +79,7 @@ func (t Typ) AssignableTo(to *Typ) bool {
 func (t Typ) ConvertibleTo(to *Typ) bool {
 	return t.refTyp.ConvertibleTo(to.refTyp)
 }
+
+func (t Typ) String() string {
+	return t.refTyp.Name()
+}
