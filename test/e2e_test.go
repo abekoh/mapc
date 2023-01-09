@@ -11,22 +11,6 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-//// AUser is source for mapping test
-//type AUser struct {
-//	id           uuid.UUID
-//	name         string
-//	age          int
-//	registeredAt time.Time
-//}
-//
-//// BUser is destination for mapping test
-//type BUser struct {
-//	ID           uuid.UUID
-//	Name         string
-//	Age          int
-//	RegisteredAt time.Time
-//}
-
 func TestMapC(t *testing.T) {
 	m := mapc.New()
 	m.Register(a.User{}, b.User{}, &mapc.Option{
