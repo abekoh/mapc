@@ -78,7 +78,7 @@ func NewFromDecl(pkgPath string, d *dst.FuncDecl) (*Func, error) {
 	if !ok {
 		return nil, fmt.Errorf("failed to cast result type")
 	}
-	res.toTyp = &Typ{name: paramTyp.Name, pkgPath: getPkgPath(resultTyp)}
+	res.toTyp = &Typ{name: resultTyp.Name, pkgPath: getPkgPath(resultTyp)}
 
 	if len(d.Body.List) != 1 {
 		return nil, fmt.Errorf("length of body must be 1")
