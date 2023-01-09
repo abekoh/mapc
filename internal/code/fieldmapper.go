@@ -96,7 +96,7 @@ func ParseComments(comments ...string) (res FieldMapperList) {
 }
 
 func commentToKey(comment string) string {
-	re := regexp.MustCompile("^\\/\\/\\s(.+):\\s.*$")
+	re := regexp.MustCompile(`^\\/\\/\\s(.+):\\s.*$`)
 	r := re.FindStringSubmatch(comment)
 	if len(r) == 2 {
 		return r[1]
