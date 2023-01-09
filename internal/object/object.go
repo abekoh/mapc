@@ -60,6 +60,10 @@ type Typ struct {
 	refTyp reflect.Type
 }
 
+func NewTyp(refTyp reflect.Type) *Typ {
+	return &Typ{refTyp: refTyp}
+}
+
 func (t Typ) PkgPath() string {
 	return t.refTyp.PkgPath()
 }
