@@ -10,8 +10,7 @@ import (
 )
 
 func TestNewStruct(t *testing.T) {
-	o := sample.Object{}
-	got, err := NewStruct(reflect.TypeOf(o))
+	got, err := NewStruct(reflect.TypeOf(sample.Object{}))
 	require.Nil(t, err)
 	assert.Equal(t, "Object", got.Name)
 	assert.Equal(t, "github.com/abekoh/mapc/testdata/sample", got.PkgPath)
