@@ -135,7 +135,7 @@ func (g *Group) Register(from, to any, options ...*Option) {
 
 func (g *Group) extendOptions() []*Option {
 	var opts []*Option
-	targetG := &g
+	targetG := g
 	for {
 		if targetG == nil {
 			break
