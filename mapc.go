@@ -14,13 +14,13 @@ import (
 )
 
 type MapC struct {
-	pairs  []pair
+	inputs []input
 	option *Option
 }
 
 func New() *MapC {
 	return &MapC{
-		pairs: []pair{},
+		inputs: []input{},
 		option: &Option{
 			FieldMappers: fieldmapper.Default,
 			TypeMappers:  typemapper.Default,
@@ -29,14 +29,14 @@ func New() *MapC {
 }
 
 func (m *MapC) Register(from, to any, options ...*Option) {
-	m.pairs = append(m.pairs, pair{
+	m.inputs = append(m.inputs, input{
 		from:   from,
 		to:     to,
 		option: (m.option).override(options...),
 	})
 }
 
-func (m MapC) NewGroup() *Group {
+func (m MapC) Group() *Group {
 	return &Group{
 		MapC:   &m,
 		parent: nil,
@@ -45,7 +45,7 @@ func (m MapC) NewGroup() *Group {
 }
 
 func (m MapC) Generate() (res GeneratedList, errs []error) {
-	for _, pair := range m.pairs {
+	for _, pair := range m.inputs {
 		if pair.option == nil {
 			errs = append(errs, fmt.Errorf("option is nil. from=%T, to=%T", pair.from, pair.to))
 			continue
@@ -82,7 +82,7 @@ func (m MapC) Generate() (res GeneratedList, errs []error) {
 	return
 }
 
-type pair struct {
+type input struct {
 	from   any
 	to     any
 	option *Option
@@ -115,10 +115,10 @@ type Group struct {
 	option *Option
 }
 
-func (g Group) NewGroup() *Group {
+func (g *Group) Group() *Group {
 	return &Group{
 		MapC:   g.MapC,
-		parent: &g,
+		parent: g,
 		option: &Option{},
 	}
 }
@@ -126,7 +126,7 @@ func (g Group) NewGroup() *Group {
 func (g *Group) Register(from, to any, options ...*Option) {
 	opts := g.extendOptions()
 	opts = append(opts, options...)
-	g.MapC.pairs = append(g.MapC.pairs, pair{
+	g.MapC.inputs = append(g.MapC.inputs, input{
 		from:   from,
 		to:     to,
 		option: (&Option{}).override(opts...),
