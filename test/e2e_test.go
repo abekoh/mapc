@@ -1,4 +1,4 @@
-package mapc_test
+package main
 
 import (
 	"bytes"
