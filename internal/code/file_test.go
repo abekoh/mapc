@@ -14,7 +14,7 @@ import (
 
 func loadSampleRaw(t *testing.T) string {
 	t.Helper()
-	f, err := os.ReadFile("../testdata/sample/sample.go")
+	f, err := os.ReadFile("../../testdata/sample/sample.go")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -23,7 +23,7 @@ func loadSampleRaw(t *testing.T) string {
 
 func loadSample(t *testing.T) *File {
 	t.Helper()
-	f, err := LoadFile("../testdata/sample/sample.go", "github.com/abekoh/mapc/internal/code/testdata/sample")
+	f, err := LoadFile("../../testdata/sample/sample.go", "github.com/abekoh/mapc/internal/code/testdata/sample")
 	if err != nil {
 		t.Fatal(err)
 	}
