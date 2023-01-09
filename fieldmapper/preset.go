@@ -2,8 +2,6 @@ package fieldmapper
 
 import (
 	"strings"
-
-	"github.com/abekoh/mapc/internal/util"
 )
 
 type Identify struct{}
@@ -15,7 +13,15 @@ func (i Identify) Map(x string) string {
 type UpperFirst struct{}
 
 func (u UpperFirst) Map(x string) string {
-	return util.UpperFirst(x)
+	return upperFirst(x)
+}
+
+func upperFirst(inp string) string {
+	f := inp[0]
+	if f < 0x61 || f > 0x7A {
+		return inp
+	}
+	return string(f-0x20) + inp[1:]
 }
 
 type SnakeToCamel struct{}
@@ -28,7 +34,7 @@ func (s SnakeToCamel) Map(x string) string {
 	}
 	for i, s := range sp {
 		if i != 0 {
-			s = util.UpperFirst(s)
+			s = upperFirst(s)
 		}
 		b.WriteString(s)
 	}
