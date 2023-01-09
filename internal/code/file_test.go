@@ -22,7 +22,7 @@ func TestLoadFile(t *testing.T) {
 	loadSample(t)
 }
 
-func TestNew(t *testing.T) {
+func TestNewFile(t *testing.T) {
 	f := NewFile("github.com/abekoh/mapc/main")
 
 	// check writing
