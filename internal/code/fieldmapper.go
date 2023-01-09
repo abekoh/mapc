@@ -6,17 +6,17 @@ import (
 	"github.com/dave/dst"
 )
 
-type FieldMapper interface {
+type MapExpr interface {
 	From() string
 	To() string
 	DstExpr(arg string) (dst.Expr, bool)
 	Comment() (string, bool)
 }
 
-type FieldMapperList []FieldMapper
+type MapExprList []MapExpr
 
-func (fl FieldMapperList) DstExprs(arg string) (exprs []dst.Expr, comments []string) {
-	for _, f := range fl {
+func (mel MapExprList) DstExprs(arg string) (exprs []dst.Expr, comments []string) {
+	for _, f := range mel {
 		if e, ok := f.DstExpr(arg); ok {
 			e.Decorations().Start.Append(comments...)
 			comments = []string{}
@@ -28,20 +28,20 @@ func (fl FieldMapperList) DstExprs(arg string) (exprs []dst.Expr, comments []str
 	return
 }
 
-type SimpleFieldMapper struct {
+type SimpleMapExpr struct {
 	from string
 	to   string
 }
 
-func (s SimpleFieldMapper) From() string {
+func (s SimpleMapExpr) From() string {
 	return s.from
 }
 
-func (s SimpleFieldMapper) To() string {
+func (s SimpleMapExpr) To() string {
 	return s.to
 }
 
-func (s SimpleFieldMapper) DstExpr(arg string) (dst.Expr, bool) {
+func (s SimpleMapExpr) DstExpr(arg string) (dst.Expr, bool) {
 	return &dst.KeyValueExpr{
 		Key: dst.NewIdent(s.to),
 		Value: &dst.SelectorExpr{
@@ -58,35 +58,35 @@ func (s SimpleFieldMapper) DstExpr(arg string) (dst.Expr, bool) {
 	}, true
 }
 
-func (s SimpleFieldMapper) Comment() (string, bool) {
+func (s SimpleMapExpr) Comment() (string, bool) {
 	return "", false
 }
 
-type CommentedFieldMapper struct {
+type CommentMapExpr struct {
 	to      string
 	comment string
 }
 
-func (c CommentedFieldMapper) From() string {
+func (c CommentMapExpr) From() string {
 	return ""
 }
 
-func (c CommentedFieldMapper) To() string {
+func (c CommentMapExpr) To() string {
 	return c.to
 }
 
-func (c CommentedFieldMapper) DstExpr(_ string) (dst.Expr, bool) {
+func (c CommentMapExpr) DstExpr(_ string) (dst.Expr, bool) {
 	return nil, false
 }
 
-func (c CommentedFieldMapper) Comment() (string, bool) {
+func (c CommentMapExpr) Comment() (string, bool) {
 	return c.comment, true
 }
 
-func ParseComments(comments ...string) (res FieldMapperList) {
+func parseComments(comments ...string) (res MapExprList) {
 	for _, c := range comments {
 		if key := commentToKey(c); key != "" {
-			res = append(res, &CommentedFieldMapper{
+			res = append(res, &CommentMapExpr{
 				to:      key,
 				comment: c,
 			})

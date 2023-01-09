@@ -18,7 +18,7 @@ type Func struct {
 	argName  string
 	fromTyp  *Typ
 	toTyp    *Typ
-	mapExprs FieldMapperList
+	mapExprs MapExprList
 }
 
 func (f Func) Name() string {
@@ -26,9 +26,9 @@ func (f Func) Name() string {
 }
 
 func NewFromMapping(m *mapping.Mapping) *Func {
-	fieldMappers := FieldMapperList{}
+	fieldMappers := MapExprList{}
 	for _, p := range m.FieldPairs {
-		fieldMappers = append(fieldMappers, &SimpleFieldMapper{
+		fieldMappers = append(fieldMappers, &SimpleMapExpr{
 			from: p.From.Name(),
 			to:   p.To.Name(),
 		})
@@ -90,9 +90,9 @@ func NewFromDecl(pkgPath string, d *dst.FuncDecl) (*Func, error) {
 	if !ok {
 		return nil, fmt.Errorf("body.Results[0] must be *dst.CompositeLit")
 	}
-	res.mapExprs = FieldMapperList{}
+	res.mapExprs = MapExprList{}
 	for _, expr := range comps.Elts {
-		res.mapExprs = append(res.mapExprs, ParseComments(expr.Decorations().Start.All()...)...)
+		res.mapExprs = append(res.mapExprs, parseComments(expr.Decorations().Start.All()...)...)
 		kvExpr, ok := expr.(*dst.KeyValueExpr)
 		if !ok {
 			return nil, fmt.Errorf("body.Results[*] must be KeyValueExpr")
@@ -105,11 +105,11 @@ func NewFromDecl(pkgPath string, d *dst.FuncDecl) (*Func, error) {
 		if !ok {
 			return nil, fmt.Errorf("value must be SelectorExpr")
 		}
-		res.mapExprs = append(res.mapExprs, &SimpleFieldMapper{
+		res.mapExprs = append(res.mapExprs, &SimpleMapExpr{
 			from: selectorExpr.Sel.Name,
 			to:   keyIdent.Name,
 		})
-		res.mapExprs = append(res.mapExprs, ParseComments(expr.Decorations().End.All()...)...)
+		res.mapExprs = append(res.mapExprs, parseComments(expr.Decorations().End.All()...)...)
 	}
 	return res, nil
 }
@@ -190,7 +190,7 @@ func genResult(toTyp *Typ) *dst.FieldList {
 	}
 }
 
-func genReturn(toTyp *Typ, arg string, exprs FieldMapperList) *dst.ReturnStmt {
+func genReturn(toTyp *Typ, arg string, exprs MapExprList) *dst.ReturnStmt {
 	elts, comments := exprs.DstExprs(arg)
 	lit := &dst.CompositeLit{
 		Type:       genType(toTyp),
