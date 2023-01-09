@@ -6,7 +6,7 @@ import (
 
 	"github.com/abekoh/mapc/fieldmapper"
 	"github.com/abekoh/mapc/internal/object"
-	typemapper2 "github.com/abekoh/mapc/typemapper"
+	"github.com/abekoh/mapc/typemapper"
 )
 
 type fieldMap map[string]*object.Field
@@ -14,12 +14,12 @@ type fieldMap map[string]*object.Field
 type FieldPair struct {
 	From   *object.Field
 	To     *object.Field
-	Caster typemapper2.Caster
+	Caster typemapper.Caster
 }
 
 type Mapper struct {
 	FieldMappers []fieldmapper.FieldMapper
-	TypeMappers  []typemapper2.TypeMapper
+	TypeMappers  []typemapper.TypeMapper
 }
 
 type Mapping struct {
