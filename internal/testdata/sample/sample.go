@@ -36,6 +36,36 @@ type Object struct {
 	ExternalPointer *uuid.UUID
 }
 
+var ObjectFieldNames = []string{
+	"Bool",
+	"Int",
+	"Int8",
+	"Int16",
+	"Int32",
+	"Int64",
+	"Uint",
+	"Uint8",
+	"Uint16",
+	"Uint32",
+	"Uint64",
+	"Uintptr",
+	"Float32",
+	"Float64",
+	"Complex64",
+	"Complex128",
+	"IntArray",
+	"IntChan",
+	"IntToStringFunc",
+	"Interface",
+	"StringIntMap",
+	"IntPointer",
+	"Slice",
+	"String",
+	"EmptyStruct",
+	"ExternalType",
+	"ExternalPointer",
+}
+
 // AUser is source for mapping test
 type AUser struct {
 	ID           uuid.UUID

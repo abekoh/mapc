@@ -11,45 +11,45 @@ type Struct struct {
 	Fields  []*Field
 }
 
-func NewStruct(t reflect.Type) (*Struct, error) {
-	if t.Kind() != reflect.Struct {
-		return nil, fmt.Errorf("kind must be struct, got %v", t.Kind())
+func NewStruct(typ reflect.Type) (*Struct, error) {
+	if typ.Kind() != reflect.Struct {
+		return nil, fmt.Errorf("kind must be struct, got %v", typ.Kind())
 	}
-	var fs []*Field
-	for i := 0; i < t.NumField(); i++ {
-		f := t.Field(i)
-		s := &Field{f: &f}
-		fs = append(fs, s)
+	var fields []*Field
+	for i := 0; i < typ.NumField(); i++ {
+		structField := typ.Field(i)
+		field := &Field{refStructField: &structField}
+		fields = append(fields, field)
 	}
 	return &Struct{
-		Name:    t.Name(),
-		PkgPath: t.PkgPath(),
-		Fields:  fs,
+		Name:    typ.Name(),
+		PkgPath: typ.PkgPath(),
+		Fields:  fields,
 	}, nil
 }
 
 type Field struct {
-	f *reflect.StructField
+	refStructField *reflect.StructField
 }
 
 func (f Field) Name() string {
-	return f.f.Name
+	return f.refStructField.Name
 }
 
 func (f Field) Typ() *Typ {
-	return &Typ{t: f.f.Type}
+	return &Typ{refTyp: f.refStructField.Type}
 }
 
 func (f Field) TypeName() string {
-	return f.f.Type.Name()
+	return f.refStructField.Type.Name()
 }
 
 func (f Field) Kind() reflect.Kind {
-	return f.f.Type.Kind()
+	return f.refStructField.Type.Kind()
 }
 
 func (f Field) PkgPath() string {
-	return f.f.Type.PkgPath()
+	return f.refStructField.Type.PkgPath()
 }
 
 func (f Field) IsSameTypeAndPkgWith(x *Field) bool {
@@ -57,21 +57,21 @@ func (f Field) IsSameTypeAndPkgWith(x *Field) bool {
 }
 
 type Typ struct {
-	t reflect.Type
+	refTyp reflect.Type
 }
 
 func (t Typ) PkgPath() string {
-	return t.t.PkgPath()
+	return t.refTyp.PkgPath()
 }
 
 func (t Typ) Name() string {
-	return t.t.Name()
+	return t.refTyp.Name()
 }
 
 func (t Typ) AssignableTo(to *Typ) bool {
-	return t.t.AssignableTo(to.t)
+	return t.refTyp.AssignableTo(to.refTyp)
 }
 
 func (t Typ) ConvertibleTo(to *Typ) bool {
-	return t.t.ConvertibleTo(to.t)
+	return t.refTyp.ConvertibleTo(to.refTyp)
 }
