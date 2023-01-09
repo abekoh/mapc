@@ -62,31 +62,31 @@ func (s SimpleMapExpr) Comment() (string, bool) {
 	return "", false
 }
 
-type CommentMapExpr struct {
+type CommentedMapExpr struct {
 	to      string
 	comment string
 }
 
-func (c CommentMapExpr) From() string {
+func (c CommentedMapExpr) From() string {
 	return ""
 }
 
-func (c CommentMapExpr) To() string {
+func (c CommentedMapExpr) To() string {
 	return c.to
 }
 
-func (c CommentMapExpr) DstExpr(_ string) (dst.Expr, bool) {
+func (c CommentedMapExpr) DstExpr(_ string) (dst.Expr, bool) {
 	return nil, false
 }
 
-func (c CommentMapExpr) Comment() (string, bool) {
+func (c CommentedMapExpr) Comment() (string, bool) {
 	return c.comment, true
 }
 
 func parseComments(comments ...string) (res MapExprList) {
 	for _, c := range comments {
 		if key := commentToKey(c); key != "" {
-			res = append(res, &CommentMapExpr{
+			res = append(res, &CommentedMapExpr{
 				to:      key,
 				comment: c,
 			})
