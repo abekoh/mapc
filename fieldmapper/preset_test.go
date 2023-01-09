@@ -49,6 +49,9 @@ func TestSnakeToCamel_Map(t *testing.T) {
 		{x: "snake_case", want: "snakeCase"},
 		{x: "Snake_case", want: "SnakeCase"},
 		{x: "Snake_Case", want: "SnakeCase"},
+		{x: "camelCase", want: "camelCase"},
+		{x: "CamelCase", want: "CamelCase"},
+		{x: "kebab-case", want: "kebab-case"},
 		{x: "a", want: "a"},
 		{x: "foo", want: "foo"},
 	}
