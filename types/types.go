@@ -37,7 +37,7 @@ func (f Field) Name() string {
 }
 
 func (f Field) Typ() *Typ {
-	return &Typ{refTyp: f.refStructField.Type}
+	return NewTyp(f.refStructField.Type)
 }
 
 func (f Field) TypeName() string {
