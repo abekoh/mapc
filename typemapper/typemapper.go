@@ -1,11 +1,11 @@
 package typemapper
 
 import (
-	"github.com/abekoh/mapc/internal/object"
+	"github.com/abekoh/mapc/internal/types"
 )
 
 type TypeMapper interface {
-	Map(from, to *object.Typ) (Caster, bool)
+	Map(from, to *types.Typ) (Caster, bool)
 }
 
 var Default = []TypeMapper{
