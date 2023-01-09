@@ -90,10 +90,14 @@ func NewFromDecl(pkgPath string, d *dst.FuncDecl) (*Func, error) {
 	if len(body.Results) != 1 {
 		return nil, fmt.Errorf("length of body.Results must be 1")
 	}
+	comps, ok := body.Results[0].(*dst.CompositeLit)
+	if !ok {
+		return nil, fmt.Errorf("body.Results[0] must be *dst.CompositeLit")
+	}
 	res.mapExprs = FieldMapperList{}
-	for _, expr := range body.Results {
+	for _, expr := range comps.Elts {
 		res.mapExprs = append(res.mapExprs, ParseComments(expr.Decorations().Start.All()...)...)
-		kvExpr, ok := body.Results[0].(*dst.KeyValueExpr)
+		kvExpr, ok := expr.(*dst.KeyValueExpr)
 		if !ok {
 			return nil, fmt.Errorf("body.Results[*] must be KeyValueExpr")
 		}
