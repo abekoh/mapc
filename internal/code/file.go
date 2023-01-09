@@ -62,16 +62,15 @@ func (f File) FindFunc(name string) (*Func, bool) {
 }
 
 func (f *File) Apply(fn *Func) error {
-	existed, ok := f.findFuncDecl(fn.Name())
-	d, err := fn.Decl()
+	newFnDecl, err := fn.Decl()
 	if err != nil {
-		return fmt.Errorf("failed to dst.FuncDecl: %w", err)
+		return fmt.Errorf("failed to generate Decl: %w", err)
 	}
+	i, ok := f.findFuncDeclIndex(fn.Name())
 	if ok {
-		existed = d
+		f.dstFile.Decls[i] = newFnDecl
 	} else {
-		_ = existed
-		f.dstFile.Decls = append(f.dstFile.Decls, d)
+		f.dstFile.Decls = append(f.dstFile.Decls, newFnDecl)
 	}
 	return nil
 }
@@ -101,4 +100,14 @@ func (f File) findFuncDecl(name string) (*dst.FuncDecl, bool) {
 		}
 	}
 	return nil, false
+}
+
+func (f File) findFuncDeclIndex(name string) (int, bool) {
+	for i, decl := range f.dstFile.Decls {
+		_, ok := decl.(*dst.FuncDecl)
+		if ok {
+			return i, true
+		}
+	}
+	return -1, false
 }
