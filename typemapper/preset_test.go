@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/abekoh/mapc/internal/testdata/sample"
+	"github.com/abekoh/mapc/testdata/sample"
 	"github.com/abekoh/mapc/types"
 )
 

@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	"github.com/abekoh/mapc/internal/mapping"
-	"github.com/abekoh/mapc/internal/testdata/sample"
+	"github.com/abekoh/mapc/testdata/sample"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
