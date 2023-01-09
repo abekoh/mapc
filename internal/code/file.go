@@ -40,15 +40,6 @@ func LoadFile(filePath, pkgPath string) (*File, error) {
 	return &File{dstFile: df, pkgPath: pkgPath}, nil
 }
 
-func loadFileFromString(s, pkgPath string) (*File, error) {
-	dec := decorator.NewDecoratorWithImports(token.NewFileSet(), pkgPath, goast.New())
-	df, err := dec.Parse(s)
-	if err != nil {
-		return nil, fmt.Errorf("failed to parse file: %w", err)
-	}
-	return &File{dstFile: df, pkgPath: pkgPath}, nil
-}
-
 func (f File) FindFunc(name string) (*Func, bool) {
 	d, ok := f.findFuncDecl(name)
 	if !ok {
@@ -81,15 +72,6 @@ func (f File) Write(w io.Writer) error {
 		return fmt.Errorf("failed to write: %w", err)
 	}
 	return nil
-}
-
-func (f File) sPrint() (string, error) {
-	var buf bytes.Buffer
-	err := f.Write(&buf)
-	if err != nil {
-		return "", fmt.Errorf("failed to write to buffer: %w", err)
-	}
-	return buf.String(), nil
 }
 
 func (f File) findFuncDecl(name string) (*dst.FuncDecl, bool) {
