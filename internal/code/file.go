@@ -39,7 +39,7 @@ func LoadFile(filePath, pkgPath string) (*File, error) {
 	return &File{dstFile: df, pkgPath: pkgPath}, nil
 }
 
-func (f File) FindFunc(name string) (*Func, bool) {
+func (f *File) FindFunc(name string) (*Func, bool) {
 	d, ok := f.findFuncDecl(name)
 	if !ok {
 		return nil, false
@@ -65,7 +65,7 @@ func (f *File) Apply(fn *Func) error {
 	return nil
 }
 
-func (f File) Write(w io.Writer) error {
+func (f *File) Write(w io.Writer) error {
 	r := decorator.NewRestorerWithImports(f.pkgPath, guess.New())
 	if err := r.Fprint(w, f.dstFile); err != nil {
 		return fmt.Errorf("failed to write: %w", err)
@@ -73,7 +73,7 @@ func (f File) Write(w io.Writer) error {
 	return nil
 }
 
-func (f File) findFuncDecl(name string) (*dst.FuncDecl, bool) {
+func (f *File) findFuncDecl(name string) (*dst.FuncDecl, bool) {
 	for _, decl := range f.dstFile.Decls {
 		funcDecl, ok := decl.(*dst.FuncDecl)
 		if ok && funcDecl.Name != nil && funcDecl.Name.Name == name {
@@ -83,10 +83,10 @@ func (f File) findFuncDecl(name string) (*dst.FuncDecl, bool) {
 	return nil, false
 }
 
-func (f File) findFuncDeclIndex(name string) (int, bool) {
+func (f *File) findFuncDeclIndex(name string) (int, bool) {
 	for i, decl := range f.dstFile.Decls {
-		_, ok := decl.(*dst.FuncDecl)
-		if ok {
+		fd, ok := decl.(*dst.FuncDecl)
+		if ok && fd.Name.Name == name {
 			return i, true
 		}
 	}
