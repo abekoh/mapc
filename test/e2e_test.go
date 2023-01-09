@@ -2,41 +2,35 @@ package main
 
 import (
 	"bytes"
-	"os"
-	"path/filepath"
 	"testing"
-	"time"
 
 	"github.com/abekoh/mapc"
-	"github.com/abekoh/mapc/pkg/fieldmapper"
-	"github.com/google/uuid"
+	"github.com/abekoh/mapc/test/testdata/a"
+	"github.com/abekoh/mapc/test/testdata/b"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
-// AUser is source for mapping test
-type AUser struct {
-	id           uuid.UUID
-	name         string
-	age          int
-	registeredAt time.Time
-}
-
-// BUser is destination for mapping test
-type BUser struct {
-	ID           uuid.UUID
-	Name         string
-	Age          int
-	RegisteredAt time.Time
-}
+//// AUser is source for mapping test
+//type AUser struct {
+//	id           uuid.UUID
+//	name         string
+//	age          int
+//	registeredAt time.Time
+//}
+//
+//// BUser is destination for mapping test
+//type BUser struct {
+//	ID           uuid.UUID
+//	Name         string
+//	Age          int
+//	RegisteredAt time.Time
+//}
 
 func TestMapC(t *testing.T) {
 	m := mapc.New()
-	m.Register(AUser{}, BUser{}, &mapc.Option{
+	m.Register(a.User{}, b.User{}, &mapc.Option{
 		OutPath: "src/foo/bar.go",
-		FieldMappers: []fieldmapper.FieldMapper{
-			&fieldmapper.UpperFirst{},
-		},
 	})
 	gs, errs := m.Generate()
 	for _, err := range errs {
@@ -48,22 +42,19 @@ func TestMapC(t *testing.T) {
 		require.Nil(t, err)
 		assert.Equal(t, `package foo
 
-import "github.com/abekoh/mapc_test"
+import (
+	"github.com/abekoh/mapc/test/testdata/a"
+	"github.com/abekoh/mapc/test/testdata/b"
+)
 
-func ToBUser(x mapc_test.AUser) mapc_test.BUser {
-	return mapc_test.BUser{
-		Name:         x.name,
-		Age:          x.age,
-		RegisteredAt: x.registeredAt,
+func ToUser(x a.User) b.User {
+	return b.User{
+		ID:           x.ID,
+		Name:         x.Name,
+		Age:          x.Age,
+		RegisteredAt: x.RegisteredAt,
 	}
 }
 `, buf.String())
 	}
-}
-
-func TestPath(t *testing.T) {
-	f, _ := os.Getwd()
-	t.Log(f)
-	t.Log(filepath.Base(f))
-	t.Log(filepath.Dir(f))
 }
