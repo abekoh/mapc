@@ -30,7 +30,7 @@ func (f Func) Name() string {
 }
 
 func NewFromMapping(m *mapping.Mapping) *Func {
-	var fieldMappers FieldMapperList
+	fieldMappers := FieldMapperList{}
 	for _, p := range m.FieldPairs {
 		fieldMappers = append(fieldMappers, &SimpleFieldMapper{
 			from: p.From.Name(),
