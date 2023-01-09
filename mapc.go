@@ -6,11 +6,11 @@ import (
 	"io"
 	"os"
 
+	"github.com/abekoh/mapc/fieldmapper"
 	"github.com/abekoh/mapc/internal/code"
 	"github.com/abekoh/mapc/internal/mapping"
 	"github.com/abekoh/mapc/internal/util"
-	"github.com/abekoh/mapc/pkg/fieldmapper"
-	"github.com/abekoh/mapc/pkg/typemapper"
+	"github.com/abekoh/mapc/typemapper"
 )
 
 type MapC struct {

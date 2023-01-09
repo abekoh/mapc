@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"reflect"
 
+	"github.com/abekoh/mapc/fieldmapper"
 	"github.com/abekoh/mapc/internal/object"
-	"github.com/abekoh/mapc/pkg/fieldmapper"
-	"github.com/abekoh/mapc/pkg/typemapper"
+	typemapper2 "github.com/abekoh/mapc/typemapper"
 )
 
 type fieldMap map[string]*object.Field
@@ -14,12 +14,12 @@ type fieldMap map[string]*object.Field
 type FieldPair struct {
 	From   *object.Field
 	To     *object.Field
-	Caster typemapper.Caster
+	Caster typemapper2.Caster
 }
 
 type Mapper struct {
 	FieldMappers []fieldmapper.FieldMapper
-	TypeMappers  []typemapper.TypeMapper
+	TypeMappers  []typemapper2.TypeMapper
 }
 
 type Mapping struct {
