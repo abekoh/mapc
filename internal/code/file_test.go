@@ -4,14 +4,19 @@ import (
 	"bytes"
 	_ "embed"
 	"testing"
+
+	"github.com/abekoh/mapc/internal/code/testdata/sample"
+	"github.com/abekoh/mapc/internal/mapping"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
-//go:embed testdata/mapper/mapper.go
+//go:embed testdata/sample/sample.go
 var mapperRawFile string
 
 func loadSample(t *testing.T) *File {
 	t.Helper()
-	f, err := LoadFile("testdata/mapper/mapper.go", "github.com/abekoh/mapc/internal/code/testdata/mapper")
+	f, err := LoadFile("testdata/sample/sample.go", "github.com/abekoh/mapc/internal/code/testdata/sample")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -57,4 +62,20 @@ func TestFile_FindFunc(t *testing.T) {
 	if !ok {
 		t.Errorf("not found %s", funcName)
 	}
+}
+
+func TestFile_Apply(t *testing.T) {
+	t.Run("when Func is found, replace", func(t *testing.T) {
+		mapper := mapping.Mapper{}
+		m, err := mapper.NewMapping(sample.AUser{}, sample.BUser{})
+		require.Nil(t, err)
+		fn := NewFromMapping(m)
+
+		f := loadSample(t)
+		err = f.Apply(fn)
+		require.Nil(t, err)
+		got, ok := f.FindFunc("ToBUser")
+		assert.True(t, ok)
+		assert.Equal(t, fn, got)
+	})
 }
