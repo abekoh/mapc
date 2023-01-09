@@ -65,13 +65,20 @@ func TestFile_FindFunc(t *testing.T) {
 }
 
 func TestFile_Apply(t *testing.T) {
+	mapper := mapping.Mapper{}
+	m, err := mapper.NewMapping(sample.AUser{}, sample.BUser{})
+	require.Nil(t, err)
+	fn := NewFromMapping(m)
 	t.Run("when Func is found, replace", func(t *testing.T) {
-		mapper := mapping.Mapper{}
-		m, err := mapper.NewMapping(sample.AUser{}, sample.BUser{})
-		require.Nil(t, err)
-		fn := NewFromMapping(m)
-
 		f := loadSample(t)
+		err = f.Apply(fn)
+		require.Nil(t, err)
+		got, ok := f.FindFunc("ToBUser")
+		assert.True(t, ok)
+		assert.Equal(t, fn, got)
+	})
+	t.Run("when Func is not found, append", func(t *testing.T) {
+		f := NewFile("github.com/abekoh/mapc/internal/code/testdata/sample")
 		err = f.Apply(fn)
 		require.Nil(t, err)
 		got, ok := f.FindFunc("ToBUser")
