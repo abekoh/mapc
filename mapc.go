@@ -64,7 +64,7 @@ func (m *MapC) Generate() (res GeneratedList, errs []error) {
 			errs = append(errs, fmt.Errorf("failed to map: %w", err))
 			continue
 		}
-		pkgPath := util.PkgPathFromRelativePath(pair.option.OutPath)
+		pkgPath := pkgPathFromRelativePath(pair.option.OutPath)
 		// TODO: cache file
 		f := code.NewFile(pkgPath)
 		fn := code.NewFromMapping(mp)

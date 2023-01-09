@@ -1,6 +1,6 @@
 //go:build !windows
 
-package util
+package mapc
 
 import (
 	"strings"
@@ -19,9 +19,9 @@ func Test_rootPath(t *testing.T) {
 	assert.Equal(t, "github.com/abekoh/mapc", rootPkgPath)
 }
 
-func TestPkgPathFromRelativePath(t *testing.T) {
+func Test_pkgPathFromRelativePath(t *testing.T) {
 	RootDirPath = "/home/abekoh/repos/mapc"
 	RootPkgPath = "github.com/abekoh/mapc"
-	assert.Equal(t, "github.com/abekoh/mapc/pkg/mapping", PkgPathFromRelativePath("pkg/mapping/sample.go"))
-	assert.Equal(t, "github.com/abekoh/mapc/pkg/mapping", PkgPathFromRelativePath("pkg/mapping"))
+	assert.Equal(t, "github.com/abekoh/mapc/pkg/mapping", pkgPathFromRelativePath("pkg/mapping/sample.go"))
+	assert.Equal(t, "github.com/abekoh/mapc/pkg/mapping", pkgPathFromRelativePath("pkg/mapping"))
 }
