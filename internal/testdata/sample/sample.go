@@ -32,7 +32,8 @@ type Object struct {
 	Slice           []int
 	String          string
 	EmptyStruct     struct{}
-	// TODO: unsafe pointer
+	ExternalType    uuid.UUID
+	ExternalPointer *uuid.UUID
 }
 
 // AUser is source for mapping test
