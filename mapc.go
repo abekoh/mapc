@@ -59,7 +59,7 @@ func (m MapC) Generate() (res GeneratedList, errs []error) {
 			FieldMappers: pair.option.FieldMappers,
 			TypeMappers:  pair.option.TypeMappers,
 		}
-		mapping, err := mapper.NewMapping(pair.from, pair.to)
+		mp, err := mapper.NewMapping(pair.from, pair.to)
 		if err != nil {
 			errs = append(errs, fmt.Errorf("failed to map: %w", err))
 			continue
@@ -67,7 +67,7 @@ func (m MapC) Generate() (res GeneratedList, errs []error) {
 		pkgPath := util.PkgPathFromRelativePath(pair.option.OutPath)
 		// TODO: cache file
 		f := code.NewFile(pkgPath)
-		fn := code.NewFromMapping(mapping)
+		fn := code.NewFromMapping(mp)
 		err = f.Apply(fn)
 		if err != nil {
 			errs = append(errs, fmt.Errorf("failed to apply: %w", err))
