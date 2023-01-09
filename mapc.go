@@ -36,15 +36,15 @@ func (m *MapC) Register(from, to any, options ...*Option) {
 	})
 }
 
-func (m MapC) Group() *Group {
+func (m *MapC) Group() *Group {
 	return &Group{
-		MapC:   &m,
+		MapC:   m,
 		parent: nil,
 		option: nil,
 	}
 }
 
-func (m MapC) Generate() (res GeneratedList, errs []error) {
+func (m *MapC) Generate() (res GeneratedList, errs []error) {
 	for _, pair := range m.inputs {
 		if pair.option == nil {
 			errs = append(errs, fmt.Errorf("option is nil. from=%T, to=%T", pair.from, pair.to))
