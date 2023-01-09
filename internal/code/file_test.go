@@ -3,20 +3,27 @@ package code
 import (
 	"bytes"
 	_ "embed"
+	"os"
 	"testing"
 
-	"github.com/abekoh/mapc/internal/code/testdata/sample"
 	"github.com/abekoh/mapc/internal/mapping"
+	"github.com/abekoh/mapc/internal/testdata/sample"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
-//go:embed testdata/sample/sample.go
-var mapperRawFile string
+func loadSampleRaw(t *testing.T) string {
+	t.Helper()
+	f, err := os.ReadFile("../testdata/sample/sample.go")
+	if err != nil {
+		t.Fatal(err)
+	}
+	return string(f)
+}
 
 func loadSample(t *testing.T) *File {
 	t.Helper()
-	f, err := LoadFile("testdata/sample/sample.go", "github.com/abekoh/mapc/internal/code/testdata/sample")
+	f, err := LoadFile("../testdata/sample/sample.go", "github.com/abekoh/mapc/internal/code/testdata/sample")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -45,12 +52,13 @@ func TestNewFile(t *testing.T) {
 
 func TestFile_Write(t *testing.T) {
 	f := loadSample(t)
+	raw := loadSampleRaw(t)
 	var buf bytes.Buffer
 	if err := f.Write(&buf); err != nil {
 		t.Fatal(err)
 	}
 	r := buf.String()
-	assert.Equal(t, mapperRawFile, r)
+	assert.Equal(t, raw, r)
 }
 
 func TestFile_FindFunc(t *testing.T) {
