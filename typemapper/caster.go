@@ -2,7 +2,7 @@ package typemapper
 
 type Caster interface {
 	PkgPath() string
-	Fun() string
+	Func() string
 }
 
 type NopCaster struct{}
@@ -11,19 +11,19 @@ func (n NopCaster) PkgPath() string {
 	return ""
 }
 
-func (n NopCaster) Fun() string {
+func (n NopCaster) Func() string {
 	return ""
 }
 
 type SimpleCaster struct {
 	pkgPath string
-	fun     string
+	fn      string
 }
 
 func (s SimpleCaster) PkgPath() string {
 	return s.pkgPath
 }
 
-func (s SimpleCaster) Fun() string {
-	return s.fun
+func (s SimpleCaster) Func() string {
+	return s.fn
 }

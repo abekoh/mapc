@@ -21,7 +21,7 @@ func (c ConvertMapper) Map(from, to *types.Typ) (Caster, bool) {
 	if from.ConvertibleTo(to) {
 		return &SimpleCaster{
 			pkgPath: to.PkgPath(),
-			fun:     to.Name(),
+			fn:      to.Name(),
 		}, true
 	}
 	return nil, false
