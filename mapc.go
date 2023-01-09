@@ -133,7 +133,7 @@ func (g *Group) Register(from, to any, options ...*Option) {
 	})
 }
 
-func (g Group) extendOptions() []*Option {
+func (g *Group) extendOptions() []*Option {
 	var opts []*Option
 	targetG := &g
 	for {
