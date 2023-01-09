@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/abekoh/mapc/internal/testdata/sample"
-	"github.com/abekoh/mapc/internal/types"
+	"github.com/abekoh/mapc/types"
 )
 
 type TypedInt int

@@ -1,6 +1,8 @@
 package typemapper
 
-import "github.com/abekoh/mapc/internal/types"
+import (
+	"github.com/abekoh/mapc/types"
+)
 
 type AssignMapper struct {
 }

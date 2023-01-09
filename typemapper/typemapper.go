@@ -1,7 +1,7 @@
 package typemapper
 
 import (
-	"github.com/abekoh/mapc/internal/types"
+	"github.com/abekoh/mapc/types"
 )
 
 type TypeMapper interface {

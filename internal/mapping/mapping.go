@@ -5,8 +5,8 @@ import (
 	"reflect"
 
 	"github.com/abekoh/mapc/fieldmapper"
-	"github.com/abekoh/mapc/internal/types"
 	"github.com/abekoh/mapc/typemapper"
+	"github.com/abekoh/mapc/types"
 )
 
 type Mapper struct {
