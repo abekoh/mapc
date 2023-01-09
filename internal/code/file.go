@@ -20,7 +20,7 @@ type File struct {
 
 func NewFile(pkgPath string) *File {
 	df := &dst.File{
-		Name:  dst.NewIdent(util.PkgName(pkgPath)),
+		Name:  dst.NewIdent(util.PkgNameFromPath(pkgPath)),
 		Decls: []dst.Decl{},
 	}
 	return &File{dstFile: df, pkgPath: pkgPath}
