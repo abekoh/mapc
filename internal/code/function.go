@@ -13,10 +13,6 @@ type Typ struct {
 	pkgPath string
 }
 
-type Caster struct {
-	fc string
-}
-
 type Func struct {
 	name     string
 	argName  string
