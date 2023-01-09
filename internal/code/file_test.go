@@ -50,9 +50,7 @@ func TestFile_Write(t *testing.T) {
 		t.Fatal(err)
 	}
 	r := buf.String()
-	if r != mapperRawFile {
-		t.Errorf("output is not matched. expected: %s, got: %s", mapperRawFile, r)
-	}
+	assert.Equal(t, mapperRawFile, r)
 }
 
 func TestFile_FindFunc(t *testing.T) {
