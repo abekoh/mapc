@@ -11,6 +11,23 @@ type Struct struct {
 	Fields  []*Field
 }
 
+func NewStruct(t reflect.Type) (*Struct, error) {
+	if t.Kind() != reflect.Struct {
+		return nil, fmt.Errorf("kind must be struct, got %v", t.Kind())
+	}
+	var fs []*Field
+	for i := 0; i < t.NumField(); i++ {
+		f := t.Field(i)
+		s := &Field{f: &f}
+		fs = append(fs, s)
+	}
+	return &Struct{
+		Name:    t.Name(),
+		PkgPath: t.PkgPath(),
+		Fields:  fs,
+	}, nil
+}
+
 type Field struct {
 	f *reflect.StructField
 }
@@ -37,23 +54,6 @@ func (f Field) PkgPath() string {
 
 func (f Field) IsSameTypeAndPkgWith(x *Field) bool {
 	return f.Kind() == x.Kind() && f.PkgPath() == x.PkgPath()
-}
-
-func NewStruct(t reflect.Type) (*Struct, error) {
-	if t.Kind() != reflect.Struct {
-		return nil, fmt.Errorf("kind must be struct, got %v", t.Kind())
-	}
-	var fs []*Field
-	for i := 0; i < t.NumField(); i++ {
-		f := t.Field(i)
-		s := &Field{f: &f}
-		fs = append(fs, s)
-	}
-	return &Struct{
-		Name:    t.Name(),
-		PkgPath: t.PkgPath(),
-		Fields:  fs,
-	}, nil
 }
 
 type Typ struct {
