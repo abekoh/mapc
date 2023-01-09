@@ -1,29 +1,47 @@
 package mapping
 
 import (
+	"fmt"
+	"reflect"
+
 	"github.com/abekoh/mapc/fieldmapper"
 	"github.com/abekoh/mapc/internal/object"
 	"github.com/abekoh/mapc/typemapper"
 )
 
-type (
-	Mapper struct {
-		FieldMappers []fieldmapper.FieldMapper
-		TypeMappers  []typemapper.TypeMapper
-	}
+type Mapper struct {
+	FieldMappers []fieldmapper.FieldMapper
+	TypeMappers  []typemapper.TypeMapper
+}
 
-	Mapping struct {
-		From       *object.Struct
-		To         *object.Struct
-		FieldPairs []*FieldPair
-	}
+type Mapping struct {
+	From       *object.Struct
+	To         *object.Struct
+	FieldPairs []*FieldPair
+}
 
-	FieldPair struct {
-		From   *object.Field
-		To     *object.Field
-		Caster typemapper.Caster
+type FieldPair struct {
+	From   *object.Field
+	To     *object.Field
+	Caster typemapper.Caster
+}
+
+func (m Mapper) NewMapping(from, to any) (*Mapping, error) {
+	fromStr, err := object.NewStruct(reflect.TypeOf(from))
+	if err != nil {
+		return nil, fmt.Errorf("failed to construct struct: %w", err)
 	}
-)
+	toStr, err := object.NewStruct(reflect.TypeOf(to))
+	if err != nil {
+		return nil, fmt.Errorf("failed to construct struct: %w", err)
+	}
+	fieldPairs := m.newFieldPairs(fromStr, toStr)
+	return &Mapping{
+		From:       fromStr,
+		To:         toStr,
+		FieldPairs: fieldPairs,
+	}, nil
+}
 
 func (m Mapper) newFieldPairs(from, to *object.Struct) []*FieldPair {
 	toFieldMap := make(map[string]*object.Field)

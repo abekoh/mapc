@@ -60,10 +60,6 @@ type Typ struct {
 	t reflect.Type
 }
 
-func NewTyp(t reflect.Type) *Typ {
-	return &Typ{t: t}
-}
-
 func (t Typ) PkgPath() string {
 	return t.t.PkgPath()
 }
