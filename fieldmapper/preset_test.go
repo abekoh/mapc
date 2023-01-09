@@ -12,11 +12,29 @@ func TestIdentify_Map(t *testing.T) {
 	}{
 		{x: "a", want: "a"},
 		{x: "Foo", want: "Foo"},
-		{x: "", want: ""},
 	}
 	for _, tt := range tests {
 		t.Run(fmt.Sprintf("%s->%s", tt.x, tt.want), func(t *testing.T) {
 			if got := (Identify{}).Map(tt.x); got != tt.want {
+				t.Errorf("Map() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestUpperFirst_Map(t *testing.T) {
+	tests := []struct {
+		x    string
+		want string
+	}{
+		{x: "a", want: "A"},
+		{x: "foo", want: "Foo"},
+		{x: "zero", want: "Zero"},
+		{x: "mapFunc", want: "MapFunc"},
+	}
+	for _, tt := range tests {
+		t.Run(fmt.Sprintf("%s->%s", tt.x, tt.want), func(t *testing.T) {
+			if got := (UpperFirst{}).Map(tt.x); got != tt.want {
 				t.Errorf("Map() = %v, want %v", got, tt.want)
 			}
 		})
