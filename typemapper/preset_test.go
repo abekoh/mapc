@@ -11,11 +11,13 @@ import (
 
 type typedInt int
 
-var Int = types.NewTyp(reflect.TypeOf(1))
-var Int64 = types.NewTyp(reflect.TypeOf(int64(1)))
-var String = types.NewTyp(reflect.TypeOf("foo"))
-var TypedInt = types.NewTyp(reflect.TypeOf(typedInt(1)))
-var Object = types.NewTyp(reflect.TypeOf(sample.Object{}))
+var (
+	Int      = types.NewTyp(reflect.TypeOf(1))
+	Int64    = types.NewTyp(reflect.TypeOf(int64(1)))
+	String   = types.NewTyp(reflect.TypeOf("foo"))
+	TypedInt = types.NewTyp(reflect.TypeOf(typedInt(1)))
+	Object   = types.NewTyp(reflect.TypeOf(sample.Object{}))
+)
 
 func TestAssignMapper_Map(t *testing.T) {
 	tests := []struct {
