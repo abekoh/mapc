@@ -23,11 +23,11 @@ type BUser struct {
 }
 
 // ToBUser is mapper from AUser into BUser
-func ToBUser(inp AUser) BUser {
+func ToBUser(x AUser) BUser {
 	return BUser{
-		ID:           inp.ID,
-		Name:         inp.Name,
-		Age:          inp.Age,
-		RegisteredAt: inp.RegisteredAt,
+		ID:           x.ID,
+		Name:         x.Name,
+		Age:          x.Age,
+		RegisteredAt: x.RegisteredAt,
 	}
 }
