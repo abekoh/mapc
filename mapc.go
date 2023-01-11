@@ -74,7 +74,10 @@ func (m *MapC) Generate() (res GeneratedList, errs []error) {
 		}
 		fn := code.NewFuncFromMapping(mp, &code.FuncOption{})
 		if existedFn, ok := f.FindFunc(fn.Name()); ok {
-			_ = fn.AppendNotSetExprs(existedFn)
+			if err := fn.AppendNotSetExprs(existedFn); err != nil {
+				errs = append(errs, fmt.Errorf("failed to append not set exprs: %w", err))
+				continue
+			}
 		}
 		err = f.Apply(fn)
 		if err != nil {
