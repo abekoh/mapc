@@ -44,7 +44,7 @@ func (f *File) FindFunc(name string) (*Func, bool) {
 	if !ok {
 		return nil, false
 	}
-	fn, err := NewFromDecl(f.pkgPath, d)
+	fn, err := newFuncFromDecl(f.pkgPath, d)
 	if err != nil {
 		return nil, false
 	}

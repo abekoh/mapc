@@ -75,7 +75,7 @@ func TestFile_Apply(t *testing.T) {
 	mapper := mapping.Mapper{}
 	m, err := mapper.NewMapping(sample.AUser{}, sample.BUser{})
 	require.Nil(t, err)
-	fn := NewFromMapping(m)
+	fn := NewFuncFromMapping(m)
 	t.Run("when Func is found, replace", func(t *testing.T) {
 		f := loadSample(t)
 		err = f.Apply(fn)

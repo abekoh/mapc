@@ -25,7 +25,7 @@ func (f Func) Name() string {
 	return f.name
 }
 
-func NewFromMapping(m *mapping.Mapping) *Func {
+func NewFuncFromMapping(m *mapping.Mapping) *Func {
 	fieldMappers := MapExprList{}
 	for _, p := range m.FieldPairs {
 		fieldMappers = append(fieldMappers, &SimpleMapExpr{
@@ -42,7 +42,7 @@ func NewFromMapping(m *mapping.Mapping) *Func {
 	}
 }
 
-func NewFromDecl(pkgPath string, d *dst.FuncDecl) (*Func, error) {
+func newFuncFromDecl(pkgPath string, d *dst.FuncDecl) (*Func, error) {
 	getPkgPath := func(ident *dst.Ident) string {
 		if ident.Path == "" {
 			return pkgPath
