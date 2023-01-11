@@ -100,3 +100,37 @@ func Test_funcName(t *testing.T) {
 		})
 	}
 }
+
+func Test_argName(t *testing.T) {
+	type args struct {
+		m   *mapping.Mapping
+		opt *FuncOption
+	}
+	tests := []struct {
+		name string
+		args args
+		want string
+	}{
+		{
+			name: "opt.ArgName is set",
+			args: args{
+				opt: &FuncOption{
+					ArgName: "input",
+				},
+			},
+			want: "input",
+		},
+		{
+			name: "default",
+			args: args{
+				opt: &FuncOption{},
+			},
+			want: "x",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			assert.Equalf(t, tt.want, argName(tt.args.m, tt.args.opt), "argName(%v, %v)", tt.args.m, tt.args.opt)
+		})
+	}
+}

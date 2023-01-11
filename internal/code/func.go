@@ -43,8 +43,8 @@ func NewFuncFromMapping(m *mapping.Mapping, opt *FuncOption) *Func {
 		})
 	}
 	return &Func{
-		name:     fmt.Sprintf("To%s", util.UpperFirst(m.To.Name)),
-		argName:  "x",
+		name:     funcName(m, opt),
+		argName:  argName(m, opt),
 		fromTyp:  &Typ{name: m.From.Name, pkgPath: m.From.PkgPath},
 		toTyp:    &Typ{name: m.To.Name, pkgPath: m.To.PkgPath},
 		mapExprs: fieldMappers,
@@ -74,6 +74,13 @@ func funcName(m *mapping.Mapping, opt *FuncOption) (res string) {
 		res = util.LowerFirst(res)
 	}
 	return
+}
+
+func argName(m *mapping.Mapping, opt *FuncOption) string {
+	if opt.ArgName != "" {
+		return opt.ArgName
+	}
+	return "x"
 }
 
 func newFuncFromDecl(pkgPath string, d *dst.FuncDecl) (*Func, error) {
