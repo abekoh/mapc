@@ -159,7 +159,7 @@ func newFuncFromDecl(pkgPath string, d *dst.FuncDecl) (*Func, error) {
 	return res, nil
 }
 
-func (f *Func) AppendNotSetFields(x *Func) error {
+func (f *Func) AppendNotSetExprs(x *Func) error {
 	if !f.fromTyp.Equal(x.fromTyp) {
 		return errors.New("fromType must be equal")
 	}

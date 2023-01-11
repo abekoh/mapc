@@ -161,7 +161,7 @@ func Test_argName(t *testing.T) {
 	}
 }
 
-func TestFunc_AppendNotSetFields(t *testing.T) {
+func TestFunc_AppendNotSetExprs(t *testing.T) {
 	genTarget := func() *Func {
 		return &Func{
 			name:    "AFunc",
@@ -198,7 +198,7 @@ func TestFunc_AppendNotSetFields(t *testing.T) {
 		}
 		target := genTarget()
 		assert.Len(t, target.mapExprs, 1)
-		err := target.AppendNotSetFields(x)
+		err := target.AppendNotSetExprs(x)
 		require.Nil(t, err)
 		assert.Len(t, target.mapExprs, 2)
 	})
@@ -220,7 +220,7 @@ func TestFunc_AppendNotSetFields(t *testing.T) {
 		}
 		target := genTarget()
 		assert.Len(t, target.mapExprs, 1)
-		err := target.AppendNotSetFields(x)
+		err := target.AppendNotSetExprs(x)
 		require.Nil(t, err)
 		assert.Len(t, target.mapExprs, 1)
 	})
@@ -242,7 +242,7 @@ func TestFunc_AppendNotSetFields(t *testing.T) {
 		}
 		target := genTarget()
 		assert.Len(t, target.mapExprs, 1)
-		err := target.AppendNotSetFields(x)
+		err := target.AppendNotSetExprs(x)
 		require.NotNil(t, err)
 	})
 }
