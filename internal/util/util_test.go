@@ -27,6 +27,27 @@ func TestUpperFirst(t *testing.T) {
 	}
 }
 
+func TestLowerFirst(t *testing.T) {
+	tests := []struct {
+		x    string
+		want string
+	}{
+		{x: "Apple", want: "apple"},
+		{x: "apple", want: "apple"},
+		{x: "Zoo", want: "zoo"},
+		{x: "zoo", want: "zoo"},
+		{x: "12345", want: "12345"},
+	}
+	for _, tt := range tests {
+		t.Run(fmt.Sprintf("%s -> %s", tt.x, tt.want), func(t *testing.T) {
+			if got := LowerFirst(tt.x); got != tt.want {
+				t.Errorf("UpperFirst() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+
+}
+
 func TestPrepend(t *testing.T) {
 	t.Run("[]string", func(t *testing.T) {
 		strs := []string{"bar", "baz"}
