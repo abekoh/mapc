@@ -7,9 +7,34 @@ import (
 
 	"github.com/abekoh/mapc/internal/mapping"
 	"github.com/abekoh/mapc/testdata/sample"
+	"github.com/abekoh/mapc/typemapper"
 	"github.com/abekoh/mapc/types"
 	"github.com/stretchr/testify/assert"
 )
+
+func TestNewFuncFromMapping(t *testing.T) {
+	from, _ := types.NewStruct(reflect.TypeOf(sample.AUser{}))
+	to, _ := types.NewStruct(reflect.TypeOf(sample.BUser{}))
+	m := &mapping.Mapping{
+		From: from,
+		To:   to,
+		FieldPairs: []*mapping.FieldPair{
+			{
+				From:   from.Fields[0],
+				To:     to.Fields[0],
+				Caster: &typemapper.NopCaster{},
+			},
+		},
+	}
+	got := NewFuncFromMapping(m, &FuncOption{})
+	assert.Equal(t, "ToBUser", got.name)
+	assert.Equal(t, "x", got.argName)
+	assert.Equal(t, &Typ{name: "AUser", pkgPath: "github.com/abekoh/mapc/testdata/sample"}, got.fromTyp)
+	assert.Equal(t, &Typ{name: "BUser", pkgPath: "github.com/abekoh/mapc/testdata/sample"}, got.toTyp)
+	assert.Len(t, got.mapExprs, 1)
+	assert.Equal(t, "ID", got.mapExprs[0].From())
+	assert.Equal(t, "ID", got.mapExprs[0].To())
+}
 
 func Test_funcName(t *testing.T) {
 	type args struct {
