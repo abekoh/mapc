@@ -25,7 +25,13 @@ func (f Func) Name() string {
 	return f.name
 }
 
-func NewFuncFromMapping(m *mapping.Mapping) *Func {
+type FuncOption struct {
+	Name        string
+	NamePattern string
+	ArgName     string
+}
+
+func NewFuncFromMapping(m *mapping.Mapping, opt *FuncOption) *Func {
 	fieldMappers := MapExprList{}
 	for _, p := range m.FieldPairs {
 		fieldMappers = append(fieldMappers, &SimpleMapExpr{

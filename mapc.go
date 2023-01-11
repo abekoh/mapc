@@ -67,7 +67,7 @@ func (m *MapC) Generate() (res GeneratedList, errs []error) {
 		pkgPath := pkgPathFromRelativePath(pair.option.OutPath)
 		// TODO: cache file
 		f := code.NewFile(pkgPath)
-		fn := code.NewFuncFromMapping(mp)
+		fn := code.NewFuncFromMapping(mp, &code.FuncOption{})
 		err = f.Apply(fn)
 		if err != nil {
 			errs = append(errs, fmt.Errorf("failed to apply: %w", err))
