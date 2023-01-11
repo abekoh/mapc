@@ -40,10 +40,8 @@ func TestNewFile(t *testing.T) {
 	}
 	expected := `package main
 `
-	r := buf.String()
-	if r != expected {
-		t.Errorf("output is must be empty")
-	}
+	got := buf.String()
+	assert.Equal(t, expected, got)
 }
 
 func TestLoadFile(t *testing.T) {

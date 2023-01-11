@@ -35,6 +35,9 @@ type FuncOption struct {
 }
 
 func NewFuncFromMapping(m *mapping.Mapping, opt *FuncOption) *Func {
+	if opt == nil {
+		opt = &FuncOption{}
+	}
 	fieldMappers := MapExprList{}
 	for _, p := range m.FieldPairs {
 		fieldMappers = append(fieldMappers, &SimpleMapExpr{
