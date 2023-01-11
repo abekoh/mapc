@@ -2,6 +2,7 @@ package code
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"text/template"
 
@@ -13,6 +14,10 @@ import (
 type Typ struct {
 	name    string
 	pkgPath string
+}
+
+func (t Typ) Equal(x *Typ) bool {
+	return x.name == t.name && x.pkgPath == t.pkgPath
 }
 
 type Func struct {
@@ -154,7 +159,26 @@ func newFuncFromDecl(pkgPath string, d *dst.FuncDecl) (*Func, error) {
 	return res, nil
 }
 
-func (f Func) Decl() (*dst.FuncDecl, error) {
+func (f *Func) AppendNotSetFields(x *Func) error {
+	if !f.fromTyp.Equal(x.fromTyp) {
+		return errors.New("fromType must be equal")
+	}
+	if !f.toTyp.Equal(x.toTyp) {
+		return errors.New("toTyp must be equal")
+	}
+	existedMapExprMap := make(map[string]struct{})
+	for _, existedExpr := range f.mapExprs {
+		existedMapExprMap[existedExpr.To()] = struct{}{}
+	}
+	for _, xExpr := range x.mapExprs {
+		if _, ok := existedMapExprMap[xExpr.To()]; !ok {
+			f.mapExprs = append(f.mapExprs, xExpr)
+		}
+	}
+	return nil
+}
+
+func (f *Func) Decl() (*dst.FuncDecl, error) {
 	return &dst.FuncDecl{
 		Recv: nil,
 		Name: genFuncName(f.name),

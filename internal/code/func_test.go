@@ -10,6 +10,7 @@ import (
 	"github.com/abekoh/mapc/typemapper"
 	"github.com/abekoh/mapc/types"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestNewFuncFromMapping(t *testing.T) {
@@ -158,4 +159,90 @@ func Test_argName(t *testing.T) {
 			assert.Equalf(t, tt.want, argName(tt.args.m, tt.args.opt), "argName(%v, %v)", tt.args.m, tt.args.opt)
 		})
 	}
+}
+
+func TestFunc_AppendNotSetFields(t *testing.T) {
+	genTarget := func() *Func {
+		return &Func{
+			name:    "AFunc",
+			argName: "x",
+			fromTyp: &Typ{
+				name: "int",
+			},
+			toTyp: &Typ{
+				name: "int",
+			},
+			mapExprs: MapExprList{
+				&SimpleMapExpr{
+					from: "z",
+					to:   "z",
+				},
+			},
+		}
+	}
+	t.Run("mapExpr is appended", func(t *testing.T) {
+		x := &Func{
+			name:    "AFunc",
+			argName: "x",
+			fromTyp: &Typ{
+				name: "int",
+			},
+			toTyp: &Typ{
+				name: "int",
+			},
+			mapExprs: MapExprList{
+				&CommentedMapExpr{
+					to: "y",
+				},
+			},
+		}
+		target := genTarget()
+		assert.Len(t, target.mapExprs, 1)
+		err := target.AppendNotSetFields(x)
+		require.Nil(t, err)
+		assert.Len(t, target.mapExprs, 2)
+	})
+	t.Run("same key is existed", func(t *testing.T) {
+		x := &Func{
+			name:    "AFunc",
+			argName: "x",
+			fromTyp: &Typ{
+				name: "int",
+			},
+			toTyp: &Typ{
+				name: "int",
+			},
+			mapExprs: MapExprList{
+				&CommentedMapExpr{
+					to: "z",
+				},
+			},
+		}
+		target := genTarget()
+		assert.Len(t, target.mapExprs, 1)
+		err := target.AppendNotSetFields(x)
+		require.Nil(t, err)
+		assert.Len(t, target.mapExprs, 1)
+	})
+	t.Run("type is not match", func(t *testing.T) {
+		x := &Func{
+			name:    "AFunc",
+			argName: "x",
+			fromTyp: &Typ{
+				name: "int",
+			},
+			toTyp: &Typ{
+				name: "string",
+			},
+			mapExprs: MapExprList{
+				&CommentedMapExpr{
+					to: "y",
+				},
+			},
+		}
+		target := genTarget()
+		assert.Len(t, target.mapExprs, 1)
+		err := target.AppendNotSetFields(x)
+		require.NotNil(t, err)
+	})
 }
