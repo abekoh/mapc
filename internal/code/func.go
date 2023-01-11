@@ -1,7 +1,9 @@
 package code
 
 import (
+	"bytes"
 	"fmt"
+	"text/template"
 
 	"github.com/abekoh/mapc/internal/mapping"
 	"github.com/abekoh/mapc/internal/util"
@@ -26,9 +28,10 @@ func (f Func) Name() string {
 }
 
 type FuncOption struct {
-	Name        string
-	NamePattern string
-	ArgName     string
+	Name         string
+	NameTemplate *template.Template
+	Private      bool
+	ArgName      string
 }
 
 func NewFuncFromMapping(m *mapping.Mapping, opt *FuncOption) *Func {
@@ -46,6 +49,31 @@ func NewFuncFromMapping(m *mapping.Mapping, opt *FuncOption) *Func {
 		toTyp:    &Typ{name: m.To.Name, pkgPath: m.To.PkgPath},
 		mapExprs: fieldMappers,
 	}
+}
+
+func funcName(m *mapping.Mapping, opt *FuncOption) (res string) {
+	if opt.Name != "" {
+		res = opt.Name
+	} else if opt.NameTemplate != nil {
+		var buf bytes.Buffer
+		err := opt.NameTemplate.Execute(&buf, struct {
+			From string
+			To   string
+		}{
+			From: m.From.Name,
+			To:   m.To.Name,
+		})
+		if err == nil {
+			res = buf.String()
+		}
+	}
+	if res == "" {
+		res = fmt.Sprintf("To%s", util.UpperFirst(m.To.Name))
+	}
+	if opt.Private {
+		res = util.LowerFirst(res)
+	}
+	return
 }
 
 func newFuncFromDecl(pkgPath string, d *dst.FuncDecl) (*Func, error) {
