@@ -23,10 +23,6 @@ type Func struct {
 	mapExprs MapExprList
 }
 
-func (f Func) Name() string {
-	return f.name
-}
-
 type FuncOption struct {
 	Name         string
 	NameTemplate *template.Template

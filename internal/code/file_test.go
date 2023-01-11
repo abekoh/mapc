@@ -66,7 +66,7 @@ func TestFile_FindFunc(t *testing.T) {
 	if !ok {
 		t.Errorf("not found %s", fnName)
 	}
-	assert.Equal(t, fn.Name(), "ToBUser")
+	assert.Equal(t, fn.name, "ToBUser")
 }
 
 func TestFile_Apply(t *testing.T) {

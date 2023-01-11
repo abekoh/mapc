@@ -56,7 +56,7 @@ func (f *File) Apply(fn *Func) error {
 	if err != nil {
 		return fmt.Errorf("failed to generate Decl: %w", err)
 	}
-	i, ok := f.findFuncDeclIndex(fn.Name())
+	i, ok := f.findFuncDeclIndex(fn.name)
 	if ok {
 		f.dstFile.Decls[i] = newFnDecl
 	} else {
