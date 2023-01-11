@@ -30,10 +30,6 @@ func loadSample(t *testing.T) *File {
 	return f
 }
 
-func TestLoadFile(t *testing.T) {
-	loadSample(t)
-}
-
 func TestNewFile(t *testing.T) {
 	f := NewFile("github.com/abekoh/mapc/main")
 
@@ -50,6 +46,10 @@ func TestNewFile(t *testing.T) {
 	}
 }
 
+func TestLoadFile(t *testing.T) {
+	loadSample(t)
+}
+
 func TestFile_Write(t *testing.T) {
 	f := loadSample(t)
 	raw := loadSampleRaw(t)
@@ -63,11 +63,12 @@ func TestFile_Write(t *testing.T) {
 
 func TestFile_FindFunc(t *testing.T) {
 	f := loadSample(t)
-	funcName := "ToBUser"
-	_, ok := f.FindFunc(funcName)
+	fnName := "ToBUser"
+	fn, ok := f.FindFunc(fnName)
 	if !ok {
-		t.Errorf("not found %s", funcName)
+		t.Errorf("not found %s", fnName)
 	}
+	assert.Equal(t, fn.Name(), "ToBUser")
 }
 
 func TestFile_Apply(t *testing.T) {
