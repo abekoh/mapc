@@ -61,24 +61,24 @@ func TestFile_Write(t *testing.T) {
 
 func TestFile_FindFunc(t *testing.T) {
 	f := loadSample(t)
-	fnName := "ToBUser"
+	fnName := "ToDestUser"
 	fn, ok := f.FindFunc(fnName)
 	if !ok {
 		t.Errorf("not found %s", fnName)
 	}
-	assert.Equal(t, fn.name, "ToBUser")
+	assert.Equal(t, fn.name, "ToDestUser")
 }
 
 func TestFile_Apply(t *testing.T) {
 	mapper := mapping.Mapper{}
-	m, err := mapper.NewMapping(sample.AUser{}, sample.BUser{})
+	m, err := mapper.NewMapping(sample.SrcUser{}, sample.DestUser{})
 	require.Nil(t, err)
 	fn := NewFuncFromMapping(m, nil)
 	t.Run("when Func is found, replace", func(t *testing.T) {
 		f := loadSample(t)
 		err = f.Apply(fn)
 		require.Nil(t, err)
-		got, ok := f.FindFunc("ToBUser")
+		got, ok := f.FindFunc("ToDestUser")
 		assert.True(t, ok)
 		assert.Equal(t, fn, got)
 	})
@@ -86,7 +86,7 @@ func TestFile_Apply(t *testing.T) {
 		f := NewFile("github.com/abekoh/mapc/internal/code/testdata/sample")
 		err = f.Apply(fn)
 		require.Nil(t, err)
-		got, ok := f.FindFunc("ToBUser")
+		got, ok := f.FindFunc("ToDestUser")
 		assert.True(t, ok)
 		assert.Equal(t, fn, got)
 	})

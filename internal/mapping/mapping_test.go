@@ -16,11 +16,11 @@ func TestMapper_NewMapping(t *testing.T) {
 			FieldMappers: fieldmapper.Default,
 			TypeMappers:  typemapper.Default,
 		}
-		got, err := mapper.NewMapping(sample.AUser{}, sample.BUser{})
+		got, err := mapper.NewMapping(sample.SrcUser{}, sample.DestUser{})
 		require.Nil(t, err)
-		assert.Equal(t, "AUser", got.From.Name)
+		assert.Equal(t, "SrcUser", got.From.Name)
 		assert.Equal(t, "github.com/abekoh/mapc/testdata/sample", got.From.PkgPath)
-		assert.Equal(t, "BUser", got.To.Name)
+		assert.Equal(t, "DestUser", got.To.Name)
 		assert.Equal(t, "github.com/abekoh/mapc/testdata/sample", got.To.PkgPath)
 		assert.Len(t, got.FieldPairs, 4)
 	})
@@ -29,11 +29,11 @@ func TestMapper_NewMapping(t *testing.T) {
 			FieldMappers: []fieldmapper.FieldMapper{},
 			TypeMappers:  []typemapper.TypeMapper{},
 		}
-		got, err := mapper.NewMapping(sample.AUser{}, sample.BUser{})
+		got, err := mapper.NewMapping(sample.SrcUser{}, sample.DestUser{})
 		require.Nil(t, err)
-		assert.Equal(t, "AUser", got.From.Name)
+		assert.Equal(t, "SrcUser", got.From.Name)
 		assert.Equal(t, "github.com/abekoh/mapc/testdata/sample", got.From.PkgPath)
-		assert.Equal(t, "BUser", got.To.Name)
+		assert.Equal(t, "DestUser", got.To.Name)
 		assert.Equal(t, "github.com/abekoh/mapc/testdata/sample", got.To.PkgPath)
 		assert.Len(t, got.FieldPairs, 0)
 	})

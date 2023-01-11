@@ -14,8 +14,8 @@ import (
 )
 
 func TestNewFuncFromMapping(t *testing.T) {
-	from, _ := types.NewStruct(reflect.TypeOf(sample.AUser{}))
-	to, _ := types.NewStruct(reflect.TypeOf(sample.BUser{}))
+	from, _ := types.NewStruct(reflect.TypeOf(sample.SrcUser{}))
+	to, _ := types.NewStruct(reflect.TypeOf(sample.DestUser{}))
 	m := &mapping.Mapping{
 		From: from,
 		To:   to,
@@ -28,10 +28,10 @@ func TestNewFuncFromMapping(t *testing.T) {
 		},
 	}
 	got := NewFuncFromMapping(m, &FuncOption{})
-	assert.Equal(t, "ToBUser", got.name)
+	assert.Equal(t, "ToDestUser", got.name)
 	assert.Equal(t, "x", got.argName)
-	assert.Equal(t, &Typ{name: "AUser", pkgPath: "github.com/abekoh/mapc/testdata/sample"}, got.fromTyp)
-	assert.Equal(t, &Typ{name: "BUser", pkgPath: "github.com/abekoh/mapc/testdata/sample"}, got.toTyp)
+	assert.Equal(t, &Typ{name: "SrcUser", pkgPath: "github.com/abekoh/mapc/testdata/sample"}, got.fromTyp)
+	assert.Equal(t, &Typ{name: "DestUser", pkgPath: "github.com/abekoh/mapc/testdata/sample"}, got.toTyp)
 	assert.Len(t, got.mapExprs, 1)
 	assert.Equal(t, "ID", got.mapExprs[0].From())
 	assert.Equal(t, "ID", got.mapExprs[0].To())
@@ -43,8 +43,8 @@ func Test_funcName(t *testing.T) {
 		opt *FuncOption
 	}
 	m := func() *mapping.Mapping {
-		from, _ := types.NewStruct(reflect.TypeOf(sample.AUser{}))
-		to, _ := types.NewStruct(reflect.TypeOf(sample.BUser{}))
+		from, _ := types.NewStruct(reflect.TypeOf(sample.SrcUser{}))
+		to, _ := types.NewStruct(reflect.TypeOf(sample.DestUser{}))
 		return &mapping.Mapping{
 			From: from,
 			To:   to,
@@ -85,7 +85,7 @@ func Test_funcName(t *testing.T) {
 					}(),
 				},
 			},
-			want: "AUserToBUser",
+			want: "SrcUserToDestUser",
 		},
 		{
 			name: "opt.NameTemplate is given, private",
@@ -99,7 +99,7 @@ func Test_funcName(t *testing.T) {
 					Private: true,
 				},
 			},
-			want: "aUserToBUser",
+			want: "srcUserToDestUser",
 		},
 		{
 			name: "option is not set",
@@ -107,7 +107,7 @@ func Test_funcName(t *testing.T) {
 				m:   m,
 				opt: &FuncOption{},
 			},
-			want: "ToBUser",
+			want: "ToDestUser",
 		},
 		{
 			name: "only private",
@@ -117,7 +117,7 @@ func Test_funcName(t *testing.T) {
 					Private: true,
 				},
 			},
-			want: "toBUser",
+			want: "toDestUser",
 		},
 	}
 	for _, tt := range tests {

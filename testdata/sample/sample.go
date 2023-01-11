@@ -66,25 +66,25 @@ var ObjectFieldNames = []string{
 	"ExternalPointer",
 }
 
-// AUser is source for mapping test
-type AUser struct {
+// SrcUser is source for mapping test
+type SrcUser struct {
 	ID           uuid.UUID
 	Name         string
 	Age          int
 	RegisteredAt time.Time
 }
 
-// BUser is destination for mapping test
-type BUser struct {
+// DestUser is destination for mapping test
+type DestUser struct {
 	ID           uuid.UUID
 	Name         string
 	Age          int
 	RegisteredAt time.Time
 }
 
-// ToBUser is mapper from AUser into BUser
-func ToBUser(x AUser) BUser {
-	return BUser{
+// ToDestUser is mapper from SrcUser into DestUser
+func ToDestUser(x SrcUser) DestUser {
+	return DestUser{
 		ID:           x.ID,
 		Name:         x.Name,
 		Age:          x.Age,
