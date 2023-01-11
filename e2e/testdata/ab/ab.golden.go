@@ -1,8 +1,8 @@
 package ab
 
 import (
-	"github.com/abekoh/mapc/test/testdata/a"
-	"github.com/abekoh/mapc/test/testdata/b"
+	"github.com/abekoh/mapc/e2e/testdata/a"
+	"github.com/abekoh/mapc/e2e/testdata/b"
 )
 
 func ToBUser(inp a.User) b.User {

@@ -5,8 +5,8 @@ import (
 	"testing"
 
 	"github.com/abekoh/mapc"
-	"github.com/abekoh/mapc/test/testdata/a"
-	"github.com/abekoh/mapc/test/testdata/b"
+	"github.com/abekoh/mapc/e2e/testdata/a"
+	"github.com/abekoh/mapc/e2e/testdata/b"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -27,8 +27,8 @@ func TestMapC(t *testing.T) {
 		assert.Equal(t, `package foo
 
 import (
-	"github.com/abekoh/mapc/test/testdata/a"
-	"github.com/abekoh/mapc/test/testdata/b"
+	"github.com/abekoh/mapc/e2e/testdata/a"
+	"github.com/abekoh/mapc/e2e/testdata/b"
 )
 
 func ToUser(x a.User) b.User {
