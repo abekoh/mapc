@@ -66,8 +66,16 @@ func (m *MapC) Generate() (res GeneratedList, errs []error) {
 		}
 		pkgPath := pkgPathFromRelativePath(pair.option.OutPath)
 		// TODO: cache file
-		f := code.NewFile(pkgPath)
+		var f *code.File
+		if existed, err := code.LoadFile(pair.option.OutPath, pkgPath); err == nil {
+			f = existed
+		} else {
+			f = code.NewFile(pkgPath)
+		}
 		fn := code.NewFuncFromMapping(mp, &code.FuncOption{})
+		if existedFn, ok := f.FindFunc(fn.Name()); ok {
+			fn.AppendNotSetExprs(existedFn)
+		}
 		err = f.Apply(fn)
 		if err != nil {
 			errs = append(errs, fmt.Errorf("failed to apply: %w", err))
