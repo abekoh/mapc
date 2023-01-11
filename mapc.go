@@ -74,7 +74,7 @@ func (m *MapC) Generate() (res GeneratedList, errs []error) {
 		}
 		fn := code.NewFuncFromMapping(mp, &code.FuncOption{})
 		if existedFn, ok := f.FindFunc(fn.Name()); ok {
-			fn.AppendNotSetExprs(existedFn)
+			_ = fn.AppendNotSetExprs(existedFn)
 		}
 		err = f.Apply(fn)
 		if err != nil {
