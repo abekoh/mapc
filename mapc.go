@@ -79,7 +79,7 @@ func (m *MapC) Generate() (res GeneratedList, errs []error) {
 				continue
 			}
 		}
-		err = f.Apply(fn)
+		err = f.Attach(fn)
 		if err != nil {
 			errs = append(errs, fmt.Errorf("failed to apply: %w", err))
 			continue

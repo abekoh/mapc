@@ -51,7 +51,7 @@ func (f *File) FindFunc(name string) (*Func, bool) {
 	return fn, true
 }
 
-func (f *File) Apply(fn *Func) error {
+func (f *File) Attach(fn *Func) error {
 	newFnDecl, err := fn.Decl()
 	if err != nil {
 		return fmt.Errorf("failed to generate Decl: %w", err)
