@@ -68,6 +68,7 @@ func TestPkgNameFromPath(t *testing.T) {
 	}{
 		{pkgPath: "github.com/abekoh/sqlc", want: "sqlc"},
 		{pkgPath: "github.com/abekoh/sqlc.test", want: "sqlc.test"},
+		{pkgPath: "sqlc", want: "sqlc"},
 	}
 	for _, tt := range tests {
 		t.Run(fmt.Sprintf("%s -> %s", tt.pkgPath, tt.want), func(t *testing.T) {

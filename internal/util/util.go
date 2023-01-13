@@ -30,8 +30,5 @@ func Prepend[T any](x []T, y T) []T {
 
 func PkgNameFromPath(pkgPath string) string {
 	sp := strings.Split(pkgPath, "/")
-	if len(sp) == 0 {
-		return ""
-	}
 	return sp[len(sp)-1]
 }
