@@ -9,7 +9,6 @@ import (
 	"github.com/abekoh/mapc/fieldmapper"
 	"github.com/abekoh/mapc/internal/code"
 	"github.com/abekoh/mapc/internal/mapping"
-	"github.com/abekoh/mapc/internal/util"
 	"github.com/abekoh/mapc/typemapper"
 )
 
@@ -28,19 +27,19 @@ func New() *MapC {
 	}
 }
 
-func (m *MapC) Register(from, to any, options ...*Option) {
+func (m *MapC) Register(from, to any, optFns ...func(*Option)) {
 	m.inputs = append(m.inputs, input{
 		from:   from,
 		to:     to,
-		option: (m.option).override(options...),
+		option: (m.option).overwrite(optFns...),
 	})
 }
 
-func (m *MapC) Group() *Group {
+func (m *MapC) Group(optFns ...func(*Option)) *Group {
 	return &Group{
 		MapC:   m,
 		parent: nil,
-		option: nil,
+		option: (m.option).overwrite(optFns...),
 	}
 }
 
@@ -105,19 +104,24 @@ type Option struct {
 	TypeMappers  []typemapper.TypeMapper
 }
 
-func (o Option) override(opts ...*Option) *Option {
-	for _, opt := range opts {
-		if opt == nil {
-			continue
-		}
-		// TODO: simplify
-		if len(opt.OutPath) != 0 {
-			o.OutPath = opt.OutPath
-		}
-		o.FieldMappers = append(o.FieldMappers, opt.FieldMappers...)
-		o.TypeMappers = append(o.TypeMappers, opt.TypeMappers...)
+func (o *Option) copy() *Option {
+	var fms []fieldmapper.FieldMapper
+	copy(fms, o.FieldMappers)
+	var tms []typemapper.TypeMapper
+	copy(tms, o.TypeMappers)
+	return &Option{
+		OutPath:      o.OutPath,
+		FieldMappers: fms,
+		TypeMappers:  tms,
 	}
-	return &o
+}
+
+func (o *Option) overwrite(optFns ...func(*Option)) *Option {
+	res := o.copy()
+	for _, fn := range optFns {
+		fn(res)
+	}
+	return res
 }
 
 type Group struct {
@@ -126,36 +130,20 @@ type Group struct {
 	option *Option
 }
 
-func (g *Group) Group() *Group {
+func (g *Group) Group(optFns ...func(*Option)) *Group {
 	return &Group{
 		MapC:   g.MapC,
 		parent: g,
-		option: &Option{},
+		option: (g.option).overwrite(optFns...),
 	}
 }
 
-func (g *Group) Register(from, to any, options ...*Option) {
-	opts := g.extendOptions()
-	opts = append(opts, options...)
+func (g *Group) Register(from, to any, optFns ...func(*Option)) {
 	g.MapC.inputs = append(g.MapC.inputs, input{
 		from:   from,
 		to:     to,
-		option: (&Option{}).override(opts...),
+		option: (g.option).overwrite(optFns...),
 	})
-}
-
-func (g *Group) extendOptions() []*Option {
-	var opts []*Option
-	targetG := g
-	for {
-		if targetG == nil {
-			break
-		}
-		util.Prepend(opts, targetG.option)
-		targetG = targetG.parent
-	}
-	util.Prepend(opts, g.MapC.option)
-	return opts
 }
 
 type Generated struct {
