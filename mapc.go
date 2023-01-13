@@ -105,9 +105,9 @@ type Option struct {
 }
 
 func (o *Option) copy() *Option {
-	var fms []fieldmapper.FieldMapper
+	fms := make([]fieldmapper.FieldMapper, len(o.FieldMappers))
 	copy(fms, o.FieldMappers)
-	var tms []typemapper.TypeMapper
+	tms := make([]typemapper.TypeMapper, len(o.TypeMappers))
 	copy(tms, o.TypeMappers)
 	return &Option{
 		OutPath:      o.OutPath,

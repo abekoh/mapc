@@ -13,8 +13,8 @@ import (
 
 func TestMapC(t *testing.T) {
 	m := mapc.New()
-	m.Register(a.User{}, b.User{}, &mapc.Option{
-		OutPath: "src/foo/bar.go",
+	m.Register(a.User{}, b.User{}, func(option *mapc.Option) {
+		option.OutPath = "src/foo/bar.go"
 	})
 	gs, errs := m.Generate()
 	for _, err := range errs {
