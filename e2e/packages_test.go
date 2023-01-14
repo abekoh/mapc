@@ -13,7 +13,6 @@ func Test_ab_same_package(t *testing.T) {
 	m := mapc.New()
 	m.Register(ab.AUser{}, ab.BUser{}, func(option *mapc.Option) {
 		option.OutPkgPath = "github.com/abekoh/mapc/e2e/testdata/ab"
-		option.OutPath = "src/foo/bar.go"
 	})
 	gs, errs := m.Generate()
 	requireNoErrors(t, errs)

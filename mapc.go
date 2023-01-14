@@ -2,6 +2,7 @@ package mapc
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -47,11 +48,6 @@ func (m *MapC) Generate() (res GeneratedList, errs []error) {
 	for _, pair := range m.inputs {
 		if pair.option == nil {
 			errs = append(errs, fmt.Errorf("option is nil. from=%T, to=%T", pair.from, pair.to))
-			continue
-		}
-		// TODO: validate with Option's method
-		if pair.option.OutPath == "" {
-			errs = append(errs, fmt.Errorf("OutPath is empty"))
 			continue
 		}
 		mapper := mapping.Mapper{
@@ -172,6 +168,9 @@ func (g Generated) Sprint() (string, error) {
 }
 
 func (g Generated) Save() error {
+	if g.filePath == "" {
+		return errors.New("filepath must not be empty")
+	}
 	f, err := os.OpenFile(g.filePath, os.O_RDWR|os.O_CREATE, 0755)
 	if err != nil {
 		return fmt.Errorf("failed to save: %w", err)
