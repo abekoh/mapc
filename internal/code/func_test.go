@@ -173,7 +173,7 @@ func TestFunc_AppendNotSetExprs(t *testing.T) {
 				name: "int",
 			},
 			mapExprs: MapExprList{
-				&SimpleMapExpr{
+				&NopMapExpr{
 					from: "z",
 					to:   "z",
 				},

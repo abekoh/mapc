@@ -56,7 +56,7 @@ func NewFuncFromMapping(m *mapping.Mapping, opt *FuncOption) *Func {
 	}
 	mapExprs := MapExprList{}
 	for _, p := range m.FieldPairs {
-		mapExprs = append(mapExprs, &SimpleMapExpr{
+		mapExprs = append(mapExprs, &NopMapExpr{
 			from: p.From.Name(),
 			to:   p.To.Name(),
 		})
@@ -167,7 +167,7 @@ func newFuncFromDecl(pkgPath string, d *dst.FuncDecl) (*Func, error) {
 			return nil, fmt.Errorf("value must be SelectorExpr")
 		}
 		// TODO: with caster
-		res.mapExprs = append(res.mapExprs, &SimpleMapExpr{
+		res.mapExprs = append(res.mapExprs, &NopMapExpr{
 			from: selectorExpr.Sel.Name,
 			to:   keyIdent.Name,
 		})
