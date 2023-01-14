@@ -28,25 +28,29 @@ func (mel MapExprList) DstExprs(arg string) (exprs []dst.Expr, comments []string
 	return
 }
 
-type NopMapExpr struct {
+type SimpleMapExpr struct {
 	from string
 	to   string
 }
 
-func (s NopMapExpr) From() string {
-	return s.from
+func (e SimpleMapExpr) From() string {
+	return e.from
 }
 
-func (s NopMapExpr) To() string {
-	return s.to
+func (e SimpleMapExpr) To() string {
+	return e.to
 }
 
-func (s NopMapExpr) DstExpr(arg string) (dst.Expr, bool) {
+func (e SimpleMapExpr) Comment() (string, bool) {
+	return "", false
+}
+
+func (e SimpleMapExpr) DstExpr(arg string) (dst.Expr, bool) {
 	return &dst.KeyValueExpr{
-		Key: dst.NewIdent(s.to),
+		Key: dst.NewIdent(e.to),
 		Value: &dst.SelectorExpr{
 			X:    genVar(arg),
-			Sel:  dst.NewIdent(s.from),
+			Sel:  dst.NewIdent(e.from),
 			Decs: dst.SelectorExprDecorations{},
 		},
 		Decs: dst.KeyValueExprDecorations{
@@ -56,10 +60,6 @@ func (s NopMapExpr) DstExpr(arg string) (dst.Expr, bool) {
 			},
 		},
 	}, true
-}
-
-func (s NopMapExpr) Comment() (string, bool) {
-	return "", false
 }
 
 type CommentedMapExpr struct {
