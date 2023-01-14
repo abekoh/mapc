@@ -50,7 +50,7 @@ func (m Mapper) NewMapping(from, to any, outPkgPath string) (*Mapping, error) {
 	}, nil
 }
 
-func isAccessible(info types.Typable, outPkgPath string) bool {
+func isAccessible(info types.Accessor, outPkgPath string) bool {
 	if !util.IsPrivate(info.Name()) {
 		return true
 	}
