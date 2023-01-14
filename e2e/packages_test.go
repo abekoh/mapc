@@ -6,6 +6,7 @@ import (
 	"github.com/abekoh/mapc"
 	"github.com/abekoh/mapc/e2e/testdata/a"
 	"github.com/abekoh/mapc/e2e/testdata/ab"
+	"github.com/abekoh/mapc/fieldmapper"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -42,6 +43,7 @@ func ToBUser(x AUser) BUser {
 func Test_from_package(t *testing.T) {
 	m := mapc.New()
 	m.Option.WithoutComment = true
+	m.Option.FieldMappers = append(m.Option.FieldMappers, &fieldmapper.UpperFirst{})
 	a.RegisterPrivateAUserToBUser(t, m)
 	gs, errs := m.Generate()
 	requireNoErrors(t, errs)
@@ -53,10 +55,10 @@ import "github.com/abekoh/mapc/e2e/testdata/b"
 
 func ToUser(x User) b.User {
 	return b.User{
-		ID:           x.ID,
-		Name:         x.Name,
-		Age:          x.Age,
-		RegisteredAt: x.RegisteredAt,
+		ID:           x.id,
+		Name:         x.name,
+		Age:          x.age,
+		RegisteredAt: x.registeredAt,
 	}
 }
 `, got)
