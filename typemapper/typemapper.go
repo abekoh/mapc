@@ -15,4 +15,6 @@ type TypeProcessor interface {
 var DefaultMappers = []TypeMapper{
 	&AssignMapper{},
 	&ConvertMapper{},
+	&RefMapper{},
+	&DerefMapper{},
 }
