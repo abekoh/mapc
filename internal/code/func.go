@@ -62,13 +62,12 @@ func NewFuncFromMapping(m *mapping.Mapping, opt *FuncOption) *Func {
 	mapExprs := MapExprList{}
 	for _, p := range m.FieldPairs {
 		var casters []Caster
-		for _, c := range p.Casters {
-
-		}
+		//for _, c := range p.Casters {
+		//}
 		mapExprs = append(mapExprs, &SimpleMapExpr{
-			from: p.From.Name(),
-			to:   p.To.Name(),
-			//casters:
+			from:    p.From.Name(),
+			to:      p.To.Name(),
+			casters: casters,
 		})
 	}
 	return &Func{
