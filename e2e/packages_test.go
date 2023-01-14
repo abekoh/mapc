@@ -4,7 +4,9 @@ import (
 	"testing"
 
 	"github.com/abekoh/mapc"
+	"github.com/abekoh/mapc/e2e/testdata/a"
 	"github.com/abekoh/mapc/e2e/testdata/ab"
+	"github.com/abekoh/mapc/e2e/testdata/b"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -29,6 +31,33 @@ func Test_same_package(t *testing.T) {
 
 func ToBUser(x AUser) BUser {
 	return BUser{
+		ID:           x.ID,
+		Name:         x.Name,
+		Age:          x.Age,
+		RegisteredAt: x.RegisteredAt,
+	}
+}
+`, got)
+}
+
+func Test_from_package(t *testing.T) {
+	m := mapc.New()
+	m.Register(a.User{}, b.User{},
+		commonOptFn,
+		func(option *mapc.Option) {
+			option.OutPkgPath = "github.com/abekoh/mapc/e2e/testdata/a"
+		},
+	)
+	gs, errs := m.Generate()
+	requireNoErrors(t, errs)
+	got, err := gs[0].Sprint()
+	require.Nil(t, err)
+	assert.Equal(t, `package a
+
+import "github.com/abekoh/mapc/e2e/testdata/b"
+
+func ToUser(x User) b.User {
+	return b.User{
 		ID:           x.ID,
 		Name:         x.Name,
 		Age:          x.Age,
