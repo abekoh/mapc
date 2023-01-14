@@ -70,7 +70,7 @@ func Test_ToPointer(t *testing.T) {
 	assert.Equal(t, `package various
 
 func ToSWithPointers(x S) SWithPointers {
-	return S2{
+	return SWithPointers{
 		Bool:            &x.Bool,
 		Int:             &x.Int,
 		Int8:            &x.Int8,
