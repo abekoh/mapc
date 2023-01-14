@@ -21,9 +21,9 @@ func TestNewFuncFromMapping(t *testing.T) {
 		To:   to,
 		FieldPairs: []*mapping.FieldPair{
 			{
-				From:   from.Fields[0],
-				To:     to.Fields[0],
-				Caster: &typemapper.NopCaster{},
+				From:    from.Fields[0],
+				To:      to.Fields[0],
+				Casters: []typemapper.Caster{&typemapper.NopCaster{}},
 			},
 		},
 	}
