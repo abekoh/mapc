@@ -12,7 +12,7 @@ type Info interface {
 
 type Struct struct {
 	name    string
-	PkgPath string
+	pkgPath string
 	Fields  []*Field
 }
 
@@ -28,7 +28,7 @@ func NewStruct(typ reflect.Type) (*Struct, error) {
 	}
 	return &Struct{
 		name:    typ.Name(),
-		PkgPath: typ.PkgPath(),
+		pkgPath: typ.PkgPath(),
 		Fields:  fields,
 	}, nil
 }
@@ -37,10 +37,9 @@ func (s Struct) Name() string {
 	return s.name
 }
 
-//
-//func (s Struct) PkgPath() string {
-//	return s.PkgPath
-//}
+func (s Struct) PkgPath() string {
+	return s.pkgPath
+}
 
 type Field struct {
 	refStructField *reflect.StructField

@@ -13,7 +13,7 @@ func TestNewStruct(t *testing.T) {
 	got, err := NewStruct(reflect.TypeOf(sample.Object{}))
 	require.Nil(t, err)
 	assert.Equal(t, "Object", got.Name())
-	assert.Equal(t, "github.com/abekoh/mapc/testdata/sample", got.PkgPath)
+	assert.Equal(t, "github.com/abekoh/mapc/testdata/sample", got.PkgPath())
 	var gotFieldNames []string
 	for _, f := range got.Fields {
 		switch f.Name() {
