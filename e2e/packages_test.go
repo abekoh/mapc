@@ -43,7 +43,9 @@ func ToBUser(x AUser) BUser {
 func Test_from_package(t *testing.T) {
 	m := mapc.New()
 	m.Option.WithoutComment = true
-	m.Option.FieldMappers = append(m.Option.FieldMappers, &fieldmapper.UpperFirst{})
+	m.Option.FieldMappers = append(m.Option.FieldMappers,
+		&fieldmapper.UpperFirst{},
+	)
 	a.RegisterPrivateAUserToBUser(t, m)
 	gs, errs := m.Generate()
 	requireNoErrors(t, errs)
