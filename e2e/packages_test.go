@@ -6,7 +6,6 @@ import (
 	"github.com/abekoh/mapc"
 	"github.com/abekoh/mapc/e2e/testdata/a"
 	"github.com/abekoh/mapc/e2e/testdata/ab"
-	"github.com/abekoh/mapc/e2e/testdata/b"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -42,12 +41,8 @@ func ToBUser(x AUser) BUser {
 
 func Test_from_package(t *testing.T) {
 	m := mapc.New()
-	m.Register(a.User{}, b.User{},
-		commonOptFn,
-		func(option *mapc.Option) {
-			option.OutPkgPath = "github.com/abekoh/mapc/e2e/testdata/a"
-		},
-	)
+	m.Option.WithoutComment = true
+	a.RegisterPrivateAUserToBUser(t, m)
 	gs, errs := m.Generate()
 	requireNoErrors(t, errs)
 	got, err := gs[0].Sprint()

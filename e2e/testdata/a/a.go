@@ -14,8 +14,8 @@ type User struct {
 }
 
 type user struct {
-	ID           uuid.UUID
-	Name         string
-	Age          int
-	RegisteredAt time.Time
+	id           uuid.UUID
+	name         string
+	age          int
+	registeredAt time.Time
 }
