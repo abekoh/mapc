@@ -95,6 +95,10 @@ func (t Typ) ConvertibleTo(to *Typ) bool {
 }
 
 func (t Typ) String() string {
+	if t.IsPointer() {
+		e, _ := t.Elem()
+		return fmt.Sprintf("*%s", e.String())
+	}
 	return t.refTyp.Name()
 }
 

@@ -12,14 +12,16 @@ import (
 type typedInt int
 
 var IntValue = 1
+var StringValue = "foo"
 
 var (
-	Int        = types.NewTyp(reflect.TypeOf(1))
-	Int64      = types.NewTyp(reflect.TypeOf(int64(1)))
-	String     = types.NewTyp(reflect.TypeOf("foo"))
-	TypedInt   = types.NewTyp(reflect.TypeOf(typedInt(1)))
-	Object     = types.NewTyp(reflect.TypeOf(sample.Object{}))
-	PointerInt = types.NewTyp(reflect.TypeOf(&IntValue))
+	Int           = types.NewTyp(reflect.TypeOf(1))
+	Int64         = types.NewTyp(reflect.TypeOf(int64(1)))
+	String        = types.NewTyp(reflect.TypeOf("foo"))
+	TypedInt      = types.NewTyp(reflect.TypeOf(typedInt(1)))
+	Object        = types.NewTyp(reflect.TypeOf(sample.Object{}))
+	PointerInt    = types.NewTyp(reflect.TypeOf(&IntValue))
+	PointerString = types.NewTyp(reflect.TypeOf(&StringValue))
 )
 
 func TestAssignMapper_Map(t *testing.T) {
@@ -153,10 +155,94 @@ func TestRefMapper_Map(t *testing.T) {
 			},
 			wantOk: true,
 		},
+		{
+			from: String,
+			to:   PointerString,
+			want: &SimpleCaster{
+				pkgPath: "",
+				fn:      "&",
+			},
+			wantOk: true,
+		},
+		{
+			from:   String,
+			to:     PointerInt,
+			want:   nil,
+			wantOk: false,
+		},
+		{
+			from:   PointerInt,
+			to:     Int,
+			want:   nil,
+			wantOk: false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(fmt.Sprintf("%s -> %s", tt.from, tt.to), func(t *testing.T) {
 			got, got1 := RefMapper{}.Map(tt.from, tt.to)
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Map() got = %v, want %v", got, tt.want)
+			}
+			if got1 != tt.wantOk {
+				t.Errorf("Map() gotOk = %v, wantOk %v", got1, tt.wantOk)
+			}
+		})
+	}
+}
+
+func TestDerefMapper_Map(t *testing.T) {
+	tests := []struct {
+		from   *types.Typ
+		to     *types.Typ
+		want   Caster
+		wantOk bool
+	}{
+		{
+			from:   Int,
+			to:     Int,
+			want:   nil,
+			wantOk: false,
+		},
+		{
+			from:   Int,
+			to:     PointerInt,
+			want:   nil,
+			wantOk: false,
+		},
+		{
+			from:   String,
+			to:     PointerString,
+			want:   nil,
+			wantOk: false,
+		},
+		{
+			from: PointerString,
+			to:   String,
+			want: &SimpleCaster{
+				pkgPath: "",
+				fn:      "*",
+			},
+			wantOk: true,
+		},
+		{
+			from: PointerInt,
+			to:   Int,
+			want: &SimpleCaster{
+				pkgPath: "",
+				fn:      "*",
+			},
+			wantOk: true,
+		},
+		{
+			from:   PointerInt,
+			to:     String,
+			want:   nil,
+			wantOk: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(fmt.Sprintf("%s -> %s", tt.from, tt.to), func(t *testing.T) {
+			got, got1 := DerefMapper{}.Map(tt.from, tt.to)
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("Map() got = %v, want %v", got, tt.want)
 			}
