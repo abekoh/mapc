@@ -16,12 +16,26 @@ func (u UpperFirst) Map(x string) string {
 	return upperFirst(x)
 }
 
-func upperFirst(inp string) string {
-	f := inp[0]
+func upperFirst(x string) string {
+	f := x[0]
 	if f < 0x61 || f > 0x7A {
-		return inp
+		return x
 	}
-	return string(f-0x20) + inp[1:]
+	return string(f-0x20) + x[1:]
+}
+
+type LowerFirst struct{}
+
+func (l LowerFirst) Map(x string) string {
+	return lowerFirst(x)
+}
+
+func lowerFirst(x string) string {
+	f := x[0]
+	if f < 0x41 || f > 0x5A {
+		return x
+	}
+	return string(f+0x20) + x[1:]
 }
 
 type SnakeToCamel struct{}

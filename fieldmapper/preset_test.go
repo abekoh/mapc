@@ -41,6 +41,25 @@ func TestUpperFirst_Map(t *testing.T) {
 	}
 }
 
+func TestLowerFirst_Map(t *testing.T) {
+	tests := []struct {
+		x    string
+		want string
+	}{
+		{x: "A", want: "a"},
+		{x: "Foo", want: "foo"},
+		{x: "Zero", want: "zero"},
+		{x: "MapFunc", want: "mapFunc"},
+	}
+	for _, tt := range tests {
+		t.Run(fmt.Sprintf("%s->%s", tt.x, tt.want), func(t *testing.T) {
+			if got := (LowerFirst{}).Map(tt.x); got != tt.want {
+				t.Errorf("Map() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
 func TestSnakeToCamel_Map(t *testing.T) {
 	tests := []struct {
 		x    string
