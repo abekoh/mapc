@@ -26,7 +26,7 @@ type FieldPair struct {
 	Caster typemapper.Caster
 }
 
-func (m Mapper) NewMapping(from, to any) (*Mapping, error) {
+func (m Mapper) NewMapping(from, to any, outPkgPath string) (*Mapping, error) {
 	fromStr, err := types.NewStruct(reflect.TypeOf(from))
 	if err != nil {
 		return nil, fmt.Errorf("failed to construct struct: %w", err)

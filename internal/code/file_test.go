@@ -70,8 +70,9 @@ func TestFile_FindFunc(t *testing.T) {
 }
 
 func TestFile_Attach(t *testing.T) {
+	outPkgPath := "github.com/abekoh/mapc/testdata/sample"
 	mapper := mapping.Mapper{}
-	m, err := mapper.NewMapping(sample.SrcUser{}, sample.DestUser{})
+	m, err := mapper.NewMapping(sample.SrcUser{}, sample.DestUser{}, outPkgPath)
 	require.Nil(t, err)
 	fn := NewFuncFromMapping(m, nil)
 	t.Run("when Func is found, replace", func(t *testing.T) {
@@ -83,7 +84,7 @@ func TestFile_Attach(t *testing.T) {
 		assert.Equal(t, fn, got)
 	})
 	t.Run("when Func is not found, append", func(t *testing.T) {
-		f := NewFile("github.com/abekoh/mapc/internal/code/testdata/sample")
+		f := NewFile(outPkgPath)
 		err = f.Attach(fn)
 		require.Nil(t, err)
 		got, ok := f.FindFunc("ToDestUser")

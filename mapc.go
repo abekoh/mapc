@@ -59,7 +59,7 @@ func (m *MapC) Generate() (res GeneratedList, errs []error) {
 			FieldMappers: input.option.FieldMappers,
 			TypeMappers:  input.option.TypeMappers,
 		}
-		mp, err := mapper.NewMapping(input.from, input.to)
+		mp, err := mapper.NewMapping(input.from, input.to, "github.com/abekoh/mapc/testdata/sample")
 		if err != nil {
 			errs = append(errs, fmt.Errorf("failed to map: %w", err))
 			continue
