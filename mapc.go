@@ -70,7 +70,9 @@ func (m *MapC) Generate() (res GeneratedList, errs []error) {
 		} else {
 			f = code.NewFile(pkgPath)
 		}
-		fn := code.NewFuncFromMapping(mp, &code.FuncOption{})
+		fn := code.NewFuncFromMapping(mp, &code.FuncOption{
+			WithComment: pair.option.WithoutComment,
+		})
 		if existedFn, ok := f.FindFunc(fn.Name()); ok {
 			if err := fn.AppendNotSetExprs(existedFn); err != nil {
 				errs = append(errs, fmt.Errorf("failed to append not set exprs: %w", err))
@@ -98,10 +100,11 @@ type input struct {
 }
 
 type Option struct {
-	OutPath      string
-	OutPkgPath   string
-	FieldMappers []fieldmapper.FieldMapper
-	TypeMappers  []typemapper.TypeMapper
+	OutPath        string
+	OutPkgPath     string
+	WithoutComment bool
+	FieldMappers   []fieldmapper.FieldMapper
+	TypeMappers    []typemapper.TypeMapper
 }
 
 func (o *Option) copy() *Option {
@@ -110,10 +113,11 @@ func (o *Option) copy() *Option {
 	tms := make([]typemapper.TypeMapper, len(o.TypeMappers))
 	copy(tms, o.TypeMappers)
 	return &Option{
-		OutPath:      o.OutPath,
-		OutPkgPath:   o.OutPkgPath,
-		FieldMappers: fms,
-		TypeMappers:  tms,
+		OutPath:        o.OutPath,
+		OutPkgPath:     o.OutPkgPath,
+		WithoutComment: o.WithoutComment,
+		FieldMappers:   fms,
+		TypeMappers:    tms,
 	}
 }
 
