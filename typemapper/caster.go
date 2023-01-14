@@ -1,29 +1,33 @@
 package typemapper
 
 type Caster interface {
-	PkgPath() string
-	Caller() string
+	Caller() *Caller
+}
+
+type Caller struct {
+	PkgPath    string
+	Name       string
+	CallerType CallerType
 }
 
 type NopCaster struct{}
 
-func (n NopCaster) PkgPath() string {
-	return ""
+func (n NopCaster) Caller() *Caller {
+	return nil
 }
 
-func (n NopCaster) Caller() string {
-	return ""
-}
+type CallerType int
+
+const (
+	Unary CallerType = iota
+	Typ
+	Func
+)
 
 type SimpleCaster struct {
-	pkgPath string
-	caller  string
+	caller *Caller
 }
 
-func (s SimpleCaster) PkgPath() string {
-	return s.pkgPath
-}
-
-func (s SimpleCaster) Caller() string {
+func (s SimpleCaster) Caller() *Caller {
 	return s.caller
 }

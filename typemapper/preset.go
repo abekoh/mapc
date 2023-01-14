@@ -20,8 +20,11 @@ type ConvertMapper struct {
 func (c ConvertMapper) Map(from, to *types.Typ) (Caster, bool) {
 	if from.ConvertibleTo(to) {
 		return &SimpleCaster{
-			pkgPath: to.PkgPath(),
-			caller:  to.Name(),
+			caller: &Caller{
+				Name:       to.Name(),
+				PkgPath:    to.PkgPath(),
+				CallerType: Typ,
+			},
 		}, true
 	}
 	return nil, false
@@ -36,7 +39,11 @@ func (p RefMapper) Map(from, to *types.Typ) (Caster, bool) {
 	}
 	if toElm, ok := to.Elem(); ok && from.AssignableTo(toElm) {
 		return &SimpleCaster{
-			caller: "&",
+			caller: &Caller{
+				PkgPath:    "",
+				Name:       "&",
+				CallerType: Unary,
+			},
 		}, true
 	}
 	return nil, false
@@ -51,7 +58,11 @@ func (p DerefMapper) Map(from, to *types.Typ) (Caster, bool) {
 	}
 	if fromElm, ok := from.Elem(); ok && fromElm.AssignableTo(to) {
 		return &SimpleCaster{
-			caller: "*",
+			caller: &Caller{
+				PkgPath:    "",
+				Name:       "*",
+				CallerType: Unary,
+			},
 		}, true
 	}
 	return nil, false
