@@ -11,14 +11,10 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-var commonOptFn = func(o *mapc.Option) {
-	o.WithoutComment = true
-}
-
 func Test_same_package(t *testing.T) {
 	m := mapc.New()
+	m.Option.WithoutComment = true
 	m.Register(ab.AUser{}, ab.BUser{},
-		commonOptFn,
 		func(option *mapc.Option) {
 			option.OutPkgPath = "github.com/abekoh/mapc/e2e/testdata/ab"
 		},
