@@ -29,8 +29,9 @@ func (mel MapExprList) DstExprs(arg string) (exprs []dst.Expr, comments []string
 }
 
 type SimpleMapExpr struct {
-	from string
-	to   string
+	from    string
+	to      string
+	casters Caster
 }
 
 func (s SimpleMapExpr) From() string {
