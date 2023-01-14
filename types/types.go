@@ -23,7 +23,7 @@ func NewStruct(typ reflect.Type) (*Struct, error) {
 	var fields []*Field
 	for i := 0; i < typ.NumField(); i++ {
 		structField := typ.Field(i)
-		field := &Field{refStructField: &structField}
+		field := &Field{refStructField: &structField, pkgPath: typ.PkgPath()}
 		fields = append(fields, field)
 	}
 	return &Struct{
@@ -42,6 +42,7 @@ func (s Struct) PkgPath() string {
 }
 
 type Field struct {
+	pkgPath        string
 	refStructField *reflect.StructField
 }
 
@@ -62,11 +63,11 @@ func (f Field) Kind() reflect.Kind {
 }
 
 func (f Field) PkgPath() string {
-	return f.refStructField.Type.PkgPath()
+	return f.pkgPath
 }
 
 func (f Field) IsSameTypeAndPkgWith(x *Field) bool {
-	return f.Kind() == x.Kind() && f.PkgPath() == x.PkgPath()
+	return f.Kind() == x.Kind() && f.Typ().PkgPath() == x.Typ().PkgPath()
 }
 
 type Typ struct {

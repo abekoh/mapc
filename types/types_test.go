@@ -18,7 +18,7 @@ func TestNewStruct(t *testing.T) {
 	for _, f := range got.Fields {
 		switch f.Name() {
 		case "ExternalType":
-			assert.Equal(t, "github.com/google/uuid", f.PkgPath())
+			assert.Equal(t, "github.com/google/uuid", f.Typ().PkgPath())
 		default:
 		}
 		gotFieldNames = append(gotFieldNames, f.Name())
