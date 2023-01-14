@@ -1,7 +1,6 @@
 package e2e
 
 import (
-	"bytes"
 	"testing"
 
 	"github.com/abekoh/mapc"
@@ -12,18 +11,14 @@ import (
 
 func Test_ab_same_package(t *testing.T) {
 	m := mapc.New()
-	m.Register(ab.AUser{}, bb.BUser{}, func(option *mapc.Option) {
+	m.Register(ab.AUser{}, ab.BUser{}, func(option *mapc.Option) {
 		option.OutPath = "src/foo/bar.go"
 	})
 	gs, errs := m.Generate()
-	for _, err := range errs {
-		require.Nil(t, err)
-	}
-	for _, g := range gs {
-		var buf bytes.Buffer
-		err := g.Write(&buf)
-		require.Nil(t, err)
-		assert.Equal(t, `package foo
+	requireNoError(t, errs)
+	got, err := gs[0].Sprint()
+	require.Nil(t, err)
+	assert.Equal(t, `package foo
 
 import (
 	"github.com/abekoh/mapc/e2e/testdata/a"
@@ -38,6 +33,5 @@ func ToUser(x a.User) b.User {
 		RegisteredAt: x.RegisteredAt,
 	}
 }
-`, buf.String())
-	}
+`, got)
 }

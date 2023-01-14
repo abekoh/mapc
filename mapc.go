@@ -157,6 +157,15 @@ func (g Generated) Write(w io.Writer) error {
 	return g.codeFile.Write(w)
 }
 
+func (g Generated) Sprint() (string, error) {
+	var buf bytes.Buffer
+	err := g.Write(&buf)
+	if err != nil {
+		return "", err
+	}
+	return buf.String(), nil
+}
+
 func (g Generated) Save() error {
 	f, err := os.OpenFile(g.filePath, os.O_RDWR|os.O_CREATE, 0755)
 	if err != nil {
