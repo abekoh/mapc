@@ -5,6 +5,11 @@ import (
 	"reflect"
 )
 
+type Info interface {
+	Name() string
+	PkgPath() string
+}
+
 type Struct struct {
 	Name    string
 	PkgPath string
@@ -27,6 +32,15 @@ func NewStruct(typ reflect.Type) (*Struct, error) {
 		Fields:  fields,
 	}, nil
 }
+
+//
+//func (s Struct) Name() string {
+//	return s.Name
+//}
+//
+//func (s Struct) PkgPath() string {
+//	return s.PkgPath
+//}
 
 type Field struct {
 	refStructField *reflect.StructField
