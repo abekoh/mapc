@@ -41,7 +41,7 @@ func ToBUser(x AUser) BUser {
 }
 
 func Test_from_is_private(t *testing.T) {
-	t.Run("outPkgPath is from, success all fields", func(t *testing.T) {
+	t.Run("outPkgPath is from's, success all fields", func(t *testing.T) {
 		m := mapc.New()
 		m.Option.WithoutComment = true
 		m.Option.FieldMappers = append(m.Option.FieldMappers,
@@ -67,7 +67,7 @@ func ToUser(x user) b.User {
 }
 `, got)
 	})
-	t.Run("outPkgPath is to, fail", func(t *testing.T) {
+	t.Run("outPkgPath is to's, fail", func(t *testing.T) {
 		m := mapc.New()
 		m.Option.WithoutComment = true
 		m.Option.FieldMappers = append(m.Option.FieldMappers,
