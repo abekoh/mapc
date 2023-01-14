@@ -5,7 +5,6 @@ import (
 
 	"github.com/abekoh/mapc"
 	"github.com/abekoh/mapc/e2e/testdata/various"
-	"github.com/abekoh/mapc/typemapper"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -57,7 +56,7 @@ func Test_ToPointer(t *testing.T) {
 	m := mapc.New()
 	m.Option.WithoutComment = true
 	m.Option.OutPkgPath = "github.com/abekoh/mapc/e2e/testdata/various"
-	m.Option.TypeMappers = append(m.Option.TypeMappers, &typemapper.RefMapper{})
+	m.Option.TypeMappers = append(m.Option.TypeMappers)
 	m.Register(various.S{}, various.SWithPointers{})
 	gs, errs := m.Generate()
 	requireNoErrors(t, errs)
