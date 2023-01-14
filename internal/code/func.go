@@ -54,9 +54,9 @@ func NewFuncFromMapping(m *mapping.Mapping, opt *FuncOption) *Func {
 	if opt == nil {
 		opt = &FuncOption{}
 	}
-	fieldMappers := MapExprList{}
+	mapExprs := MapExprList{}
 	for _, p := range m.FieldPairs {
-		fieldMappers = append(fieldMappers, &SimpleMapExpr{
+		mapExprs = append(mapExprs, &SimpleMapExpr{
 			from: p.From.Name(),
 			to:   p.To.Name(),
 		})
@@ -66,7 +66,7 @@ func NewFuncFromMapping(m *mapping.Mapping, opt *FuncOption) *Func {
 		argName:        argName(m, opt),
 		fromTyp:        &Typ{name: m.From.Name(), pkgPath: m.From.PkgPath()},
 		toTyp:          &Typ{name: m.To.Name(), pkgPath: m.To.PkgPath()},
-		mapExprs:       fieldMappers,
+		mapExprs:       mapExprs,
 		withoutComment: opt.WithComment,
 	}
 }
