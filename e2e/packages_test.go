@@ -12,21 +12,17 @@ import (
 func Test_ab_same_package(t *testing.T) {
 	m := mapc.New()
 	m.Register(ab.AUser{}, ab.BUser{}, func(option *mapc.Option) {
+		option.OutPkgPath = "github.com/abekoh/mapc/e2e/testdata/ab"
 		option.OutPath = "src/foo/bar.go"
 	})
 	gs, errs := m.Generate()
 	requireNoError(t, errs)
 	got, err := gs[0].Sprint()
 	require.Nil(t, err)
-	assert.Equal(t, `package foo
+	assert.Equal(t, `package ab
 
-import (
-	"github.com/abekoh/mapc/e2e/testdata/a"
-	"github.com/abekoh/mapc/e2e/testdata/b"
-)
-
-func ToUser(x a.User) b.User {
-	return b.User{
+func ToBUser(x AUser) BUser {
+	return BUser{
 		ID:           x.ID,
 		Name:         x.Name,
 		Age:          x.Age,

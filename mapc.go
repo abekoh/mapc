@@ -63,7 +63,10 @@ func (m *MapC) Generate() (res GeneratedList, errs []error) {
 			errs = append(errs, fmt.Errorf("failed to map: %w", err))
 			continue
 		}
-		pkgPath := pkgPathFromRelativePath(pair.option.OutPath)
+		pkgPath := pair.option.OutPkgPath
+		if pkgPath == "" {
+			pkgPath = pkgPathFromRelativePath(pair.option.OutPath)
+		}
 		// TODO: cache file
 		var f *code.File
 		if existed, err := code.LoadFile(pair.option.OutPath, pkgPath); err == nil {
@@ -100,6 +103,7 @@ type input struct {
 
 type Option struct {
 	OutPath      string
+	OutPkgPath   string
 	FieldMappers []fieldmapper.FieldMapper
 	TypeMappers  []typemapper.TypeMapper
 }
@@ -111,6 +115,7 @@ func (o *Option) copy() *Option {
 	copy(tms, o.TypeMappers)
 	return &Option{
 		OutPath:      o.OutPath,
+		OutPkgPath:   o.OutPkgPath,
 		FieldMappers: fms,
 		TypeMappers:  tms,
 	}
