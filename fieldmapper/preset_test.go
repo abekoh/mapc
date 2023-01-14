@@ -85,19 +85,19 @@ func TestSnakeToCamel_Map(t *testing.T) {
 
 func TestHashMap_Map(t *testing.T) {
 	tests := []struct {
-		stringMap map[string]string
-		x         string
-		want      string
+		hashMap HashMap
+		x       string
+		want    string
 	}{
 		{
-			stringMap: map[string]string{
+			hashMap: HashMap{
 				"Foo": "Bar",
 			},
 			x:    "Foo",
 			want: "Bar",
 		},
 		{
-			stringMap: map[string]string{
+			hashMap: HashMap{
 				"Foo": "Bar",
 			},
 			x:    "Baz",
@@ -106,10 +106,7 @@ func TestHashMap_Map(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(fmt.Sprintf("%s->%s", tt.x, tt.want), func(t *testing.T) {
-			m := HashMap{
-				StringMap: tt.stringMap,
-			}
-			if got := m.Map(tt.x); got != tt.want {
+			if got := tt.hashMap.Map(tt.x); got != tt.want {
 				t.Errorf("Map() = %v, want %v", got, tt.want)
 			}
 		})
