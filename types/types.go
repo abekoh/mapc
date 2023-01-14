@@ -5,7 +5,7 @@ import (
 	"reflect"
 )
 
-type Accessor interface {
+type Identifier interface {
 	Name() string
 	PkgPath() string
 }

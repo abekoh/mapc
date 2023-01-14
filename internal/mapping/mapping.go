@@ -50,11 +50,11 @@ func (m Mapper) NewMapping(from, to any, outPkgPath string) (*Mapping, error) {
 	}, nil
 }
 
-func isAccessible(info types.Accessor, outPkgPath string) bool {
-	if !util.IsPrivate(info.Name()) {
+func isAccessible(id types.Identifier, outPkgPath string) bool {
+	if !util.IsPrivate(id.Name()) {
 		return true
 	}
-	return info.PkgPath() == outPkgPath
+	return id.PkgPath() == outPkgPath
 }
 
 func (m Mapper) newFieldPairs(from, to *types.Struct) []*FieldPair {
