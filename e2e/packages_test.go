@@ -16,7 +16,7 @@ func Test_ab_same_package(t *testing.T) {
 		option.OutPath = "src/foo/bar.go"
 	})
 	gs, errs := m.Generate()
-	requireNoError(t, errs)
+	requireNoErrors(t, errs)
 	got, err := gs[0].Sprint()
 	require.Nil(t, err)
 	assert.Equal(t, `package ab

@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func requireNoError(t *testing.T, errs []error) {
+func requireNoErrors(t *testing.T, errs []error) {
 	t.Helper()
 	for _, err := range errs {
 		require.Nil(t, err)
