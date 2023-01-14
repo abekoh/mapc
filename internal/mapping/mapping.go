@@ -5,6 +5,7 @@ import (
 	"reflect"
 
 	"github.com/abekoh/mapc/fieldmapper"
+	"github.com/abekoh/mapc/internal/util"
 	"github.com/abekoh/mapc/typemapper"
 	"github.com/abekoh/mapc/types"
 )
@@ -31,9 +32,15 @@ func (m Mapper) NewMapping(from, to any, outPkgPath string) (*Mapping, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to construct struct: %w", err)
 	}
+	if !isAccessible(fromStr, outPkgPath) {
+		return nil, fmt.Errorf("%v is not accessible from %v", fromStr.Name(), outPkgPath)
+	}
 	toStr, err := types.NewStruct(reflect.TypeOf(to))
 	if err != nil {
 		return nil, fmt.Errorf("failed to construct struct: %w", err)
+	}
+	if !isAccessible(toStr, outPkgPath) {
+		return nil, fmt.Errorf("%v is not accessible from %v", toStr.Name(), outPkgPath)
 	}
 	fieldPairs := m.newFieldPairs(fromStr, toStr)
 	return &Mapping{
@@ -41,6 +48,13 @@ func (m Mapper) NewMapping(from, to any, outPkgPath string) (*Mapping, error) {
 		To:         toStr,
 		FieldPairs: fieldPairs,
 	}, nil
+}
+
+func isAccessible(info types.Typable, outPkgPath string) bool {
+	if !util.IsPrivate(info.Name()) {
+		return true
+	}
+	return info.PkgPath() == outPkgPath
 }
 
 func (m Mapper) newFieldPairs(from, to *types.Struct) []*FieldPair {

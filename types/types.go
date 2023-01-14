@@ -5,7 +5,7 @@ import (
 	"reflect"
 )
 
-type Info interface {
+type Typable interface {
 	Name() string
 	PkgPath() string
 }
