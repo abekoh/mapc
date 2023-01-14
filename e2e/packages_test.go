@@ -11,7 +11,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func Test_same_package(t *testing.T) {
+func Test_WithSamePackage(t *testing.T) {
 	m := mapc.New()
 	m.Option.WithoutComment = true
 	m.Register(ab.AUser{}, ab.BUser{},
@@ -36,7 +36,7 @@ func ToBUser(x AUser) BUser {
 `, got)
 }
 
-func Test_from_is_private(t *testing.T) {
+func Test_FromIsPrivate(t *testing.T) {
 	t.Run("outPkgPath is from's, success all fields", func(t *testing.T) {
 		m := mapc.New()
 		m.Option.WithoutComment = true
@@ -76,7 +76,7 @@ func ToUser(x user) b.User {
 	})
 }
 
-func Test_to_is_private(t *testing.T) {
+func Test_ToIsPrivate(t *testing.T) {
 	t.Run("outPkgPath is to's, success all fields", func(t *testing.T) {
 		m := mapc.New()
 		m.Option.WithoutComment = true

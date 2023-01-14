@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func Test_comment(t *testing.T) {
+func Test_WithComments(t *testing.T) {
 	m := mapc.New()
 	m.Register(ab.AUser{}, ab.BUser{},
 		func(option *mapc.Option) {
