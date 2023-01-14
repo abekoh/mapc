@@ -13,14 +13,14 @@ import (
 )
 
 type MapC struct {
+	Option *Option
 	inputs []input
-	option *Option
 }
 
 func New() *MapC {
 	return &MapC{
 		inputs: []input{},
-		option: &Option{
+		Option: &Option{
 			FieldMappers: fieldmapper.Default,
 			TypeMappers:  typemapper.Default,
 		},
@@ -31,7 +31,7 @@ func (m *MapC) Register(from, to any, optFns ...func(*Option)) {
 	m.inputs = append(m.inputs, input{
 		from:   from,
 		to:     to,
-		option: (m.option).overwrite(optFns...),
+		option: (m.Option).overwrite(optFns...),
 	})
 }
 
@@ -39,7 +39,7 @@ func (m *MapC) Group(optFns ...func(*Option)) *Group {
 	return &Group{
 		MapC:   m,
 		parent: nil,
-		option: (m.option).overwrite(optFns...),
+		Option: (m.Option).overwrite(optFns...),
 	}
 }
 
@@ -126,15 +126,15 @@ func (o *Option) overwrite(optFns ...func(*Option)) *Option {
 
 type Group struct {
 	*MapC
+	Option *Option
 	parent *Group
-	option *Option
 }
 
 func (g *Group) Group(optFns ...func(*Option)) *Group {
 	return &Group{
 		MapC:   g.MapC,
 		parent: g,
-		option: (g.option).overwrite(optFns...),
+		Option: (g.Option).overwrite(optFns...),
 	}
 }
 
@@ -142,7 +142,7 @@ func (g *Group) Register(from, to any, optFns ...func(*Option)) {
 	g.MapC.inputs = append(g.MapC.inputs, input{
 		from:   from,
 		to:     to,
-		option: (g.option).overwrite(optFns...),
+		option: (g.Option).overwrite(optFns...),
 	})
 }
 

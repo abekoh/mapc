@@ -5,15 +5,14 @@ import (
 	"testing"
 
 	"github.com/abekoh/mapc"
-	"github.com/abekoh/mapc/e2e/testdata/a"
-	"github.com/abekoh/mapc/e2e/testdata/b"
+	"github.com/abekoh/mapc/e2e/testdata/ab"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
-func TestMapC(t *testing.T) {
+func Test_ab_same_package(t *testing.T) {
 	m := mapc.New()
-	m.Register(a.User{}, b.User{}, func(option *mapc.Option) {
+	m.Register(ab.AUser{}, bb.BUser{}, func(option *mapc.Option) {
 		option.OutPath = "src/foo/bar.go"
 	})
 	gs, errs := m.Generate()
