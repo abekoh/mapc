@@ -64,7 +64,7 @@ func TestConvertMapper_Map(t *testing.T) {
 			to:   Int,
 			want: &SimpleCaster{
 				pkgPath: "",
-				fn:      "int",
+				caller:  "int",
 			},
 			wantOk: true,
 		},
@@ -73,7 +73,7 @@ func TestConvertMapper_Map(t *testing.T) {
 			to:   String,
 			want: &SimpleCaster{
 				pkgPath: "",
-				fn:      "string",
+				caller:  "string",
 			},
 			wantOk: true,
 		},
@@ -82,7 +82,7 @@ func TestConvertMapper_Map(t *testing.T) {
 			to:   Object,
 			want: &SimpleCaster{
 				pkgPath: "github.com/abekoh/mapc/testdata/sample",
-				fn:      "Object",
+				caller:  "Object",
 			},
 			wantOk: true,
 		},
@@ -91,7 +91,7 @@ func TestConvertMapper_Map(t *testing.T) {
 			to:   Int64,
 			want: &SimpleCaster{
 				pkgPath: "",
-				fn:      "int64",
+				caller:  "int64",
 			},
 			wantOk: true,
 		},
@@ -100,7 +100,7 @@ func TestConvertMapper_Map(t *testing.T) {
 			to:   TypedInt,
 			want: &SimpleCaster{
 				pkgPath: "github.com/abekoh/mapc/typemapper",
-				fn:      "typedInt",
+				caller:  "typedInt",
 			},
 			wantOk: true,
 		},
@@ -109,7 +109,7 @@ func TestConvertMapper_Map(t *testing.T) {
 			to:   String,
 			want: &SimpleCaster{
 				pkgPath: "",
-				fn:      "string",
+				caller:  "string",
 			},
 			wantOk: true,
 		},
@@ -151,7 +151,7 @@ func TestRefMapper_Map(t *testing.T) {
 			to:   PointerInt,
 			want: &SimpleCaster{
 				pkgPath: "",
-				fn:      "&",
+				caller:  "&",
 			},
 			wantOk: true,
 		},
@@ -160,7 +160,7 @@ func TestRefMapper_Map(t *testing.T) {
 			to:   PointerString,
 			want: &SimpleCaster{
 				pkgPath: "",
-				fn:      "&",
+				caller:  "&",
 			},
 			wantOk: true,
 		},
@@ -220,7 +220,7 @@ func TestDerefMapper_Map(t *testing.T) {
 			to:   String,
 			want: &SimpleCaster{
 				pkgPath: "",
-				fn:      "*",
+				caller:  "*",
 			},
 			wantOk: true,
 		},
@@ -229,7 +229,7 @@ func TestDerefMapper_Map(t *testing.T) {
 			to:   Int,
 			want: &SimpleCaster{
 				pkgPath: "",
-				fn:      "*",
+				caller:  "*",
 			},
 			wantOk: true,
 		},

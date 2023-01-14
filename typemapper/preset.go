@@ -21,7 +21,7 @@ func (c ConvertMapper) Map(from, to *types.Typ) (Caster, bool) {
 	if from.ConvertibleTo(to) {
 		return &SimpleCaster{
 			pkgPath: to.PkgPath(),
-			fn:      to.Name(),
+			caller:  to.Name(),
 		}, true
 	}
 	return nil, false
@@ -36,7 +36,7 @@ func (p RefMapper) Map(from, to *types.Typ) (Caster, bool) {
 	}
 	if toElm, ok := to.Elem(); ok && from.AssignableTo(toElm) {
 		return &SimpleCaster{
-			fn: "&",
+			caller: "&",
 		}, true
 	}
 	return nil, false
@@ -51,7 +51,7 @@ func (p DerefMapper) Map(from, to *types.Typ) (Caster, bool) {
 	}
 	if fromElm, ok := from.Elem(); ok && fromElm.AssignableTo(to) {
 		return &SimpleCaster{
-			fn: "*",
+			caller: "*",
 		}, true
 	}
 	return nil, false
