@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func Test_VariousType(t *testing.T) {
+func Test_AssignableType(t *testing.T) {
 	m := mapc.New()
 	m.Option.WithoutComment = true
 	m.Register(various.S{}, various.S2{},
