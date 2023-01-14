@@ -4,9 +4,23 @@ import (
 	"strings"
 )
 
+func isLower(c byte) bool {
+	if c >= 0x61 && c <= 0x7A {
+		return true
+	}
+	return false
+}
+
+func isUpper(c byte) bool {
+	if c >= 0x41 && c <= 0x5A {
+		return true
+	}
+	return false
+}
+
 func UpperFirst(x string) string {
 	f := x[0]
-	if f < 0x61 || f > 0x7A {
+	if !isLower(f) {
 		return x
 	}
 	return string(f-0x20) + x[1:]
@@ -14,7 +28,7 @@ func UpperFirst(x string) string {
 
 func LowerFirst(x string) string {
 	f := x[0]
-	if f < 0x41 || f > 0x5A {
+	if !isUpper(f) {
 		return x
 	}
 	return string(f+0x20) + x[1:]
