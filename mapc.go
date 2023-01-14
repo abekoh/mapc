@@ -18,6 +18,11 @@ type MapC struct {
 	inputs []input
 }
 
+type Registerer interface {
+	Register(from, to any, optFns ...func(option *Option))
+	Group(optFns ...func(*Option)) *Group
+}
+
 func New() *MapC {
 	return &MapC{
 		inputs: []input{},
