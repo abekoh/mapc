@@ -97,3 +97,15 @@ func (t Typ) ConvertibleTo(to *Typ) bool {
 func (t Typ) String() string {
 	return t.refTyp.Name()
 }
+
+func (t Typ) IsPointer() bool {
+	return t.refTyp.Kind() == reflect.Pointer
+}
+
+func (t Typ) Elem() (*Typ, bool) {
+	e := t.refTyp.Elem()
+	if e == nil {
+		return nil, false
+	}
+	return NewTyp(e), true
+}

@@ -27,6 +27,18 @@ func (c ConvertMapper) Map(from, to *types.Typ) (Caster, bool) {
 	return nil, false
 }
 
+type RefMapper struct {
+}
+
+func (p RefMapper) Map(from, to *types.Typ) (Caster, bool) {
+	if !to.IsPointer() {
+		return nil, false
+	}
+	return &SimpleCaster{
+		fn: "&",
+	}, true
+}
+
 type MapTypeMapper map[types.Typ]map[types.Typ]Caster
 
 func (m MapTypeMapper) Map(from, to types.Typ) (Caster, bool) {
