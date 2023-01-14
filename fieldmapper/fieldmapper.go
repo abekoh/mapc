@@ -4,6 +4,6 @@ type FieldMapper interface {
 	Map(string) string
 }
 
-var Default = []FieldMapper{
+var DefaultMappers = []FieldMapper{
 	&Identify{},
 }

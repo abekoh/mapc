@@ -27,8 +27,8 @@ func New() *MapC {
 	return &MapC{
 		inputs: []input{},
 		Option: &Option{
-			FieldMappers: fieldmapper.Default,
-			TypeMappers:  typemapper.Default,
+			FieldMappers: fieldmapper.DefaultMappers,
+			TypeMappers:  typemapper.DefaultMappers,
 		},
 	}
 }
