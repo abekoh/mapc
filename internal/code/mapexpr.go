@@ -29,8 +29,29 @@ func (mel MapExprList) DstExprs(arg string) (exprs []dst.Expr, comments []string
 }
 
 type SimpleMapExpr struct {
-	from string
-	to   string
+	from    string
+	to      string
+	casters []Caster
+}
+
+type Caster interface {
+	Ident() *dst.Ident
+}
+
+type TypeCaster struct {
+	typ *Typ
+}
+
+func (t TypeCaster) Ident() *dst.Ident {
+	return genType(t.typ)
+}
+
+type CallerCaster struct {
+	caller *Caller
+}
+
+func (c CallerCaster) Ident() *dst.Ident {
+	return genCaller(c.caller)
 }
 
 func (e SimpleMapExpr) From() string {
@@ -47,12 +68,8 @@ func (e SimpleMapExpr) Comment() (string, bool) {
 
 func (e SimpleMapExpr) DstExpr(arg string) (dst.Expr, bool) {
 	return &dst.KeyValueExpr{
-		Key: dst.NewIdent(e.to),
-		Value: &dst.SelectorExpr{
-			X:    genVar(arg),
-			Sel:  dst.NewIdent(e.from),
-			Decs: dst.SelectorExprDecorations{},
-		},
+		Key:   dst.NewIdent(e.to),
+		Value: e.valueExpr(arg),
 		Decs: dst.KeyValueExprDecorations{
 			NodeDecs: dst.NodeDecs{
 				Before: dst.NewLine,
@@ -60,6 +77,25 @@ func (e SimpleMapExpr) DstExpr(arg string) (dst.Expr, bool) {
 			},
 		},
 	}, true
+}
+
+func (e SimpleMapExpr) valueExpr(arg string) dst.Expr {
+	var el dst.Expr
+	el = &dst.SelectorExpr{
+		X:    genVar(arg),
+		Sel:  dst.NewIdent(e.from),
+		Decs: dst.SelectorExprDecorations{},
+	}
+	for _, caster := range e.casters {
+		newEl := &dst.CallExpr{
+			Fun:      caster.Ident(),
+			Args:     []dst.Expr{el},
+			Ellipsis: false,
+			Decs:     dst.CallExprDecorations{},
+		}
+		el = newEl
+	}
+	return el
 }
 
 type CommentedMapExpr struct {

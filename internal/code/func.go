@@ -20,6 +20,11 @@ func (t Typ) Equal(x *Typ) bool {
 	return x.name == t.name && x.pkgPath == t.pkgPath
 }
 
+type Caller struct {
+	name    string
+	pkgPath string
+}
+
 type Func struct {
 	name           string
 	argName        string
@@ -237,6 +242,14 @@ func genType(typ *Typ) *dst.Ident {
 	i := dst.NewIdent(typ.name)
 	i.Obj = o
 	i.Path = typ.pkgPath
+	return i
+}
+
+func genCaller(caller *Caller) *dst.Ident {
+	o := dst.NewObj(dst.Fun, caller.name)
+	i := dst.NewIdent(caller.name)
+	i.Obj = o
+	i.Path = caller.pkgPath
 	return i
 }
 
