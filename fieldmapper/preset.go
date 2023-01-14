@@ -54,3 +54,14 @@ func (s SnakeToCamel) Map(x string) string {
 	}
 	return b.String()
 }
+
+type HashMap struct {
+	StringMap map[string]string
+}
+
+func (m HashMap) Map(x string) string {
+	if r, ok := m.StringMap[x]; ok {
+		return r
+	}
+	return ""
+}
