@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func Test_ab_same_package(t *testing.T) {
+func Test_same_package(t *testing.T) {
 	m := mapc.New()
 	m.Register(ab.AUser{}, ab.BUser{}, func(option *mapc.Option) {
 		option.OutPkgPath = "github.com/abekoh/mapc/e2e/testdata/ab"
