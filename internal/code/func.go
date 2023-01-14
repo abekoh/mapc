@@ -166,6 +166,7 @@ func newFuncFromDecl(pkgPath string, d *dst.FuncDecl) (*Func, error) {
 		if !ok {
 			return nil, fmt.Errorf("value must be SelectorExpr")
 		}
+		// TODO: with caster
 		res.mapExprs = append(res.mapExprs, &SimpleMapExpr{
 			from: selectorExpr.Sel.Name,
 			to:   keyIdent.Name,
