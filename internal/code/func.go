@@ -64,8 +64,8 @@ func NewFuncFromMapping(m *mapping.Mapping, opt *FuncOption) *Func {
 	return &Func{
 		name:           funcName(m, opt),
 		argName:        argName(m, opt),
-		fromTyp:        &Typ{name: m.From.Name, pkgPath: m.From.PkgPath},
-		toTyp:          &Typ{name: m.To.Name, pkgPath: m.To.PkgPath},
+		fromTyp:        &Typ{name: m.From.Name(), pkgPath: m.From.PkgPath},
+		toTyp:          &Typ{name: m.To.Name(), pkgPath: m.To.PkgPath},
 		mapExprs:       fieldMappers,
 		withoutComment: opt.WithComment,
 	}
@@ -80,15 +80,15 @@ func funcName(m *mapping.Mapping, opt *FuncOption) (res string) {
 			From string
 			To   string
 		}{
-			From: m.From.Name,
-			To:   m.To.Name,
+			From: m.From.Name(),
+			To:   m.To.Name(),
 		})
 		if err == nil {
 			res = buf.String()
 		}
 	}
 	if res == "" {
-		res = fmt.Sprintf("To%s", util.UpperFirst(m.To.Name))
+		res = fmt.Sprintf("To%s", util.UpperFirst(m.To.Name()))
 	}
 	if opt.Private {
 		res = util.LowerFirst(res)
