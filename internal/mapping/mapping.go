@@ -42,7 +42,7 @@ func (m Mapper) NewMapping(from, to any, outPkgPath string) (*Mapping, error) {
 	if !isAccessible(toStr, outPkgPath) {
 		return nil, fmt.Errorf("%v is not accessible from %v", toStr.Name(), outPkgPath)
 	}
-	fieldPairs := m.newFieldPairs(fromStr, toStr)
+	fieldPairs := m.newFieldPairs(fromStr, toStr, outPkgPath)
 	return &Mapping{
 		From:       fromStr,
 		To:         toStr,
@@ -57,7 +57,7 @@ func isAccessible(id types.Identifier, outPkgPath string) bool {
 	return id.PkgPath() == outPkgPath
 }
 
-func (m Mapper) newFieldPairs(from, to *types.Struct) []*FieldPair {
+func (m Mapper) newFieldPairs(from, to *types.Struct, outPkgPath string) []*FieldPair {
 	toFieldMap := make(map[string]*types.Field)
 	for _, field := range to.Fields {
 		toFieldMap[field.Name()] = field
@@ -68,6 +68,9 @@ func (m Mapper) newFieldPairs(from, to *types.Struct) []*FieldPair {
 		for _, fieldMapper := range m.FieldMappers {
 			key := fieldMapper.Map(fromField.Name())
 			if toField, ok := toFieldMap[key]; ok {
+				if !isAccessible(fromField, outPkgPath) || !isAccessible(toField, outPkgPath) {
+					break
+				}
 				if pair, ok := m.newFieldPair(fromField, toField); ok {
 					pairs = append(pairs, pair)
 					break
