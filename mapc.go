@@ -59,14 +59,14 @@ func (m *MapC) Generate() (res GeneratedList, errs []error) {
 			FieldMappers: input.option.FieldMappers,
 			TypeMappers:  input.option.TypeMappers,
 		}
-		mp, err := mapper.NewMapping(input.from, input.to, "github.com/abekoh/mapc/testdata/sample")
-		if err != nil {
-			errs = append(errs, fmt.Errorf("failed to map: %w", err))
-			continue
-		}
 		pkgPath := input.option.OutPkgPath
 		if pkgPath == "" {
 			pkgPath = pkgPathFromRelativePath(input.option.OutPath)
+		}
+		mp, err := mapper.NewMapping(input.from, input.to, pkgPath)
+		if err != nil {
+			errs = append(errs, fmt.Errorf("failed to map: %w", err))
+			continue
 		}
 		// TODO: cache file
 		var f *code.File
