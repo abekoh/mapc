@@ -8,6 +8,7 @@ import (
 
 	"github.com/abekoh/mapc/internal/mapping"
 	"github.com/abekoh/mapc/internal/util"
+	"github.com/abekoh/mapc/typemapper"
 	"github.com/dave/dst"
 )
 
@@ -18,11 +19,6 @@ type Typ struct {
 
 func (t Typ) Equal(x *Typ) bool {
 	return x.name == t.name && x.pkgPath == t.pkgPath
-}
-
-type Caller struct {
-	name    string
-	pkgPath string
 }
 
 type Func struct {
@@ -62,8 +58,27 @@ func NewFuncFromMapping(m *mapping.Mapping, opt *FuncOption) *Func {
 	mapExprs := MapExprList{}
 	for _, p := range m.FieldPairs {
 		var casters []Caster
-		//for _, c := range p.Casters {
-		//}
+		for _, c := range p.Casters {
+			caller := c.Caller()
+			if caller == nil {
+				continue
+			}
+			switch caller.CallerType {
+			case typemapper.Unary:
+				casters = append(casters, UnaryCaster(caller.Name[0]))
+			case typemapper.Typ:
+				casters = append(casters, TypeCaster{
+					name:    caller.Name,
+					pkgPath: caller.PkgPath,
+				})
+			case typemapper.Func:
+				casters = append(casters, FuncCallCaster{
+					name:    caller.Name,
+					pkgPath: caller.PkgPath,
+				})
+			default:
+			}
+		}
 		mapExprs = append(mapExprs, &SimpleMapExpr{
 			from:    p.From.Name(),
 			to:      p.To.Name(),
@@ -249,11 +264,19 @@ func genType(typ *Typ) *dst.Ident {
 	return i
 }
 
-func genCaller(caller *Caller) *dst.Ident {
-	o := dst.NewObj(dst.Fun, caller.name)
-	i := dst.NewIdent(caller.name)
+func genTypeWithName(name, pkgPath string) *dst.Ident {
+	o := dst.NewObj(dst.Typ, name)
+	i := dst.NewIdent(name)
 	i.Obj = o
-	i.Path = caller.pkgPath
+	i.Path = pkgPath
+	return i
+}
+
+func genFunc(name, pkgPath string) *dst.Ident {
+	o := dst.NewObj(dst.Fun, name)
+	i := dst.NewIdent(name)
+	i.Obj = o
+	i.Path = pkgPath
 	return i
 }
 

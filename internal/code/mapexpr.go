@@ -1,6 +1,7 @@
 package code
 
 import (
+	"go/token"
 	"regexp"
 
 	"github.com/dave/dst"
@@ -32,26 +33,6 @@ type SimpleMapExpr struct {
 	from    string
 	to      string
 	casters []Caster
-}
-
-type Caster interface {
-	Ident() *dst.Ident
-}
-
-type TypeCaster struct {
-	typ *Typ
-}
-
-func (t TypeCaster) Ident() *dst.Ident {
-	return genType(t.typ)
-}
-
-type CallerCaster struct {
-	caller *Caller
-}
-
-func (c CallerCaster) Ident() *dst.Ident {
-	return genCaller(c.caller)
 }
 
 func (e SimpleMapExpr) From() string {
@@ -87,13 +68,7 @@ func (e SimpleMapExpr) valueExpr(arg string) dst.Expr {
 		Decs: dst.SelectorExprDecorations{},
 	}
 	for _, caster := range e.casters {
-		newEl := &dst.CallExpr{
-			Fun:      caster.Ident(),
-			Args:     []dst.Expr{el},
-			Ellipsis: false,
-			Decs:     dst.CallExprDecorations{},
-		}
-		el = newEl
+		el = caster.Expr(el)
 	}
 	return el
 }
@@ -138,4 +113,55 @@ func commentToKey(comment string) string {
 		return r[1]
 	}
 	return ""
+}
+
+type Caster interface {
+	Expr(arg dst.Expr) dst.Expr
+}
+
+type TypeCaster struct {
+	name    string
+	pkgPath string
+}
+
+func (t TypeCaster) Expr(arg dst.Expr) dst.Expr {
+	return &dst.CallExpr{
+		Fun:      genTypeWithName(t.name, t.pkgPath),
+		Args:     []dst.Expr{arg},
+		Ellipsis: false,
+		Decs:     dst.CallExprDecorations{},
+	}
+}
+
+type FuncCallCaster struct {
+	name    string
+	pkgPath string
+}
+
+func (c FuncCallCaster) Expr(arg dst.Expr) dst.Expr {
+	return &dst.CallExpr{
+		Fun:      genFunc(c.name, c.pkgPath),
+		Args:     []dst.Expr{arg},
+		Ellipsis: false,
+		Decs:     dst.CallExprDecorations{},
+	}
+}
+
+type UnaryCaster byte
+
+func (u UnaryCaster) Expr(arg dst.Expr) dst.Expr {
+	var op token.Token
+	switch rune(u) {
+	case '&':
+		op = token.AND
+	case '*':
+		op = token.MUL
+	default:
+		return nil
+	}
+	return &dst.UnaryExpr{
+		Op:   op,
+		X:    arg,
+		Decs: dst.UnaryExprDecorations{},
+	}
 }
