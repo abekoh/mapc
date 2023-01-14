@@ -46,3 +46,10 @@ func PkgNameFromPath(pkgPath string) string {
 	sp := strings.Split(pkgPath, "/")
 	return sp[len(sp)-1]
 }
+
+func IsPrivate(name string) bool {
+	if name == "" {
+		return false
+	}
+	return isLower(name[0])
+}

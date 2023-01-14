@@ -76,3 +76,19 @@ func TestPkgNameFromPath(t *testing.T) {
 		})
 	}
 }
+
+func TestIsPrivate(t *testing.T) {
+	tests := []struct {
+		name string
+		want bool
+	}{
+		{name: "Foo", want: false},
+		{name: "foo", want: true},
+		{name: "", want: false},
+	}
+	for _, tt := range tests {
+		t.Run(fmt.Sprintf("%v->%v", tt.name, tt.want), func(t *testing.T) {
+			assert.Equalf(t, tt.want, IsPrivate(tt.name), "IsPrivate(%v)", tt.name)
+		})
+	}
+}
