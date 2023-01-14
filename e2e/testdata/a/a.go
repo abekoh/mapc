@@ -12,3 +12,10 @@ type User struct {
 	Age          int
 	RegisteredAt time.Time
 }
+
+type user struct {
+	ID           uuid.UUID
+	Name         string
+	Age          int
+	RegisteredAt time.Time
+}
