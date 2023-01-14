@@ -56,7 +56,6 @@ func Test_ToPointer(t *testing.T) {
 	m := mapc.New()
 	m.Option.WithoutComment = true
 	m.Option.OutPkgPath = "github.com/abekoh/mapc/e2e/testdata/various"
-	m.Option.TypeMappers = append(m.Option.TypeMappers)
 	m.Register(various.S{}, various.SWithPointers{})
 	gs, errs := m.Generate()
 	requireNoErrors(t, errs)
