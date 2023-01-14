@@ -50,33 +50,33 @@ func (m *MapC) Group(optFns ...func(*Option)) *Group {
 }
 
 func (m *MapC) Generate() (res GeneratedList, errs []error) {
-	for _, pair := range m.inputs {
-		if pair.option == nil {
-			errs = append(errs, fmt.Errorf("option is nil. from=%T, to=%T", pair.from, pair.to))
+	for _, input := range m.inputs {
+		if input.option == nil {
+			errs = append(errs, fmt.Errorf("option is nil. from=%T, to=%T", input.from, input.to))
 			continue
 		}
 		mapper := mapping.Mapper{
-			FieldMappers: pair.option.FieldMappers,
-			TypeMappers:  pair.option.TypeMappers,
+			FieldMappers: input.option.FieldMappers,
+			TypeMappers:  input.option.TypeMappers,
 		}
-		mp, err := mapper.NewMapping(pair.from, pair.to)
+		mp, err := mapper.NewMapping(input.from, input.to)
 		if err != nil {
 			errs = append(errs, fmt.Errorf("failed to map: %w", err))
 			continue
 		}
-		pkgPath := pair.option.OutPkgPath
+		pkgPath := input.option.OutPkgPath
 		if pkgPath == "" {
-			pkgPath = pkgPathFromRelativePath(pair.option.OutPath)
+			pkgPath = pkgPathFromRelativePath(input.option.OutPath)
 		}
 		// TODO: cache file
 		var f *code.File
-		if existed, err := code.LoadFile(pair.option.OutPath, pkgPath); err == nil {
+		if existed, err := code.LoadFile(input.option.OutPath, pkgPath); err == nil {
 			f = existed
 		} else {
 			f = code.NewFile(pkgPath)
 		}
 		fn := code.NewFuncFromMapping(mp, &code.FuncOption{
-			WithComment: pair.option.WithoutComment,
+			WithComment: input.option.WithoutComment,
 		})
 		if existedFn, ok := f.FindFunc(fn.Name()); ok {
 			if err := fn.AppendNotSetExprs(existedFn); err != nil {
@@ -90,7 +90,7 @@ func (m *MapC) Generate() (res GeneratedList, errs []error) {
 			continue
 		}
 		g := &Generated{
-			filePath: pair.option.OutPath,
+			filePath: input.option.OutPath,
 			codeFile: f,
 		}
 		res = append(res, g)
