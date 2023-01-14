@@ -79,3 +79,43 @@ func ToUser(x user) b.User {
 		require.Len(t, errs, 1)
 	})
 }
+
+func Test_to_is_private(t *testing.T) {
+	t.Run("outPkgPath is to's, success all fields", func(t *testing.T) {
+		m := mapc.New()
+		m.Option.WithoutComment = true
+		m.Option.FieldMappers = append(m.Option.FieldMappers,
+			&fieldmapper.LowerFirst{},
+			&fieldmapper.HashMap{"ID": "id"},
+		)
+		a.RegisterBUserToPrivateAUser(t, m, "github.com/abekoh/mapc/e2e/testdata/a")
+		gs, errs := m.Generate()
+		requireNoErrors(t, errs)
+		got, err := gs[0].Sprint()
+		require.Nil(t, err)
+		assert.Equal(t, `package a
+
+import "github.com/abekoh/mapc/e2e/testdata/b"
+
+func ToUser(x b.User) user {
+	return user{
+		id:           x.ID,
+		name:         x.Name,
+		age:          x.Age,
+		registeredAt: x.RegisteredAt,
+	}
+}
+`, got)
+	})
+	t.Run("outPkgPath is to's, fail", func(t *testing.T) {
+		m := mapc.New()
+		m.Option.WithoutComment = true
+		m.Option.FieldMappers = append(m.Option.FieldMappers,
+			&fieldmapper.LowerFirst{},
+			&fieldmapper.HashMap{"ID": "id"},
+		)
+		a.RegisterPrivateAUserToBUser(t, m, "github.com/abekoh/mapc/e2e/testdata/b")
+		_, errs := m.Generate()
+		require.Len(t, errs, 1)
+	})
+}
