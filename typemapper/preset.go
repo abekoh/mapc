@@ -50,9 +50,6 @@ type DerefMapper struct {
 }
 
 func (p DerefMapper) Map(from, to *types.Typ) (Caster, bool) {
-	if !from.IsPointer() || to.IsPointer() {
-		return nil, false
-	}
 	if fromElm, ok := from.Elem(); ok && fromElm.AssignableTo(to) {
 		return &SimpleCaster{
 			caller: &Caller{

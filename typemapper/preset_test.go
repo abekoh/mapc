@@ -278,6 +278,18 @@ func TestDerefMapper_Map(t *testing.T) {
 			wantOk: true,
 		},
 		{
+			from: DoublePointerInt,
+			to:   PointerInt,
+			want: &SimpleCaster{
+				caller: &Caller{
+					PkgPath:    "",
+					Name:       "*",
+					CallerType: Unary,
+				},
+			},
+			wantOk: true,
+		},
+		{
 			from:   PointerInt,
 			to:     String,
 			want:   nil,
