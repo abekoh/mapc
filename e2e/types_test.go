@@ -12,7 +12,7 @@ import (
 
 func Test_AssignableType(t *testing.T) {
 	m := mapc.New()
-	m.Option.WithFuncComment = false
+	m.Option.FuncComment = false
 	m.Option.OutPkgPath = "github.com/abekoh/mapc/e2e/testdata/various"
 	m.Register(various.S{}, various.S2{})
 	gs, errs := m.Generate()
@@ -57,7 +57,7 @@ func MapSToS2(x S) S2 {
 
 func Test_Reference(t *testing.T) {
 	m := mapc.New()
-	m.Option.WithFuncComment = false
+	m.Option.FuncComment = false
 	m.Option.OutPkgPath = "github.com/abekoh/mapc/e2e/testdata/various"
 	m.Register(various.S{}, various.SPointer{})
 	gs, errs := m.Generate()
@@ -102,7 +102,7 @@ func MapSToSPointer(x S) SPointer {
 
 func Test_DeReference(t *testing.T) {
 	m := mapc.New()
-	m.Option.WithFuncComment = false
+	m.Option.FuncComment = false
 	m.Option.OutPkgPath = "github.com/abekoh/mapc/e2e/testdata/various"
 	m.Register(various.SPointer{}, various.S{})
 	gs, errs := m.Generate()
@@ -147,7 +147,7 @@ func MapSPointerToS(x SPointer) S {
 
 func Test_ConvertWithCast(t *testing.T) {
 	m := mapc.New()
-	m.Option.WithFuncComment = false
+	m.Option.FuncComment = false
 	m.Option.OutPkgPath = "github.com/abekoh/mapc/e2e/testdata/various"
 	m.Option.FieldMappers = []fieldmapper.FieldMapper{fieldmapper.HashMap{
 		"Int":    "Int64",
