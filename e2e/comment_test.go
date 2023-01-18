@@ -5,6 +5,7 @@ import (
 
 	"github.com/abekoh/mapc"
 	"github.com/abekoh/mapc/e2e/testdata/ab"
+	"github.com/abekoh/mapc/fieldmapper"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -31,6 +32,29 @@ func MapAUserToBUser(x AUser) BUser {
 		Name:         x.Name,
 		Age:          x.Age,
 		RegisteredAt: x.RegisteredAt,
+	}
+}
+`, got)
+}
+
+func Test_FieldComments(t *testing.T) {
+	m := mapc.New()
+	m.Option.FuncComment = false
+	m.Option.FieldMappers = []fieldmapper.FieldMapper{}
+	m.Option.OutPkgPath = "github.com/abekoh/mapc/e2e/testdata/ab"
+	m.Register(ab.AUser{}, ab.BUser{})
+	gs, errs := m.Generate()
+	requireNoErrors(t, errs)
+	got, err := gs[0].Sprint()
+	require.Nil(t, err)
+	assert.Equal(t, `package ab
+
+func MapAUserToBUser(x AUser) BUser {
+	return BUser{
+		// ID:
+		// Name:
+		// Age:
+		// RegisteredAt:
 	}
 }
 `, got)
