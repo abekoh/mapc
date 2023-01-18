@@ -13,7 +13,7 @@ import (
 
 func Test_WithSamePackage(t *testing.T) {
 	m := mapc.New()
-	m.Option.WithoutComment = true
+	m.Option.FuncComment = false
 	m.Register(ab.AUser{}, ab.BUser{},
 		func(option *mapc.Option) {
 			option.OutPkgPath = "github.com/abekoh/mapc/e2e/testdata/ab"
@@ -39,7 +39,7 @@ func MapAUserToBUser(x AUser) BUser {
 func Test_FromIsPrivate(t *testing.T) {
 	t.Run("outPkgPath is from's, success all fields", func(t *testing.T) {
 		m := mapc.New()
-		m.Option.WithoutComment = true
+		m.Option.FuncComment = false
 		m.Option.FieldMappers = append(m.Option.FieldMappers,
 			&fieldmapper.UpperFirst{},
 			&fieldmapper.HashMap{"id": "ID"},
@@ -65,7 +65,7 @@ func MapUserToUser(x user) b.User {
 	})
 	t.Run("outPkgPath is to's, fail", func(t *testing.T) {
 		m := mapc.New()
-		m.Option.WithoutComment = true
+		m.Option.FuncComment = false
 		m.Option.FieldMappers = append(m.Option.FieldMappers,
 			&fieldmapper.UpperFirst{},
 			&fieldmapper.HashMap{"id": "ID"},
@@ -79,7 +79,7 @@ func MapUserToUser(x user) b.User {
 func Test_ToIsPrivate(t *testing.T) {
 	t.Run("outPkgPath is to's, success all fields", func(t *testing.T) {
 		m := mapc.New()
-		m.Option.WithoutComment = true
+		m.Option.FuncComment = false
 		m.Option.FieldMappers = append(m.Option.FieldMappers,
 			&fieldmapper.LowerFirst{},
 			&fieldmapper.HashMap{"ID": "id"},
@@ -105,7 +105,7 @@ func MapUserToUser(x b.User) user {
 	})
 	t.Run("outPkgPath is to's, fail", func(t *testing.T) {
 		m := mapc.New()
-		m.Option.WithoutComment = true
+		m.Option.FuncComment = false
 		m.Option.FieldMappers = append(m.Option.FieldMappers,
 			&fieldmapper.LowerFirst{},
 			&fieldmapper.HashMap{"ID": "id"},

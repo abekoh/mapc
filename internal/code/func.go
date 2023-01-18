@@ -22,12 +22,12 @@ func (t Typ) Equal(x *Typ) bool {
 }
 
 type Func struct {
-	name           string
-	argName        string
-	fromTyp        *Typ
-	toTyp          *Typ
-	mapExprs       MapExprList
-	withoutComment bool
+	name            string
+	argName         string
+	fromTyp         *Typ
+	toTyp           *Typ
+	mapExprs        MapExprList
+	withFuncComment bool
 }
 
 func (f *Func) Name() string {
@@ -44,18 +44,21 @@ func (f *Func) funcComments() []string {
 }
 
 type FuncOption struct {
-	Name         string
-	NameTemplate *template.Template
-	Private      bool
-	ArgName      string
-	WithComment  bool
+	Name                 string
+	NameTemplate         *template.Template
+	Private              bool
+	ArgName              string
+	FuncComment          bool
+	NoMapperFieldComment bool
 }
 
 func NewFuncFromMapping(m *mapping.Mapping, opt *FuncOption) *Func {
 	if opt == nil {
 		opt = &FuncOption{}
 	}
+
 	mapExprs := MapExprList{}
+	mappedFieldMap := make(map[string]struct{})
 	for _, p := range m.FieldPairs {
 		var casters []Caster
 		for _, c := range p.Casters {
@@ -84,14 +87,26 @@ func NewFuncFromMapping(m *mapping.Mapping, opt *FuncOption) *Func {
 			to:      p.To.Name(),
 			casters: casters,
 		})
+		mappedFieldMap[p.To.Name()] = struct{}{}
+	}
+	if opt.NoMapperFieldComment {
+		for _, toField := range m.To.Fields {
+			toFieldName := toField.Name()
+			if _, ok := mappedFieldMap[toFieldName]; !ok {
+				mapExprs = append(mapExprs, &CommentedMapExpr{
+					to:      toFieldName,
+					comment: fmt.Sprintf("// %s:", toFieldName),
+				})
+			}
+		}
 	}
 	return &Func{
-		name:           funcName(m, opt),
-		argName:        argName(m, opt),
-		fromTyp:        &Typ{name: m.From.Name(), pkgPath: m.From.PkgPath()},
-		toTyp:          &Typ{name: m.To.Name(), pkgPath: m.To.PkgPath()},
-		mapExprs:       mapExprs,
-		withoutComment: opt.WithComment,
+		name:            funcName(m, opt),
+		argName:         argName(m, opt),
+		fromTyp:         &Typ{name: m.From.Name(), pkgPath: m.From.PkgPath()},
+		toTyp:           &Typ{name: m.To.Name(), pkgPath: m.To.PkgPath()},
+		mapExprs:        mapExprs,
+		withFuncComment: opt.FuncComment,
 	}
 }
 
@@ -221,7 +236,7 @@ func (f *Func) AppendNotSetExprs(x *Func) error {
 
 func (f *Func) Decl() (*dst.FuncDecl, error) {
 	var fnComments []string
-	if !f.withoutComment {
+	if f.withFuncComment {
 		fnComments = f.funcComments()
 	}
 	return &dst.FuncDecl{
@@ -325,9 +340,11 @@ func genReturn(toTyp *Typ, arg string, exprs MapExprList) *dst.ReturnStmt {
 		Type:       genType(toTyp),
 		Elts:       elts,
 		Incomplete: false,
-		Decs:       dst.CompositeLitDecorations{},
+		Decs: dst.CompositeLitDecorations{
+			NodeDecs: dst.NodeDecs{},
+			Lbrace:   comments,
+		},
 	}
-	lit.Decorations().Start.Append(comments...)
 	return &dst.ReturnStmt{
 		Results: []dst.Expr{lit},
 		Decs:    dst.ReturnStmtDecorations{},

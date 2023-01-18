@@ -16,16 +16,32 @@ type MapExpr interface {
 
 type MapExprList []MapExpr
 
-func (mel MapExprList) DstExprs(arg string) (exprs []dst.Expr, comments []string) {
+func (mel MapExprList) DstExprs(arg string) (exprs []dst.Expr, startComments []string) {
+	var prevExpr dst.Expr
+	firstComment := true
+	aboveLineIsExpr := false
 	for _, f := range mel {
 		if e, ok := f.DstExpr(arg); ok {
-			e.Decorations().Start.Append(comments...)
-			comments = []string{}
 			exprs = append(exprs, e)
+			prevExpr = e
+			aboveLineIsExpr = true
 		} else if c, ok := f.Comment(); ok {
-			comments = append(comments, c)
+			if prevExpr == nil {
+				if firstComment {
+					startComments = append(startComments, "\n")
+					firstComment = false
+				}
+				startComments = append(startComments, c)
+			} else {
+				if aboveLineIsExpr {
+					prevExpr.Decorations().End.Append("\n")
+				}
+				prevExpr.Decorations().End.Append(c)
+			}
+			aboveLineIsExpr = false
 		}
 	}
+	// returned comments are appended to lbrace
 	return
 }
 

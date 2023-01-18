@@ -5,17 +5,16 @@ import (
 
 	"github.com/abekoh/mapc"
 	"github.com/abekoh/mapc/e2e/testdata/ab"
+	"github.com/abekoh/mapc/fieldmapper"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
-func Test_WithComments(t *testing.T) {
+func Test_FuncComments(t *testing.T) {
 	m := mapc.New()
-	m.Register(ab.AUser{}, ab.BUser{},
-		func(option *mapc.Option) {
-			option.OutPkgPath = "github.com/abekoh/mapc/e2e/testdata/ab"
-		},
-	)
+	m.Option.NoMapperFieldComment = false
+	m.Option.OutPkgPath = "github.com/abekoh/mapc/e2e/testdata/ab"
+	m.Register(ab.AUser{}, ab.BUser{})
 	gs, errs := m.Generate()
 	requireNoErrors(t, errs)
 	got, err := gs[0].Sprint()
@@ -34,4 +33,57 @@ func MapAUserToBUser(x AUser) BUser {
 	}
 }
 `, got)
+}
+
+func Test_FieldComments(t *testing.T) {
+	t.Run("one field is commented", func(t *testing.T) {
+		m := mapc.New()
+		m.Option.FuncComment = false
+		m.Option.FieldMappers = []fieldmapper.FieldMapper{
+			fieldmapper.HashMap{
+				"ID":   "ID",
+				"Name": "Name",
+				"Age":  "Age",
+			},
+		}
+		m.Option.OutPkgPath = "github.com/abekoh/mapc/e2e/testdata/ab"
+		m.Register(ab.AUser{}, ab.BUser{})
+		gs, errs := m.Generate()
+		requireNoErrors(t, errs)
+		got, err := gs[0].Sprint()
+		require.Nil(t, err)
+		assert.Equal(t, `package ab
+
+func MapAUserToBUser(x AUser) BUser {
+	return BUser{
+		ID:   x.ID,
+		Name: x.Name,
+		Age:  x.Age,
+		// RegisteredAt:
+	}
+}
+`, got)
+	})
+	t.Run("all fields are commented", func(t *testing.T) {
+		m := mapc.New()
+		m.Option.FuncComment = false
+		m.Option.FieldMappers = []fieldmapper.FieldMapper{}
+		m.Option.OutPkgPath = "github.com/abekoh/mapc/e2e/testdata/ab"
+		m.Register(ab.AUser{}, ab.BUser{})
+		gs, errs := m.Generate()
+		requireNoErrors(t, errs)
+		got, err := gs[0].Sprint()
+		require.Nil(t, err)
+		assert.Equal(t, `package ab
+
+func MapAUserToBUser(x AUser) BUser {
+	return BUser{
+		// ID:
+		// Name:
+		// Age:
+		// RegisteredAt:
+	}
+}
+`, got)
+	})
 }
