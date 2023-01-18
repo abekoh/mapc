@@ -112,7 +112,7 @@ func funcName(m *mapping.Mapping, opt *FuncOption) (res string) {
 		}
 	}
 	if res == "" {
-		res = fmt.Sprintf("To%s", util.UpperFirst(m.To.Name()))
+		res = fmt.Sprintf("Map%sTo%s", util.UpperFirst(m.From.Name()), util.UpperFirst(m.To.Name()))
 	}
 	if opt.Private {
 		res = util.LowerFirst(res)

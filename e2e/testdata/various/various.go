@@ -24,10 +24,12 @@ type S struct {
 	IntToStringFunc func(string) int
 	Interface       interface{}
 	StringIntMap    map[string]int
+	IntPointer      *int
 	Slice           []int
 	String          string
 	EmptyStruct     struct{}
 	ExternalType    uuid.UUID
+	ExternalPointer *uuid.UUID
 }
 
 // S2 is same with S
@@ -53,13 +55,15 @@ type S2 struct {
 	IntToStringFunc func(string) int
 	Interface       interface{}
 	StringIntMap    map[string]int
+	IntPointer      *int
 	Slice           []int
 	String          string
 	EmptyStruct     struct{}
 	ExternalType    uuid.UUID
+	ExternalPointer *uuid.UUID
 }
 
-type SWithPointers struct {
+type SPointer struct {
 	Bool            *bool
 	Int             *int
 	Int8            *int8
@@ -81,8 +85,10 @@ type SWithPointers struct {
 	IntToStringFunc *func(string) int
 	Interface       *interface{}
 	StringIntMap    *map[string]int
+	IntPointer      **int
 	Slice           *[]int
 	String          *string
 	EmptyStruct     *struct{}
 	ExternalType    *uuid.UUID
+	ExternalPointer **uuid.UUID
 }

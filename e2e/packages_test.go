@@ -25,7 +25,7 @@ func Test_WithSamePackage(t *testing.T) {
 	require.Nil(t, err)
 	assert.Equal(t, `package ab
 
-func ToBUser(x AUser) BUser {
+func MapAUserToBUser(x AUser) BUser {
 	return BUser{
 		ID:           x.ID,
 		Name:         x.Name,
@@ -53,7 +53,7 @@ func Test_FromIsPrivate(t *testing.T) {
 
 import "github.com/abekoh/mapc/e2e/testdata/b"
 
-func ToUser(x user) b.User {
+func MapUserToUser(x user) b.User {
 	return b.User{
 		ID:           x.id,
 		Name:         x.name,
@@ -93,7 +93,7 @@ func Test_ToIsPrivate(t *testing.T) {
 
 import "github.com/abekoh/mapc/e2e/testdata/b"
 
-func ToUser(x b.User) user {
+func MapUserToUser(x b.User) user {
 	return user{
 		id:           x.ID,
 		name:         x.Name,

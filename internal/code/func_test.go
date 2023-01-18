@@ -28,7 +28,7 @@ func TestNewFuncFromMapping(t *testing.T) {
 		},
 	}
 	got := NewFuncFromMapping(m, &FuncOption{})
-	assert.Equal(t, "ToDestUser", got.name)
+	assert.Equal(t, "MapSrcUserToDestUser", got.name)
 	assert.Equal(t, "x", got.argName)
 	assert.Equal(t, &Typ{name: "SrcUser", pkgPath: "github.com/abekoh/mapc/testdata/sample"}, got.fromTyp)
 	assert.Equal(t, &Typ{name: "DestUser", pkgPath: "github.com/abekoh/mapc/testdata/sample"}, got.toTyp)
@@ -107,7 +107,7 @@ func Test_funcName(t *testing.T) {
 				m:   m,
 				opt: &FuncOption{},
 			},
-			want: "ToDestUser",
+			want: "MapSrcUserToDestUser",
 		},
 		{
 			name: "only private",
@@ -117,7 +117,7 @@ func Test_funcName(t *testing.T) {
 					Private: true,
 				},
 			},
-			want: "toDestUser",
+			want: "mapSrcUserToDestUser",
 		},
 	}
 	for _, tt := range tests {
