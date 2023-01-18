@@ -20,7 +20,7 @@ func Test_AssignableType(t *testing.T) {
 	require.Nil(t, err)
 	assert.Equal(t, `package various
 
-func ToS2(x S) S2 {
+func MapSToS2(x S) S2 {
 	return S2{
 		Bool:            x.Bool,
 		Int:             x.Int,
@@ -65,7 +65,7 @@ func Test_Reference(t *testing.T) {
 	require.Nil(t, err)
 	assert.Equal(t, `package various
 
-func ToSPointer(x S) SPointer {
+func MapSToSPointer(x S) SPointer {
 	return SPointer{
 		Bool:            &x.Bool,
 		Int:             &x.Int,
@@ -110,7 +110,7 @@ func Test_DeReference(t *testing.T) {
 	require.Nil(t, err)
 	assert.Equal(t, `package various
 
-func ToS(x SPointer) S {
+func MapSPointerToS(x SPointer) S {
 	return S{
 		Bool:            *x.Bool,
 		Int:             *x.Int,

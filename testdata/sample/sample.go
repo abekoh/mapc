@@ -82,8 +82,8 @@ type DestUser struct {
 	RegisteredAt time.Time
 }
 
-// ToDestUser is mapper from SrcUser into DestUser
-func ToDestUser(x SrcUser) DestUser {
+// MapSrcUserToDestUser is mapper from SrcUser into DestUser
+func MapSrcToDestUser(x SrcUser) DestUser {
 	return DestUser{
 		ID:           x.ID,
 		Name:         x.Name,
