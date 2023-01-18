@@ -53,6 +53,7 @@ type S2 struct {
 	IntToStringFunc func(string) int
 	Interface       interface{}
 	StringIntMap    map[string]int
+	IntPointer      *int
 	Slice           []int
 	String          string
 	EmptyStruct     struct{}
@@ -81,6 +82,7 @@ type SWithPointers struct {
 	IntToStringFunc *func(string) int
 	Interface       *interface{}
 	StringIntMap    *map[string]int
+	IntPointer      **int
 	Slice           *[]int
 	String          *string
 	EmptyStruct     *struct{}
