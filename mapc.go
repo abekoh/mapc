@@ -78,8 +78,8 @@ func (m *MapC) Generate() (res GeneratedList, errs []error) {
 			f = code.NewFile(pkgPath)
 		}
 		fn := code.NewFuncFromMapping(mp, &code.FuncOption{
-			WithFuncComment:          input.option.FuncComment,
-			WithNoMapperFieldComment: input.option.NoMapperFieldComment,
+			FuncComment:          input.option.FuncComment,
+			NoMapperFieldComment: input.option.NoMapperFieldComment,
 		})
 		if existedFn, ok := f.FindFunc(fn.Name()); ok {
 			if err := fn.AppendNotSetExprs(existedFn); err != nil {
