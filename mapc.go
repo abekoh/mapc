@@ -27,8 +27,9 @@ func New() *MapC {
 	return &MapC{
 		inputs: []input{},
 		Option: &Option{
-			FieldMappers: fieldmapper.DefaultMappers,
-			TypeMappers:  typemapper.Defaults,
+			WithFuncComment: true,
+			FieldMappers:    fieldmapper.DefaultMappers,
+			TypeMappers:     typemapper.Defaults,
 		},
 	}
 }
@@ -76,7 +77,7 @@ func (m *MapC) Generate() (res GeneratedList, errs []error) {
 			f = code.NewFile(pkgPath)
 		}
 		fn := code.NewFuncFromMapping(mp, &code.FuncOption{
-			WithComment: input.option.WithoutComment,
+			WithFuncComment: input.option.WithFuncComment,
 		})
 		if existedFn, ok := f.FindFunc(fn.Name()); ok {
 			if err := fn.AppendNotSetExprs(existedFn); err != nil {
@@ -105,11 +106,11 @@ type input struct {
 }
 
 type Option struct {
-	OutPath        string
-	OutPkgPath     string
-	WithoutComment bool
-	FieldMappers   []fieldmapper.FieldMapper
-	TypeMappers    []typemapper.TypeMapper
+	OutPath         string
+	OutPkgPath      string
+	WithFuncComment bool
+	FieldMappers    []fieldmapper.FieldMapper
+	TypeMappers     []typemapper.TypeMapper
 }
 
 func (o *Option) copy() *Option {
@@ -118,11 +119,11 @@ func (o *Option) copy() *Option {
 	tms := make([]typemapper.TypeMapper, len(o.TypeMappers))
 	copy(tms, o.TypeMappers)
 	return &Option{
-		OutPath:        o.OutPath,
-		OutPkgPath:     o.OutPkgPath,
-		WithoutComment: o.WithoutComment,
-		FieldMappers:   fms,
-		TypeMappers:    tms,
+		OutPath:         o.OutPath,
+		OutPkgPath:      o.OutPkgPath,
+		WithFuncComment: o.WithFuncComment,
+		FieldMappers:    fms,
+		TypeMappers:     tms,
 	}
 }
 

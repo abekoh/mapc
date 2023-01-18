@@ -22,12 +22,12 @@ func (t Typ) Equal(x *Typ) bool {
 }
 
 type Func struct {
-	name           string
-	argName        string
-	fromTyp        *Typ
-	toTyp          *Typ
-	mapExprs       MapExprList
-	withoutComment bool
+	name            string
+	argName         string
+	fromTyp         *Typ
+	toTyp           *Typ
+	mapExprs        MapExprList
+	withFuncComment bool
 }
 
 func (f *Func) Name() string {
@@ -44,11 +44,11 @@ func (f *Func) funcComments() []string {
 }
 
 type FuncOption struct {
-	Name         string
-	NameTemplate *template.Template
-	Private      bool
-	ArgName      string
-	WithComment  bool
+	Name            string
+	NameTemplate    *template.Template
+	Private         bool
+	ArgName         string
+	WithFuncComment bool
 }
 
 func NewFuncFromMapping(m *mapping.Mapping, opt *FuncOption) *Func {
@@ -86,12 +86,12 @@ func NewFuncFromMapping(m *mapping.Mapping, opt *FuncOption) *Func {
 		})
 	}
 	return &Func{
-		name:           funcName(m, opt),
-		argName:        argName(m, opt),
-		fromTyp:        &Typ{name: m.From.Name(), pkgPath: m.From.PkgPath()},
-		toTyp:          &Typ{name: m.To.Name(), pkgPath: m.To.PkgPath()},
-		mapExprs:       mapExprs,
-		withoutComment: opt.WithComment,
+		name:            funcName(m, opt),
+		argName:         argName(m, opt),
+		fromTyp:         &Typ{name: m.From.Name(), pkgPath: m.From.PkgPath()},
+		toTyp:           &Typ{name: m.To.Name(), pkgPath: m.To.PkgPath()},
+		mapExprs:        mapExprs,
+		withFuncComment: opt.WithFuncComment,
 	}
 }
 
@@ -221,7 +221,7 @@ func (f *Func) AppendNotSetExprs(x *Func) error {
 
 func (f *Func) Decl() (*dst.FuncDecl, error) {
 	var fnComments []string
-	if !f.withoutComment {
+	if f.withFuncComment {
 		fnComments = f.funcComments()
 	}
 	return &dst.FuncDecl{
