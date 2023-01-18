@@ -340,9 +340,11 @@ func genReturn(toTyp *Typ, arg string, exprs MapExprList) *dst.ReturnStmt {
 		Type:       genType(toTyp),
 		Elts:       elts,
 		Incomplete: false,
-		Decs:       dst.CompositeLitDecorations{},
+		Decs: dst.CompositeLitDecorations{
+			NodeDecs: dst.NodeDecs{},
+			Lbrace:   comments,
+		},
 	}
-	lit.Decorations().Start.Append(comments...)
 	return &dst.ReturnStmt{
 		Results: []dst.Expr{lit},
 		Decs:    dst.ReturnStmtDecorations{},

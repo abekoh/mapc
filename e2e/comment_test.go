@@ -12,6 +12,7 @@ import (
 
 func Test_FuncComments(t *testing.T) {
 	m := mapc.New()
+	m.Option.NoMapperFieldComment = false
 	m.Option.OutPkgPath = "github.com/abekoh/mapc/e2e/testdata/ab"
 	m.Register(ab.AUser{}, ab.BUser{})
 	gs, errs := m.Generate()
@@ -35,16 +36,45 @@ func MapAUserToBUser(x AUser) BUser {
 }
 
 func Test_FieldComments(t *testing.T) {
-	m := mapc.New()
-	m.Option.FuncComment = false
-	m.Option.FieldMappers = []fieldmapper.FieldMapper{}
-	m.Option.OutPkgPath = "github.com/abekoh/mapc/e2e/testdata/ab"
-	m.Register(ab.AUser{}, ab.BUser{})
-	gs, errs := m.Generate()
-	requireNoErrors(t, errs)
-	got, err := gs[0].Sprint()
-	require.Nil(t, err)
-	assert.Equal(t, `package ab
+	t.Run("one field is commented", func(t *testing.T) {
+		m := mapc.New()
+		m.Option.FuncComment = false
+		m.Option.FieldMappers = []fieldmapper.FieldMapper{
+			fieldmapper.HashMap{
+				"ID":   "ID",
+				"Name": "Name",
+				"Age":  "Age",
+			},
+		}
+		m.Option.OutPkgPath = "github.com/abekoh/mapc/e2e/testdata/ab"
+		m.Register(ab.AUser{}, ab.BUser{})
+		gs, errs := m.Generate()
+		requireNoErrors(t, errs)
+		got, err := gs[0].Sprint()
+		require.Nil(t, err)
+		assert.Equal(t, `package ab
+
+func MapAUserToBUser(x AUser) BUser {
+	return BUser{
+		ID:   x.ID,
+		Name: x.Name,
+		Age:  x.Age,
+		// RegisteredAt:
+	}
+}
+`, got)
+	})
+	t.Run("all fields are commented", func(t *testing.T) {
+		m := mapc.New()
+		m.Option.FuncComment = false
+		m.Option.FieldMappers = []fieldmapper.FieldMapper{}
+		m.Option.OutPkgPath = "github.com/abekoh/mapc/e2e/testdata/ab"
+		m.Register(ab.AUser{}, ab.BUser{})
+		gs, errs := m.Generate()
+		requireNoErrors(t, errs)
+		got, err := gs[0].Sprint()
+		require.Nil(t, err)
+		assert.Equal(t, `package ab
 
 func MapAUserToBUser(x AUser) BUser {
 	return BUser{
@@ -55,4 +85,5 @@ func MapAUserToBUser(x AUser) BUser {
 	}
 }
 `, got)
+	})
 }

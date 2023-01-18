@@ -17,12 +17,17 @@ type MapExpr interface {
 type MapExprList []MapExpr
 
 func (mel MapExprList) DstExprs(arg string) (exprs []dst.Expr, comments []string) {
+	firstComment := true
 	for _, f := range mel {
 		if e, ok := f.DstExpr(arg); ok {
 			e.Decorations().Start.Append(comments...)
 			comments = []string{}
 			exprs = append(exprs, e)
 		} else if c, ok := f.Comment(); ok {
+			if firstComment {
+				comments = append(comments, "\n")
+				firstComment = false
+			}
 			comments = append(comments, c)
 		}
 	}
