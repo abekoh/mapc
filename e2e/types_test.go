@@ -86,10 +86,12 @@ func ToSWithPointers(x S) SWithPointers {
 		IntToStringFunc: &x.IntToStringFunc,
 		Interface:       &x.Interface,
 		StringIntMap:    &x.StringIntMap,
+	    IntPointer       &x.Int,
 		Slice:           &x.Slice,
 		String:          &x.String,
 		EmptyStruct:     &x.EmptyStruct,
 		ExternalType:    &x.ExternalType,
+    	ExternalPointer  &x.UUID,
 	}
 }
 `, got)
