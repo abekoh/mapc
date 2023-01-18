@@ -63,7 +63,7 @@ type S2 struct {
 	ExternalPointer *uuid.UUID
 }
 
-type SWithPointers struct {
+type SPointer struct {
 	Bool            *bool
 	Int             *int
 	Int8            *int8

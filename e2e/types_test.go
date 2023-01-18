@@ -58,15 +58,15 @@ func Test_Reference(t *testing.T) {
 	m := mapc.New()
 	m.Option.WithoutComment = true
 	m.Option.OutPkgPath = "github.com/abekoh/mapc/e2e/testdata/various"
-	m.Register(various.S{}, various.SWithPointers{})
+	m.Register(various.S{}, various.SPointer{})
 	gs, errs := m.Generate()
 	requireNoErrors(t, errs)
 	got, err := gs[0].Sprint()
 	require.Nil(t, err)
 	assert.Equal(t, `package various
 
-func ToSWithPointers(x S) SWithPointers {
-	return SWithPointers{
+func ToSPointer(x S) SPointer {
+	return SPointer{
 		Bool:            &x.Bool,
 		Int:             &x.Int,
 		Int8:            &x.Int8,
