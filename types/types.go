@@ -107,6 +107,9 @@ func (t Typ) IsPointer() bool {
 }
 
 func (t Typ) Elem() (*Typ, bool) {
+	if !t.IsPointer() {
+		return nil, false
+	}
 	e := t.refTyp.Elem()
 	if e == nil {
 		return nil, false

@@ -34,9 +34,6 @@ type RefMapper struct {
 }
 
 func (p RefMapper) Map(from, to *types.Typ) (Caster, bool) {
-	if from.IsPointer() || !to.IsPointer() {
-		return nil, false
-	}
 	if toElm, ok := to.Elem(); ok && from.AssignableTo(toElm) {
 		return &SimpleCaster{
 			caller: &Caller{

@@ -13,15 +13,17 @@ type typedInt int
 
 var IntValue = 1
 var StringValue = "foo"
+var PointerIntValue = &IntValue
 
 var (
-	Int           = types.NewTyp(reflect.TypeOf(1))
-	Int64         = types.NewTyp(reflect.TypeOf(int64(1)))
-	String        = types.NewTyp(reflect.TypeOf("foo"))
-	TypedInt      = types.NewTyp(reflect.TypeOf(typedInt(1)))
-	Object        = types.NewTyp(reflect.TypeOf(sample.Object{}))
-	PointerInt    = types.NewTyp(reflect.TypeOf(&IntValue))
-	PointerString = types.NewTyp(reflect.TypeOf(&StringValue))
+	Int              = types.NewTyp(reflect.TypeOf(1))
+	Int64            = types.NewTyp(reflect.TypeOf(int64(1)))
+	String           = types.NewTyp(reflect.TypeOf("foo"))
+	TypedInt         = types.NewTyp(reflect.TypeOf(typedInt(1)))
+	Object           = types.NewTyp(reflect.TypeOf(sample.Object{}))
+	PointerInt       = types.NewTyp(reflect.TypeOf(&IntValue))
+	PointerString    = types.NewTyp(reflect.TypeOf(&StringValue))
+	DoublePointerInt = types.NewTyp(reflect.TypeOf(&PointerIntValue))
 )
 
 func TestAssignMapper_Map(t *testing.T) {
@@ -167,6 +169,18 @@ func TestRefMapper_Map(t *testing.T) {
 		{
 			from: Int,
 			to:   PointerInt,
+			want: &SimpleCaster{
+				caller: &Caller{
+					PkgPath:    "",
+					Name:       "&",
+					CallerType: Unary,
+				},
+			},
+			wantOk: true,
+		},
+		{
+			from: PointerInt,
+			to:   DoublePointerInt,
 			want: &SimpleCaster{
 				caller: &Caller{
 					PkgPath:    "",
