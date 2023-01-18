@@ -54,7 +54,7 @@ func ToS2(x S) S2 {
 `, got)
 }
 
-func Test_ToPointer(t *testing.T) {
+func Test_Reference(t *testing.T) {
 	m := mapc.New()
 	m.Option.WithoutComment = true
 	m.Option.OutPkgPath = "github.com/abekoh/mapc/e2e/testdata/various"
