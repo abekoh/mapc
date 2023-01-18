@@ -1,0 +1,41 @@
+name: Test
+
+on:
+  push:
+    tags: [ v* ]
+    branches: [ main ]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - macos-latest
+          # TODO: support windows
+          # - windows-latest
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Set up go
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.19
+      - name: Check out code
+        uses: actions/checkout@v3
+      - name: Restore Go modules cache
+        uses: actions/cache@v3
+        with:
+          path: ~/go/pkg/mod
+          key: go-${{ runner.os }}-${{ hashFiles('go.mod') }}
+          restore-keys: |
+            go-${{ runner.os }}-
+      - name: Download dependencies
+        run: go mod download
+      - name: Run tests
+        run: go test -race ./...
