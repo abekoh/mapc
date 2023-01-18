@@ -43,10 +43,12 @@ func ToS2(x S) S2 {
 		IntToStringFunc: x.IntToStringFunc,
 		Interface:       x.Interface,
 		StringIntMap:    x.StringIntMap,
+		IntPointer:      x.IntPointer,
 		Slice:           x.Slice,
 		String:          x.String,
 		EmptyStruct:     x.EmptyStruct,
 		ExternalType:    x.ExternalType,
+		ExternalPointer: x.ExternalPointer,
 	}
 }
 `, got)
@@ -86,12 +88,12 @@ func ToSWithPointers(x S) SWithPointers {
 		IntToStringFunc: &x.IntToStringFunc,
 		Interface:       &x.Interface,
 		StringIntMap:    &x.StringIntMap,
-	    IntPointer       &x.Int,
+		IntPointer:      &x.IntPointer,
 		Slice:           &x.Slice,
 		String:          &x.String,
 		EmptyStruct:     &x.EmptyStruct,
 		ExternalType:    &x.ExternalType,
-    	ExternalPointer  &x.UUID,
+		ExternalPointer: &x.ExternalPointer,
 	}
 }
 `, got)

@@ -24,10 +24,12 @@ type S struct {
 	IntToStringFunc func(string) int
 	Interface       interface{}
 	StringIntMap    map[string]int
+	IntPointer      *int
 	Slice           []int
 	String          string
 	EmptyStruct     struct{}
 	ExternalType    uuid.UUID
+	ExternalPointer *uuid.UUID
 }
 
 // S2 is same with S
