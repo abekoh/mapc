@@ -148,6 +148,7 @@ func MapSPointerToS(x SPointer) S {
 func Test_ConvertWithCast(t *testing.T) {
 	m := mapc.New()
 	m.Option.FuncComment = false
+	m.Option.NoMapperFieldComment = false
 	m.Option.OutPkgPath = "github.com/abekoh/mapc/e2e/testdata/various"
 	m.Option.FieldMappers = []fieldmapper.FieldMapper{fieldmapper.HashMap{
 		"Int":    "Int64",
