@@ -12,11 +12,8 @@ import (
 
 func Test_FuncComments(t *testing.T) {
 	m := mapc.New()
-	m.Register(ab.AUser{}, ab.BUser{},
-		func(option *mapc.Option) {
-			option.OutPkgPath = "github.com/abekoh/mapc/e2e/testdata/ab"
-		},
-	)
+	m.Option.OutPkgPath = "github.com/abekoh/mapc/e2e/testdata/ab"
+	m.Register(ab.AUser{}, ab.BUser{})
 	gs, errs := m.Generate()
 	requireNoErrors(t, errs)
 	got, err := gs[0].Sprint()
