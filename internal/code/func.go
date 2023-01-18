@@ -44,18 +44,21 @@ func (f *Func) funcComments() []string {
 }
 
 type FuncOption struct {
-	Name            string
-	NameTemplate    *template.Template
-	Private         bool
-	ArgName         string
-	WithFuncComment bool
+	Name                     string
+	NameTemplate             *template.Template
+	Private                  bool
+	ArgName                  string
+	WithFuncComment          bool
+	WithNoMapperFieldComment bool
 }
 
 func NewFuncFromMapping(m *mapping.Mapping, opt *FuncOption) *Func {
 	if opt == nil {
 		opt = &FuncOption{}
 	}
+
 	mapExprs := MapExprList{}
+	mappedFieldMap := make(map[string]struct{})
 	for _, p := range m.FieldPairs {
 		var casters []Caster
 		for _, c := range p.Casters {
@@ -84,6 +87,18 @@ func NewFuncFromMapping(m *mapping.Mapping, opt *FuncOption) *Func {
 			to:      p.To.Name(),
 			casters: casters,
 		})
+		mappedFieldMap[p.To.Name()] = struct{}{}
+	}
+	if opt.WithNoMapperFieldComment {
+		for _, toField := range m.To.Fields {
+			toFieldName := toField.Name()
+			if _, ok := mappedFieldMap[toFieldName]; !ok {
+				mapExprs = append(mapExprs, &CommentedMapExpr{
+					to:      toFieldName,
+					comment: fmt.Sprintf("// %s:", toFieldName),
+				})
+			}
+		}
 	}
 	return &Func{
 		name:            funcName(m, opt),
