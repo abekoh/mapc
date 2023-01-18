@@ -5,6 +5,7 @@ import (
 
 	"github.com/abekoh/mapc"
 	"github.com/abekoh/mapc/e2e/testdata/various"
+	"github.com/abekoh/mapc/fieldmapper"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -139,6 +140,32 @@ func MapSPointerToS(x SPointer) S {
 		EmptyStruct:     *x.EmptyStruct,
 		ExternalType:    *x.ExternalType,
 		ExternalPointer: *x.ExternalPointer,
+	}
+}
+`, got)
+}
+
+func Test_ConvertWithCast(t *testing.T) {
+	m := mapc.New()
+	m.Option.WithoutComment = true
+	m.Option.OutPkgPath = "github.com/abekoh/mapc/e2e/testdata/various"
+	m.Option.FieldMappers = []fieldmapper.FieldMapper{fieldmapper.HashMap{
+		"Int":    "Int64",
+		"Uint64": "Uint",
+		"Int32":  "String",
+	}}
+	m.Register(various.S{}, various.S2{})
+	gs, errs := m.Generate()
+	requireNoErrors(t, errs)
+	got, err := gs[0].Sprint()
+	require.Nil(t, err)
+	assert.Equal(t, `package various
+
+func MapSToS2(x S) S2 {
+	return S2{
+		Int64:  int64(x.Int),
+		String: string(x.Int32),
+		Uint:   uint(x.Uint64),
 	}
 }
 `, got)
