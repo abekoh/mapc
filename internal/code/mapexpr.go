@@ -26,6 +26,7 @@ func (mel MapExprList) DstExprs(arg string) (exprs []dst.Expr, comments []string
 			comments = append(comments, c)
 		}
 	}
+	// returned comments are should be append next node
 	return
 }
 
