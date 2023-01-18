@@ -19,10 +19,12 @@ type MapExprList []MapExpr
 func (mel MapExprList) DstExprs(arg string) (exprs []dst.Expr, startComments []string) {
 	var prevExpr dst.Expr
 	firstComment := true
+	aboveLineIsExpr := false
 	for _, f := range mel {
 		if e, ok := f.DstExpr(arg); ok {
 			exprs = append(exprs, e)
 			prevExpr = e
+			aboveLineIsExpr = true
 		} else if c, ok := f.Comment(); ok {
 			if prevExpr == nil {
 				if firstComment {
@@ -31,8 +33,12 @@ func (mel MapExprList) DstExprs(arg string) (exprs []dst.Expr, startComments []s
 				}
 				startComments = append(startComments, c)
 			} else {
-				prevExpr.Decorations().End.Append("\n", c)
+				if aboveLineIsExpr {
+					prevExpr.Decorations().End.Append("\n")
+				}
+				prevExpr.Decorations().End.Append(c)
 			}
+			aboveLineIsExpr = false
 		}
 	}
 	// returned comments are appended to lbrace
