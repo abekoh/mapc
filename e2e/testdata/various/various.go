@@ -58,6 +58,7 @@ type S2 struct {
 	String          string
 	EmptyStruct     struct{}
 	ExternalType    uuid.UUID
+	ExternalPointer *uuid.UUID
 }
 
 type SWithPointers struct {
@@ -87,4 +88,5 @@ type SWithPointers struct {
 	String          *string
 	EmptyStruct     *struct{}
 	ExternalType    *uuid.UUID
+	ExternalPointer **uuid.UUID
 }
