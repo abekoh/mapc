@@ -24,6 +24,7 @@ func Test_SaveToSameFile(t *testing.T) {
 	})
 	gs, errs := m.Generate()
 	requireNoErrors(t, errs)
+	assert.Len(t, gs, 1)
 	got, err := gs[0].Sprint()
 	require.Nil(t, err)
 	assert.Equal(t, `package ab
