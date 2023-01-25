@@ -66,7 +66,7 @@ func TestFile_FindFunc(t *testing.T) {
 	if !ok {
 		t.Errorf("not found %s", fnName)
 	}
-	assert.Equal(t, fn.name, "MapSrcToDestUser")
+	assert.Equal(t, fn.name, "MapSrcUserToDestUser")
 }
 
 func TestFile_Attach(t *testing.T) {
