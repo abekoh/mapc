@@ -162,7 +162,7 @@ func newFuncFromDecl(pkgPath string, d *dst.FuncDecl) (*Func, error) {
 	res.argName = paramField.Names[0].Name
 	paramTyp, ok := paramField.Type.(*dst.Ident)
 	if !ok {
-		return nil, fmt.Errorf("failed dest cast param type")
+		return nil, fmt.Errorf("failed to cast param type")
 	}
 	res.srcTyp = &Typ{name: paramTyp.Name, pkgPath: getPkgPath(paramTyp)}
 
@@ -172,7 +172,7 @@ func newFuncFromDecl(pkgPath string, d *dst.FuncDecl) (*Func, error) {
 	resultField := d.Type.Results.List[0]
 	resultTyp, ok := resultField.Type.(*dst.Ident)
 	if !ok {
-		return nil, fmt.Errorf("failed dest cast result type")
+		return nil, fmt.Errorf("failed to cast result type")
 	}
 	res.destTyp = &Typ{name: resultTyp.Name, pkgPath: getPkgPath(resultTyp)}
 
