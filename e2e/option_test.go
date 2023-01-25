@@ -40,6 +40,29 @@ func MapAUserToBUser(x AUser) BUser {
 `, got)
 }
 
+func Test_FuncName(t *testing.T) {
+	m := mapc.New()
+	m.Option.FuncComment = false
+	m.Option.OutPkgPath = "github.com/abekoh/mapc/e2e/testdata/ab"
+	m.Option.FuncName = "CustomFuncName"
+	m.Register(ab.AUser{}, ab.BUser{})
+	gs, errs := m.Generate()
+	requireNoErrors(t, errs)
+	got, err := gs[0].Sprint()
+	require.Nil(t, err)
+	assert.Equal(t, `package ab
+
+func CustomFuncName(x AUser) BUser {
+	return BUser{
+		ID:           x.ID,
+		Name:         x.Name,
+		Age:          x.Age,
+		RegisteredAt: x.RegisteredAt,
+	}
+}
+`, got)
+}
+
 func Test_FuncComments(t *testing.T) {
 	m := mapc.New()
 	m.Option.NoMapperFieldComment = false
