@@ -174,8 +174,8 @@ func TestFunc_AppendNotSetExprs(t *testing.T) {
 			},
 			mapExprs: MapExprList{
 				&SimpleMapExpr{
-					from: "z",
-					to:   "z",
+					src:  "z",
+					dest: "z",
 				},
 			},
 		}

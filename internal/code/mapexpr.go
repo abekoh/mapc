@@ -46,17 +46,17 @@ func (mel MapExprList) DstExprs(arg string) (exprs []dst.Expr, startComments []s
 }
 
 type SimpleMapExpr struct {
-	from    string
-	to      string
+	src     string
+	dest    string
 	casters []Caster
 }
 
 func (e SimpleMapExpr) From() string {
-	return e.from
+	return e.src
 }
 
 func (e SimpleMapExpr) To() string {
-	return e.to
+	return e.dest
 }
 
 func (e SimpleMapExpr) Comment() (string, bool) {
@@ -65,7 +65,7 @@ func (e SimpleMapExpr) Comment() (string, bool) {
 
 func (e SimpleMapExpr) DstExpr(arg string) (dst.Expr, bool) {
 	return &dst.KeyValueExpr{
-		Key:   dst.NewIdent(e.to),
+		Key:   dst.NewIdent(e.dest),
 		Value: e.valueExpr(arg),
 		Decs: dst.KeyValueExprDecorations{
 			NodeDecs: dst.NodeDecs{
@@ -80,7 +80,7 @@ func (e SimpleMapExpr) valueExpr(arg string) dst.Expr {
 	var el dst.Expr
 	el = &dst.SelectorExpr{
 		X:    genVar(arg),
-		Sel:  dst.NewIdent(e.from),
+		Sel:  dst.NewIdent(e.src),
 		Decs: dst.SelectorExprDecorations{},
 	}
 	for _, caster := range e.casters {

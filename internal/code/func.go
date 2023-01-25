@@ -83,8 +83,8 @@ func NewFuncFromMapping(m *mapping.Mapping, opt *FuncOption) *Func {
 			}
 		}
 		mapExprs = append(mapExprs, &SimpleMapExpr{
-			from:    p.Src.Name(),
-			to:      p.Dest.Name(),
+			src:     p.Src.Name(),
+			dest:    p.Dest.Name(),
 			casters: casters,
 		})
 		mappedFieldMap[p.Dest.Name()] = struct{}{}
@@ -207,8 +207,8 @@ func newFuncFromDecl(pkgPath string, d *dst.FuncDecl) (*Func, error) {
 		}
 		// TODO: with caster
 		res.mapExprs = append(res.mapExprs, &SimpleMapExpr{
-			from: selectorExpr.Sel.Name,
-			to:   keyIdent.Name,
+			src:  selectorExpr.Sel.Name,
+			dest: keyIdent.Name,
 		})
 		res.mapExprs = append(res.mapExprs, parseComments(expr.Decorations().End.All()...)...)
 	}
