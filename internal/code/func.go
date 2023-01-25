@@ -90,7 +90,7 @@ func NewFuncFromMapping(m *mapping.Mapping, opt *FuncOption) *Func {
 		mappedFieldMap[p.To.Name()] = struct{}{}
 	}
 	if opt.NoMapperFieldComment {
-		for _, toField := range m.To.Fields {
+		for _, toField := range m.Dest.Fields {
 			toFieldName := toField.Name()
 			if _, ok := mappedFieldMap[toFieldName]; !ok {
 				mapExprs = append(mapExprs, &CommentedMapExpr{
@@ -103,8 +103,8 @@ func NewFuncFromMapping(m *mapping.Mapping, opt *FuncOption) *Func {
 	return &Func{
 		name:            funcName(m, opt),
 		argName:         argName(m, opt),
-		fromTyp:         &Typ{name: m.From.Name(), pkgPath: m.From.PkgPath()},
-		toTyp:           &Typ{name: m.To.Name(), pkgPath: m.To.PkgPath()},
+		fromTyp:         &Typ{name: m.Src.Name(), pkgPath: m.Src.PkgPath()},
+		toTyp:           &Typ{name: m.Dest.Name(), pkgPath: m.Dest.PkgPath()},
 		mapExprs:        mapExprs,
 		withFuncComment: opt.FuncComment,
 	}
@@ -119,15 +119,15 @@ func funcName(m *mapping.Mapping, opt *FuncOption) (res string) {
 			From string
 			To   string
 		}{
-			From: m.From.Name(),
-			To:   m.To.Name(),
+			From: m.Src.Name(),
+			To:   m.Dest.Name(),
 		})
 		if err == nil {
 			res = buf.String()
 		}
 	}
 	if res == "" {
-		res = fmt.Sprintf("Map%sTo%s", util.UpperFirst(m.From.Name()), util.UpperFirst(m.To.Name()))
+		res = fmt.Sprintf("Map%sTo%s", util.UpperFirst(m.Src.Name()), util.UpperFirst(m.Dest.Name()))
 	}
 	if opt.Private {
 		res = util.LowerFirst(res)

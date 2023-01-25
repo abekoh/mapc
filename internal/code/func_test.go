@@ -17,8 +17,8 @@ func TestNewFuncFromMapping(t *testing.T) {
 	from, _ := types.NewStruct(reflect.TypeOf(sample.SrcUser{}))
 	to, _ := types.NewStruct(reflect.TypeOf(sample.DestUser{}))
 	m := &mapping.Mapping{
-		From: from,
-		To:   to,
+		Src:  from,
+		Dest: to,
 		FieldPairs: []*mapping.FieldPair{
 			{
 				From:    from.Fields[0],
@@ -46,8 +46,8 @@ func Test_funcName(t *testing.T) {
 		from, _ := types.NewStruct(reflect.TypeOf(sample.SrcUser{}))
 		to, _ := types.NewStruct(reflect.TypeOf(sample.DestUser{}))
 		return &mapping.Mapping{
-			From: from,
-			To:   to,
+			Src:  from,
+			Dest: to,
 		}
 	}()
 	tests := []struct {
@@ -80,7 +80,7 @@ func Test_funcName(t *testing.T) {
 				m: m,
 				opt: &FuncOption{
 					NameTemplate: func() *template.Template {
-						t, _ := template.New("FuncName").Parse("{{ .From }}To{{ .To }}")
+						t, _ := template.New("FuncName").Parse("{{ .Src }}Dest{{ .Dest }}")
 						return t
 					}(),
 				},
@@ -93,7 +93,7 @@ func Test_funcName(t *testing.T) {
 				m: m,
 				opt: &FuncOption{
 					NameTemplate: func() *template.Template {
-						t, _ := template.New("FuncName").Parse("{{ .From }}To{{ .To }}")
+						t, _ := template.New("FuncName").Parse("{{ .Src }}Dest{{ .Dest }}")
 						return t
 					}(),
 					Private: true,

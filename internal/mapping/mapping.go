@@ -16,8 +16,8 @@ type Mapper struct {
 }
 
 type Mapping struct {
-	From       *types.Struct
-	To         *types.Struct
+	Src        *types.Struct
+	Dest       *types.Struct
 	FieldPairs []*FieldPair
 }
 
@@ -44,8 +44,8 @@ func (m Mapper) NewMapping(src, dest any, outPkgPath string) (*Mapping, error) {
 	}
 	fieldPairs := m.newFieldPairs(srcStr, destStr, outPkgPath)
 	return &Mapping{
-		From:       srcStr,
-		To:         destStr,
+		Src:        srcStr,
+		Dest:       destStr,
 		FieldPairs: fieldPairs,
 	}, nil
 }

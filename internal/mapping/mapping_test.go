@@ -19,10 +19,10 @@ func TestMapper_NewMapping(t *testing.T) {
 		}
 		got, err := mapper.NewMapping(sample.SrcUser{}, sample.DestUser{}, outPkgPath)
 		require.Nil(t, err)
-		assert.Equal(t, "SrcUser", got.From.Name())
-		assert.Equal(t, outPkgPath, got.From.PkgPath())
-		assert.Equal(t, "DestUser", got.To.Name())
-		assert.Equal(t, outPkgPath, got.To.PkgPath())
+		assert.Equal(t, "SrcUser", got.Src.Name())
+		assert.Equal(t, outPkgPath, got.Src.PkgPath())
+		assert.Equal(t, "DestUser", got.Dest.Name())
+		assert.Equal(t, outPkgPath, got.Dest.PkgPath())
 		assert.Len(t, got.FieldPairs, 4)
 	})
 	t.Run("no fieldmappers,typemappers", func(t *testing.T) {
@@ -32,10 +32,10 @@ func TestMapper_NewMapping(t *testing.T) {
 		}
 		got, err := mapper.NewMapping(sample.SrcUser{}, sample.DestUser{}, outPkgPath)
 		require.Nil(t, err)
-		assert.Equal(t, "SrcUser", got.From.Name())
-		assert.Equal(t, outPkgPath, got.From.PkgPath())
-		assert.Equal(t, "DestUser", got.To.Name())
-		assert.Equal(t, outPkgPath, got.To.PkgPath())
+		assert.Equal(t, "SrcUser", got.Src.Name())
+		assert.Equal(t, outPkgPath, got.Src.PkgPath())
+		assert.Equal(t, "DestUser", got.Dest.Name())
+		assert.Equal(t, outPkgPath, got.Dest.PkgPath())
 		assert.Len(t, got.FieldPairs, 0)
 	})
 }
