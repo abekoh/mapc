@@ -3,9 +3,8 @@ package mapping
 import (
 	"testing"
 
-	"github.com/abekoh/mapc/fieldmapper"
+	"github.com/abekoh/mapc/mapcstd"
 	"github.com/abekoh/mapc/testdata/sample"
-	"github.com/abekoh/mapc/typemapper"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -14,8 +13,8 @@ func TestMapper_NewMapping(t *testing.T) {
 	outPkgPath := "github.com/abekoh/mapc/testdata/sample"
 	t.Run("map same field", func(t *testing.T) {
 		mapper := Mapper{
-			FieldMappers: fieldmapper.DefaultFieldMappers,
-			TypeMappers:  typemapper.DefaultTypeMappers,
+			FieldMappers: mapcstd.DefaultFieldMappers,
+			TypeMappers:  mapcstd.DefaultTypeMappers,
 		}
 		got, err := mapper.NewMapping(sample.SrcUser{}, sample.DestUser{}, outPkgPath)
 		require.Nil(t, err)
@@ -27,8 +26,8 @@ func TestMapper_NewMapping(t *testing.T) {
 	})
 	t.Run("no fieldmappers,typemappers", func(t *testing.T) {
 		mapper := Mapper{
-			FieldMappers: []fieldmapper.FieldMapper{},
-			TypeMappers:  []typemapper.TypeMapper{},
+			FieldMappers: []mapcstd.FieldMapper{},
+			TypeMappers:  []mapcstd.TypeMapper{},
 		}
 		got, err := mapper.NewMapping(sample.SrcUser{}, sample.DestUser{}, outPkgPath)
 		require.Nil(t, err)

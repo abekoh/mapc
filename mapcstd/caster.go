@@ -1,4 +1,4 @@
-package typemapper
+package mapcstd
 
 type Caster interface {
 	Caller() *Caller

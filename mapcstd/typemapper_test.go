@@ -1,4 +1,4 @@
-package typemapper
+package mapcstd
 
 import (
 	"fmt"

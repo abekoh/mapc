@@ -4,15 +4,14 @@ import (
 	"fmt"
 	"reflect"
 
-	"github.com/abekoh/mapc/fieldmapper"
 	"github.com/abekoh/mapc/internal/util"
-	"github.com/abekoh/mapc/typemapper"
+	"github.com/abekoh/mapc/mapcstd"
 	"github.com/abekoh/mapc/types"
 )
 
 type Mapper struct {
-	FieldMappers []fieldmapper.FieldMapper
-	TypeMappers  []typemapper.TypeMapper
+	FieldMappers []mapcstd.FieldMapper
+	TypeMappers  []mapcstd.TypeMapper
 }
 
 type Mapping struct {
@@ -24,7 +23,7 @@ type Mapping struct {
 type FieldPair struct {
 	Src     *types.Field
 	Dest    *types.Field
-	Casters []typemapper.Caster
+	Casters []mapcstd.Caster
 }
 
 func (m Mapper) NewMapping(src, dest any, outPkgPath string) (*Mapping, error) {
@@ -87,7 +86,7 @@ func (m Mapper) newFieldPair(src, dest *types.Field) (*FieldPair, bool) {
 			return &FieldPair{
 				Src:     src,
 				Dest:    dest,
-				Casters: []typemapper.Caster{caster},
+				Casters: []mapcstd.Caster{caster},
 			}, true
 		}
 	}

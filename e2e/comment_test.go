@@ -5,7 +5,7 @@ import (
 
 	"github.com/abekoh/mapc"
 	"github.com/abekoh/mapc/e2e/testdata/ab"
-	"github.com/abekoh/mapc/fieldmapper"
+	"github.com/abekoh/mapc/mapcstd"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -39,8 +39,8 @@ func Test_FieldComments(t *testing.T) {
 	t.Run("one field is commented", func(t *testing.T) {
 		m := mapc.New()
 		m.Option.FuncComment = false
-		m.Option.FieldMappers = []fieldmapper.FieldMapper{
-			fieldmapper.HashMap{
+		m.Option.FieldMappers = []mapcstd.FieldMapper{
+			mapcstd.HashMap{
 				"ID":   "ID",
 				"Name": "Name",
 				"Age":  "Age",
@@ -67,7 +67,7 @@ func MapAUserToBUser(x AUser) BUser {
 	t.Run("all fields are commented", func(t *testing.T) {
 		m := mapc.New()
 		m.Option.FuncComment = false
-		m.Option.FieldMappers = []fieldmapper.FieldMapper{}
+		m.Option.FieldMappers = []mapcstd.FieldMapper{}
 		m.Option.OutPkgPath = "github.com/abekoh/mapc/e2e/testdata/ab"
 		m.Register(ab.AUser{}, ab.BUser{})
 		gs, errs := m.Generate()

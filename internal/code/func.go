@@ -8,7 +8,7 @@ import (
 
 	"github.com/abekoh/mapc/internal/mapping"
 	"github.com/abekoh/mapc/internal/util"
-	"github.com/abekoh/mapc/typemapper"
+	"github.com/abekoh/mapc/mapcstd"
 	"github.com/dave/dst"
 )
 
@@ -67,14 +67,14 @@ func NewFuncFromMapping(m *mapping.Mapping, opt *FuncOption) *Func {
 				continue
 			}
 			switch caller.CallerType {
-			case typemapper.Unary:
+			case mapcstd.Unary:
 				casters = append(casters, UnaryCaster(caller.Name[0]))
-			case typemapper.Typ:
+			case mapcstd.Typ:
 				casters = append(casters, TypeCaster{
 					name:    caller.Name,
 					pkgPath: caller.PkgPath,
 				})
-			case typemapper.Func:
+			case mapcstd.Func:
 				casters = append(casters, FuncCallCaster{
 					name:    caller.Name,
 					pkgPath: caller.PkgPath,

@@ -6,8 +6,8 @@ import (
 	"text/template"
 
 	"github.com/abekoh/mapc/internal/mapping"
+	"github.com/abekoh/mapc/mapcstd"
 	"github.com/abekoh/mapc/testdata/sample"
-	"github.com/abekoh/mapc/typemapper"
 	"github.com/abekoh/mapc/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -23,7 +23,7 @@ func TestNewFuncFromMapping(t *testing.T) {
 			{
 				Src:     src.Fields[0],
 				Dest:    dest.Fields[0],
-				Casters: []typemapper.Caster{&typemapper.NopCaster{}},
+				Casters: []mapcstd.Caster{&mapcstd.NopCaster{}},
 			},
 		},
 	}
