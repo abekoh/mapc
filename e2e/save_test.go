@@ -37,3 +37,13 @@ func MapAUserToBUser(x AUser) BUser {
 }
 `, string(got))
 }
+
+func Test_OutPathIsNotSet(t *testing.T) {
+	m := mapc.New()
+	m.Option.OutPkgPath = "github.com/abekoh/mapc/e2e/testdata/ab"
+	m.Register(ab.AUser{}, ab.BUser{})
+	gs, errs := m.Generate()
+	requireNoErrors(t, errs)
+	err := gs[0].Save()
+	assert.NotNil(t, err)
+}
