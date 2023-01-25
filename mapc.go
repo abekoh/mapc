@@ -77,6 +77,7 @@ func (m *MapC) Generate() (res GeneratedList, errs []error) {
 			f = code.NewFile(pkgPath)
 		}
 		fn := code.NewFuncFromMapping(mp, &code.FuncOption{
+			Name:                 input.option.FuncName,
 			FuncComment:          input.option.FuncComment,
 			NoMapperFieldComment: input.option.NoMapperFieldComment,
 		})
@@ -109,6 +110,7 @@ type input struct {
 type Option struct {
 	OutPath              string
 	OutPkgPath           string
+	FuncName             string
 	FuncComment          bool
 	NoMapperFieldComment bool
 	FieldMappers         []mapcstd.FieldMapper
@@ -123,6 +125,7 @@ func (o *Option) copy() *Option {
 	return &Option{
 		OutPath:              o.OutPath,
 		OutPkgPath:           o.OutPkgPath,
+		FuncName:             o.FuncName,
 		FuncComment:          o.FuncComment,
 		NoMapperFieldComment: o.NoMapperFieldComment,
 		FieldMappers:         fms,
