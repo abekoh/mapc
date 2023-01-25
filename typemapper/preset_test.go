@@ -230,32 +230,32 @@ func TestRefMapper_Map(t *testing.T) {
 
 func TestDerefMapper_Map(t *testing.T) {
 	tests := []struct {
-		from   *types.Typ
-		to     *types.Typ
+		src    *types.Typ
+		dest   *types.Typ
 		want   Caster
 		wantOk bool
 	}{
 		{
-			from:   Int,
-			to:     Int,
+			src:    Int,
+			dest:   Int,
 			want:   nil,
 			wantOk: false,
 		},
 		{
-			from:   Int,
-			to:     PointerInt,
+			src:    Int,
+			dest:   PointerInt,
 			want:   nil,
 			wantOk: false,
 		},
 		{
-			from:   String,
-			to:     PointerString,
+			src:    String,
+			dest:   PointerString,
 			want:   nil,
 			wantOk: false,
 		},
 		{
-			from: PointerString,
-			to:   String,
+			src:  PointerString,
+			dest: String,
 			want: &SimpleCaster{
 				caller: &Caller{
 					PkgPath:    "",
@@ -266,8 +266,8 @@ func TestDerefMapper_Map(t *testing.T) {
 			wantOk: true,
 		},
 		{
-			from: PointerInt,
-			to:   Int,
+			src:  PointerInt,
+			dest: Int,
 			want: &SimpleCaster{
 				caller: &Caller{
 					PkgPath:    "",
@@ -278,8 +278,8 @@ func TestDerefMapper_Map(t *testing.T) {
 			wantOk: true,
 		},
 		{
-			from: DoublePointerInt,
-			to:   PointerInt,
+			src:  DoublePointerInt,
+			dest: PointerInt,
 			want: &SimpleCaster{
 				caller: &Caller{
 					PkgPath:    "",
@@ -290,15 +290,15 @@ func TestDerefMapper_Map(t *testing.T) {
 			wantOk: true,
 		},
 		{
-			from:   PointerInt,
-			to:     String,
+			src:    PointerInt,
+			dest:   String,
 			want:   nil,
 			wantOk: false,
 		},
 	}
 	for _, tt := range tests {
-		t.Run(fmt.Sprintf("%s -> %s", tt.from, tt.to), func(t *testing.T) {
-			got, got1 := DerefMapper{}.Map(tt.from, tt.to)
+		t.Run(fmt.Sprintf("%s -> %s", tt.src, tt.dest), func(t *testing.T) {
+			got, got1 := DerefMapper{}.Map(tt.src, tt.dest)
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("Map() got = %v, want %v", got, tt.want)
 			}
