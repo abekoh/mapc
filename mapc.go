@@ -19,7 +19,7 @@ type MapC struct {
 }
 
 type Registerer interface {
-	Register(from, to any, optFns ...func(option *Option))
+	Register(src, dest any, optFns ...func(option *Option))
 	Group(optFns ...func(*Option)) *Group
 }
 
@@ -35,10 +35,10 @@ func New() *MapC {
 	}
 }
 
-func (m *MapC) Register(from, to any, optFns ...func(*Option)) {
+func (m *MapC) Register(src, dest any, optFns ...func(*Option)) {
 	m.inputs = append(m.inputs, input{
-		from:   from,
-		to:     to,
+		src:    src,
+		dest:   dest,
 		option: (m.Option).overwrite(optFns...),
 	})
 }
@@ -54,7 +54,7 @@ func (m *MapC) Group(optFns ...func(*Option)) *Group {
 func (m *MapC) Generate() (res GeneratedList, errs []error) {
 	for _, input := range m.inputs {
 		if input.option == nil {
-			errs = append(errs, fmt.Errorf("option is nil. from=%T, to=%T", input.from, input.to))
+			errs = append(errs, fmt.Errorf("option is nil. src=%T, dest=%T", input.src, input.dest))
 			continue
 		}
 		mapper := mapping.Mapper{
@@ -65,7 +65,7 @@ func (m *MapC) Generate() (res GeneratedList, errs []error) {
 		if pkgPath == "" {
 			pkgPath = pkgPathFromRelativePath(input.option.OutPath)
 		}
-		mp, err := mapper.NewMapping(input.from, input.to, pkgPath)
+		mp, err := mapper.NewMapping(input.src, input.dest, pkgPath)
 		if err != nil {
 			errs = append(errs, fmt.Errorf("failed to map: %w", err))
 			continue
@@ -102,8 +102,8 @@ func (m *MapC) Generate() (res GeneratedList, errs []error) {
 }
 
 type input struct {
-	from   any
-	to     any
+	src    any
+	dest   any
 	option *Option
 }
 
@@ -153,10 +153,10 @@ func (g *Group) Group(optFns ...func(*Option)) *Group {
 	}
 }
 
-func (g *Group) Register(from, to any, optFns ...func(*Option)) {
+func (g *Group) Register(src, dest any, optFns ...func(*Option)) {
 	g.MapC.inputs = append(g.MapC.inputs, input{
-		from:   from,
-		to:     to,
+		src:    src,
+		dest:   dest,
 		option: (g.Option).overwrite(optFns...),
 	})
 }
