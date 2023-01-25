@@ -5,7 +5,7 @@ import (
 
 	"github.com/abekoh/mapc"
 	"github.com/abekoh/mapc/e2e/testdata/various"
-	"github.com/abekoh/mapc/fieldmapper"
+	"github.com/abekoh/mapc/mapcstd"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -150,7 +150,7 @@ func Test_ConvertWithCast(t *testing.T) {
 	m.Option.FuncComment = false
 	m.Option.NoMapperFieldComment = false
 	m.Option.OutPkgPath = "github.com/abekoh/mapc/e2e/testdata/various"
-	m.Option.FieldMappers = []fieldmapper.FieldMapper{fieldmapper.HashMap{
+	m.Option.FieldMappers = []mapcstd.FieldMapper{mapcstd.HashMap{
 		"Int":    "Int64",
 		"Uint64": "Uint",
 		"Int32":  "String",

@@ -1,8 +1,14 @@
-package fieldmapper
+package mapcstd
 
-import (
-	"strings"
-)
+import "strings"
+
+type FieldMapper interface {
+	Map(string) string
+}
+
+var DefaultFieldMappers = []FieldMapper{
+	&Identify{},
+}
 
 type Identify struct{}
 

@@ -1,4 +1,4 @@
-package typemapper
+package mapcstd
 
 type Caster interface {
 	Caller() *Caller
@@ -20,7 +20,7 @@ type CallerType int
 
 const (
 	Unary CallerType = iota
-	Typ
+	Type
 	Func
 )
 

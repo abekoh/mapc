@@ -1,4 +1,4 @@
-package fieldmapper
+package mapcstd
 
 import (
 	"fmt"

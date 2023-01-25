@@ -6,7 +6,7 @@ import (
 	"github.com/abekoh/mapc"
 	"github.com/abekoh/mapc/e2e/testdata/a"
 	"github.com/abekoh/mapc/e2e/testdata/ab"
-	"github.com/abekoh/mapc/fieldmapper"
+	"github.com/abekoh/mapc/mapcstd"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -41,8 +41,8 @@ func Test_SrcIsPrivate(t *testing.T) {
 		m := mapc.New()
 		m.Option.FuncComment = false
 		m.Option.FieldMappers = append(m.Option.FieldMappers,
-			&fieldmapper.UpperFirst{},
-			&fieldmapper.HashMap{"id": "ID"},
+			&mapcstd.UpperFirst{},
+			&mapcstd.HashMap{"id": "ID"},
 		)
 		a.RegisterPrivateAUserToBUser(t, m, "github.com/abekoh/mapc/e2e/testdata/a")
 		gs, errs := m.Generate()
@@ -67,8 +67,8 @@ func MapUserToUser(x user) b.User {
 		m := mapc.New()
 		m.Option.FuncComment = false
 		m.Option.FieldMappers = append(m.Option.FieldMappers,
-			&fieldmapper.UpperFirst{},
-			&fieldmapper.HashMap{"id": "ID"},
+			&mapcstd.UpperFirst{},
+			&mapcstd.HashMap{"id": "ID"},
 		)
 		a.RegisterPrivateAUserToBUser(t, m, "github.com/abekoh/mapc/e2e/testdata/b")
 		_, errs := m.Generate()
@@ -81,8 +81,8 @@ func Test_DestIsPrivate(t *testing.T) {
 		m := mapc.New()
 		m.Option.FuncComment = false
 		m.Option.FieldMappers = append(m.Option.FieldMappers,
-			&fieldmapper.LowerFirst{},
-			&fieldmapper.HashMap{"ID": "id"},
+			&mapcstd.LowerFirst{},
+			&mapcstd.HashMap{"ID": "id"},
 		)
 		a.RegisterBUserToPrivateAUser(t, m, "github.com/abekoh/mapc/e2e/testdata/a")
 		gs, errs := m.Generate()
@@ -107,8 +107,8 @@ func MapUserToUser(x b.User) user {
 		m := mapc.New()
 		m.Option.FuncComment = false
 		m.Option.FieldMappers = append(m.Option.FieldMappers,
-			&fieldmapper.LowerFirst{},
-			&fieldmapper.HashMap{"ID": "id"},
+			&mapcstd.LowerFirst{},
+			&mapcstd.HashMap{"ID": "id"},
 		)
 		a.RegisterPrivateAUserToBUser(t, m, "github.com/abekoh/mapc/e2e/testdata/b")
 		_, errs := m.Generate()

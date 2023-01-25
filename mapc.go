@@ -7,10 +7,9 @@ import (
 	"io"
 	"os"
 
-	"github.com/abekoh/mapc/fieldmapper"
 	"github.com/abekoh/mapc/internal/code"
 	"github.com/abekoh/mapc/internal/mapping"
-	"github.com/abekoh/mapc/typemapper"
+	"github.com/abekoh/mapc/mapcstd"
 )
 
 type MapC struct {
@@ -29,8 +28,8 @@ func New() *MapC {
 		Option: &Option{
 			FuncComment:          true,
 			NoMapperFieldComment: true,
-			FieldMappers:         fieldmapper.DefaultMappers,
-			TypeMappers:          typemapper.Defaults,
+			FieldMappers:         mapcstd.DefaultFieldMappers,
+			TypeMappers:          mapcstd.DefaultTypeMappers,
 		},
 	}
 }
@@ -112,14 +111,14 @@ type Option struct {
 	OutPkgPath           string
 	FuncComment          bool
 	NoMapperFieldComment bool
-	FieldMappers         []fieldmapper.FieldMapper
-	TypeMappers          []typemapper.TypeMapper
+	FieldMappers         []mapcstd.FieldMapper
+	TypeMappers          []mapcstd.TypeMapper
 }
 
 func (o *Option) copy() *Option {
-	fms := make([]fieldmapper.FieldMapper, len(o.FieldMappers))
+	fms := make([]mapcstd.FieldMapper, len(o.FieldMappers))
 	copy(fms, o.FieldMappers)
-	tms := make([]typemapper.TypeMapper, len(o.TypeMappers))
+	tms := make([]mapcstd.TypeMapper, len(o.TypeMappers))
 	copy(tms, o.TypeMappers)
 	return &Option{
 		OutPath:              o.OutPath,
