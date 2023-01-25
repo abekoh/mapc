@@ -6,7 +6,6 @@ import (
 	"testing"
 
 	"github.com/abekoh/mapc/testdata/sample"
-	"github.com/abekoh/mapc/types"
 )
 
 type typedInt int
@@ -16,20 +15,20 @@ var StringValue = "foo"
 var PointerIntValue = &IntValue
 
 var (
-	Int              = types.NewTyp(reflect.TypeOf(1))
-	Int64            = types.NewTyp(reflect.TypeOf(int64(1)))
-	String           = types.NewTyp(reflect.TypeOf("foo"))
-	TypedInt         = types.NewTyp(reflect.TypeOf(typedInt(1)))
-	Object           = types.NewTyp(reflect.TypeOf(sample.Object{}))
-	PointerInt       = types.NewTyp(reflect.TypeOf(&IntValue))
-	PointerString    = types.NewTyp(reflect.TypeOf(&StringValue))
-	DoublePointerInt = types.NewTyp(reflect.TypeOf(&PointerIntValue))
+	Int              = NewTyp(reflect.TypeOf(1))
+	Int64            = NewTyp(reflect.TypeOf(int64(1)))
+	String           = NewTyp(reflect.TypeOf("foo"))
+	TypedInt         = NewTyp(reflect.TypeOf(typedInt(1)))
+	Object           = NewTyp(reflect.TypeOf(sample.Object{}))
+	PointerInt       = NewTyp(reflect.TypeOf(&IntValue))
+	PointerString    = NewTyp(reflect.TypeOf(&StringValue))
+	DoublePointerInt = NewTyp(reflect.TypeOf(&PointerIntValue))
 )
 
 func TestAssignMapper_Map(t *testing.T) {
 	tests := []struct {
-		src    *types.Typ
-		dest   *types.Typ
+		src    *Typ
+		dest   *Typ
 		want   Caster
 		wantOk bool
 	}{
@@ -56,8 +55,8 @@ func TestAssignMapper_Map(t *testing.T) {
 
 func TestConvertMapper_Map(t *testing.T) {
 	tests := []struct {
-		src    *types.Typ
-		dest   *types.Typ
+		src    *Typ
+		dest   *Typ
 		want   Caster
 		wantOk bool
 	}{
@@ -155,8 +154,8 @@ func TestConvertMapper_Map(t *testing.T) {
 
 func TestRefMapper_Map(t *testing.T) {
 	tests := []struct {
-		src    *types.Typ
-		dest   *types.Typ
+		src    *Typ
+		dest   *Typ
 		want   Caster
 		wantOk bool
 	}{
@@ -230,8 +229,8 @@ func TestRefMapper_Map(t *testing.T) {
 
 func TestDerefMapper_Map(t *testing.T) {
 	tests := []struct {
-		src    *types.Typ
-		dest   *types.Typ
+		src    *Typ
+		dest   *Typ
 		want   Caster
 		wantOk bool
 	}{

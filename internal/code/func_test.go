@@ -8,14 +8,13 @@ import (
 	"github.com/abekoh/mapc/internal/mapping"
 	"github.com/abekoh/mapc/mapcstd"
 	"github.com/abekoh/mapc/testdata/sample"
-	"github.com/abekoh/mapc/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
 func TestNewFuncFromMapping(t *testing.T) {
-	src, _ := types.NewStruct(reflect.TypeOf(sample.SrcUser{}))
-	dest, _ := types.NewStruct(reflect.TypeOf(sample.DestUser{}))
+	src, _ := mapcstd.NewStruct(reflect.TypeOf(sample.SrcUser{}))
+	dest, _ := mapcstd.NewStruct(reflect.TypeOf(sample.DestUser{}))
 	m := &mapping.Mapping{
 		Src:  src,
 		Dest: dest,
@@ -43,8 +42,8 @@ func Test_funcName(t *testing.T) {
 		opt *FuncOption
 	}
 	m := func() *mapping.Mapping {
-		src, _ := types.NewStruct(reflect.TypeOf(sample.SrcUser{}))
-		dest, _ := types.NewStruct(reflect.TypeOf(sample.DestUser{}))
+		src, _ := mapcstd.NewStruct(reflect.TypeOf(sample.SrcUser{}))
+		dest, _ := mapcstd.NewStruct(reflect.TypeOf(sample.DestUser{}))
 		return &mapping.Mapping{
 			Src:  src,
 			Dest: dest,
