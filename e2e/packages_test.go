@@ -14,11 +14,8 @@ import (
 func Test_WithSamePackage(t *testing.T) {
 	m := mapc.New()
 	m.Option.FuncComment = false
-	m.Register(ab.AUser{}, ab.BUser{},
-		func(option *mapc.Option) {
-			option.OutPkgPath = "github.com/abekoh/mapc/e2e/testdata/ab"
-		},
-	)
+	m.Option.OutPkgPath = "github.com/abekoh/mapc/e2e/testdata/ab"
+	m.Register(ab.AUser{}, ab.BUser{})
 	gs, errs := m.Generate()
 	requireNoErrors(t, errs)
 	got, err := gs[0].Sprint()
