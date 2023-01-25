@@ -217,7 +217,7 @@ func newFuncFromDecl(pkgPath string, d *dst.FuncDecl) (*Func, error) {
 
 func (f *Func) AppendNotSetExprs(x *Func) error {
 	if !f.srcTyp.Equal(x.srcTyp) {
-		return errors.New("fromType must be equal")
+		return errors.New("srcTyp must be equal")
 	}
 	if !f.destTyp.Equal(x.destTyp) {
 		return errors.New("destTyp must be equal")
