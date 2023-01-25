@@ -64,6 +64,33 @@ func MapAUserToBUser(x AUser) BUser {
 }
 `, got)
 	})
+	t.Run("two fields are commented", func(t *testing.T) {
+		m := mapc.New()
+		m.Option.FuncComment = false
+		m.Option.FieldMappers = []mapcstd.FieldMapper{
+			mapcstd.HashMap{
+				"ID":   "ID",
+				"Name": "Name",
+			},
+		}
+		m.Option.OutPkgPath = "github.com/abekoh/mapc/e2e/testdata/ab"
+		m.Register(ab.AUser{}, ab.BUser{})
+		gs, errs := m.Generate()
+		requireNoErrors(t, errs)
+		got, err := gs[0].Sprint()
+		require.Nil(t, err)
+		assert.Equal(t, `package ab
+
+func MapAUserToBUser(x AUser) BUser {
+	return BUser{
+		ID:   x.ID,
+		Name: x.Name,
+		// Age:
+		// RegisteredAt:
+	}
+}
+`, got)
+	})
 	t.Run("all fields are commented", func(t *testing.T) {
 		m := mapc.New()
 		m.Option.FuncComment = false
