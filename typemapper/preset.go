@@ -7,8 +7,8 @@ import (
 type AssignMapper struct {
 }
 
-func (a AssignMapper) Map(from, to *types.Typ) (Caster, bool) {
-	if from.AssignableTo(to) {
+func (a AssignMapper) Map(src, dest *types.Typ) (Caster, bool) {
+	if src.AssignableTo(dest) {
 		return &NopCaster{}, true
 	}
 	return nil, false
@@ -17,12 +17,12 @@ func (a AssignMapper) Map(from, to *types.Typ) (Caster, bool) {
 type ConvertMapper struct {
 }
 
-func (c ConvertMapper) Map(from, to *types.Typ) (Caster, bool) {
-	if from.ConvertibleTo(to) {
+func (c ConvertMapper) Map(src, dest *types.Typ) (Caster, bool) {
+	if src.ConvertibleTo(dest) {
 		return &SimpleCaster{
 			caller: &Caller{
-				Name:       to.Name(),
-				PkgPath:    to.PkgPath(),
+				Name:       dest.Name(),
+				PkgPath:    dest.PkgPath(),
 				CallerType: Typ,
 			},
 		}, true
@@ -33,8 +33,8 @@ func (c ConvertMapper) Map(from, to *types.Typ) (Caster, bool) {
 type RefMapper struct {
 }
 
-func (p RefMapper) Map(from, to *types.Typ) (Caster, bool) {
-	if toElm, ok := to.Elem(); ok && from.AssignableTo(toElm) {
+func (p RefMapper) Map(src, dest *types.Typ) (Caster, bool) {
+	if srcElm, ok := dest.Elem(); ok && src.AssignableTo(srcElm) {
 		return &SimpleCaster{
 			caller: &Caller{
 				PkgPath:    "",
@@ -49,8 +49,8 @@ func (p RefMapper) Map(from, to *types.Typ) (Caster, bool) {
 type DerefMapper struct {
 }
 
-func (p DerefMapper) Map(from, to *types.Typ) (Caster, bool) {
-	if fromElm, ok := from.Elem(); ok && fromElm.AssignableTo(to) {
+func (p DerefMapper) Map(src, dest *types.Typ) (Caster, bool) {
+	if destElm, ok := src.Elem(); ok && destElm.AssignableTo(dest) {
 		return &SimpleCaster{
 			caller: &Caller{
 				PkgPath:    "",
@@ -64,12 +64,12 @@ func (p DerefMapper) Map(from, to *types.Typ) (Caster, bool) {
 
 type MapTypeMapper map[types.Typ]map[types.Typ]Caster
 
-func (m MapTypeMapper) Map(from, to types.Typ) (Caster, bool) {
-	m2, ok := m[from]
+func (m MapTypeMapper) Map(src, dest types.Typ) (Caster, bool) {
+	m2, ok := m[src]
 	if !ok {
 		return nil, false
 	}
-	c, ok := m2[to]
+	c, ok := m2[dest]
 	if !ok {
 		return nil, false
 	}
