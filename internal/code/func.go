@@ -302,13 +302,13 @@ func genVar(name string) *dst.Ident {
 	return i
 }
 
-func genParams(fromTyp *Typ, arg string) *dst.FieldList {
+func genParams(destTyp *Typ, arg string) *dst.FieldList {
 	return &dst.FieldList{
 		Opening: true,
 		List: []*dst.Field{
 			{
 				Names: []*dst.Ident{genVar(arg)},
-				Type:  genType(fromTyp),
+				Type:  genType(destTyp),
 				Tag:   nil,
 				Decs:  dst.FieldDecorations{},
 			},
