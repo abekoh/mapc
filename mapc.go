@@ -30,7 +30,7 @@ func New() *MapC {
 			FuncComment:          true,
 			NoMapperFieldComment: true,
 			FieldMappers:         fieldmapper.DefaultFieldMappers,
-			TypeMappers:          typemapper.Defaults,
+			TypeMappers:          typemapper.DefaultTypeMappers,
 		},
 	}
 }
