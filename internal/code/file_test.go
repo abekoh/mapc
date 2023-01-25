@@ -61,7 +61,7 @@ func TestFile_Write(t *testing.T) {
 
 func TestFile_FindFunc(t *testing.T) {
 	f := loadSample(t)
-	fnName := "MapSrcToDestUser"
+	fnName := "MapSrcUserToDestUser"
 	fn, ok := f.FindFunc(fnName)
 	if !ok {
 		t.Errorf("not found %s", fnName)

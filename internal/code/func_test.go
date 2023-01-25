@@ -80,7 +80,7 @@ func Test_funcName(t *testing.T) {
 				m: m,
 				opt: &FuncOption{
 					NameTemplate: func() *template.Template {
-						t, _ := template.New("FuncName").Parse("{{ .Src }}Dest{{ .Dest }}")
+						t, _ := template.New("FuncName").Parse("{{ .Src }}To{{ .Dest }}")
 						return t
 					}(),
 				},
@@ -93,7 +93,7 @@ func Test_funcName(t *testing.T) {
 				m: m,
 				opt: &FuncOption{
 					NameTemplate: func() *template.Template {
-						t, _ := template.New("FuncName").Parse("{{ .Src }}Dest{{ .Dest }}")
+						t, _ := template.New("FuncName").Parse("{{ .Src }}To{{ .Dest }}")
 						return t
 					}(),
 					Private: true,
