@@ -14,11 +14,8 @@ import (
 func Test_WithSamePackage(t *testing.T) {
 	m := mapc.New()
 	m.Option.FuncComment = false
-	m.Register(ab.AUser{}, ab.BUser{},
-		func(option *mapc.Option) {
-			option.OutPkgPath = "github.com/abekoh/mapc/e2e/testdata/ab"
-		},
-	)
+	m.Option.OutPkgPath = "github.com/abekoh/mapc/e2e/testdata/ab"
+	m.Register(ab.AUser{}, ab.BUser{})
 	gs, errs := m.Generate()
 	requireNoErrors(t, errs)
 	got, err := gs[0].Sprint()
@@ -44,7 +41,8 @@ func Test_SrcIsPrivate(t *testing.T) {
 			&mapcstd.UpperFirst{},
 			&mapcstd.HashMap{"id": "ID"},
 		)
-		a.RegisterPrivateAUserToBUser(t, m, "github.com/abekoh/mapc/e2e/testdata/a")
+		m.Option.OutPkgPath = "github.com/abekoh/mapc/e2e/testdata/a"
+		a.RegisterPrivateAUserToBUser(t, m)
 		gs, errs := m.Generate()
 		requireNoErrors(t, errs)
 		got, err := gs[0].Sprint()
@@ -70,7 +68,8 @@ func MapUserToUser(x user) b.User {
 			&mapcstd.UpperFirst{},
 			&mapcstd.HashMap{"id": "ID"},
 		)
-		a.RegisterPrivateAUserToBUser(t, m, "github.com/abekoh/mapc/e2e/testdata/b")
+		m.Option.OutPkgPath = "github.com/abekoh/mapc/e2e/testdata/b"
+		a.RegisterPrivateAUserToBUser(t, m)
 		_, errs := m.Generate()
 		require.Len(t, errs, 1)
 	})
@@ -84,7 +83,8 @@ func Test_DestIsPrivate(t *testing.T) {
 			&mapcstd.LowerFirst{},
 			&mapcstd.HashMap{"ID": "id"},
 		)
-		a.RegisterBUserToPrivateAUser(t, m, "github.com/abekoh/mapc/e2e/testdata/a")
+		m.Option.OutPkgPath = "github.com/abekoh/mapc/e2e/testdata/a"
+		a.RegisterBUserToPrivateAUser(t, m)
 		gs, errs := m.Generate()
 		requireNoErrors(t, errs)
 		got, err := gs[0].Sprint()
@@ -110,7 +110,8 @@ func MapUserToUser(x b.User) user {
 			&mapcstd.LowerFirst{},
 			&mapcstd.HashMap{"ID": "id"},
 		)
-		a.RegisterPrivateAUserToBUser(t, m, "github.com/abekoh/mapc/e2e/testdata/b")
+		m.Option.OutPkgPath = "github.com/abekoh/mapc/e2e/testdata/b"
+		a.RegisterPrivateAUserToBUser(t, m)
 		_, errs := m.Generate()
 		require.Len(t, errs, 1)
 	})

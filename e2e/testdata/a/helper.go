@@ -7,16 +7,12 @@ import (
 	"github.com/abekoh/mapc/e2e/testdata/b"
 )
 
-func RegisterPrivateAUserToBUser(t *testing.T, m mapc.Registerer, outPkgPath string) {
+func RegisterPrivateAUserToBUser(t *testing.T, m mapc.Registerer) {
 	t.Helper()
-	m.Register(user{}, b.User{}, func(o *mapc.Option) {
-		o.OutPkgPath = outPkgPath
-	})
+	m.Register(user{}, b.User{})
 }
 
-func RegisterBUserToPrivateAUser(t *testing.T, m mapc.Registerer, outPkgPath string) {
+func RegisterBUserToPrivateAUser(t *testing.T, m mapc.Registerer) {
 	t.Helper()
-	m.Register(b.User{}, user{}, func(o *mapc.Option) {
-		o.OutPkgPath = outPkgPath
-	})
+	m.Register(b.User{}, user{})
 }
