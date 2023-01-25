@@ -83,7 +83,7 @@ type DestUser struct {
 }
 
 // MapSrcUserToDestUser is mapper from SrcUser into DestUser
-func MapSrcToDestUser(x SrcUser) DestUser {
+func MapSrcUserToDestUser(x SrcUser) DestUser {
 	return DestUser{
 		ID:           x.ID,
 		Name:         x.Name,
