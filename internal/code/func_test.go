@@ -14,15 +14,15 @@ import (
 )
 
 func TestNewFuncFromMapping(t *testing.T) {
-	from, _ := types.NewStruct(reflect.TypeOf(sample.SrcUser{}))
-	to, _ := types.NewStruct(reflect.TypeOf(sample.DestUser{}))
+	src, _ := types.NewStruct(reflect.TypeOf(sample.SrcUser{}))
+	dest, _ := types.NewStruct(reflect.TypeOf(sample.DestUser{}))
 	m := &mapping.Mapping{
-		Src:  from,
-		Dest: to,
+		Src:  src,
+		Dest: dest,
 		FieldPairs: []*mapping.FieldPair{
 			{
-				From:    from.Fields[0],
-				To:      to.Fields[0],
+				Src:     src.Fields[0],
+				Dest:    dest.Fields[0],
 				Casters: []typemapper.Caster{&typemapper.NopCaster{}},
 			},
 		},

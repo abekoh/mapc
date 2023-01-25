@@ -22,8 +22,8 @@ type Mapping struct {
 }
 
 type FieldPair struct {
-	From    *types.Field
-	To      *types.Field
+	Src     *types.Field
+	Dest    *types.Field
 	Casters []typemapper.Caster
 }
 
@@ -85,8 +85,8 @@ func (m Mapper) newFieldPair(src, dest *types.Field) (*FieldPair, bool) {
 	for _, typeMapper := range m.TypeMappers {
 		if caster, ok := typeMapper.Map(src.Typ(), dest.Typ()); ok {
 			return &FieldPair{
-				From:    src,
-				To:      dest,
+				Src:     src,
+				Dest:    dest,
 				Casters: []typemapper.Caster{caster},
 			}, true
 		}

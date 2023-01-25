@@ -83,11 +83,11 @@ func NewFuncFromMapping(m *mapping.Mapping, opt *FuncOption) *Func {
 			}
 		}
 		mapExprs = append(mapExprs, &SimpleMapExpr{
-			from:    p.From.Name(),
-			to:      p.To.Name(),
+			from:    p.Src.Name(),
+			to:      p.Dest.Name(),
 			casters: casters,
 		})
-		mappedFieldMap[p.To.Name()] = struct{}{}
+		mappedFieldMap[p.Dest.Name()] = struct{}{}
 	}
 	if opt.NoMapperFieldComment {
 		for _, toField := range m.Dest.Fields {
