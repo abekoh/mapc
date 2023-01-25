@@ -18,26 +18,40 @@ func Test_OptionWithGroup(t *testing.T) {
 	m.Option.FieldMappers = []mapcstd.FieldMapper{
 		mapcstd.HashMap{"ID": "ID"},
 	}
+	m.Option.FuncName = "Func1"
+	m.Register(ab.AUser{}, ab.BUser{})
 	g := m.Group(func(option *mapc.Option) {
 		option.FieldMappers = append(
 			option.FieldMappers,
 			mapcstd.HashMap{"Name": "Name"},
 		)
+		option.FuncName = "Func2"
 	})
 	g.Register(ab.AUser{}, ab.BUser{})
 	gs, errs := m.Generate()
 	requireNoErrors(t, errs)
-	got, err := gs[0].Sprint()
+	assert.Len(t, gs, 2)
+	got1, err := gs[0].Sprint()
 	require.Nil(t, err)
 	assert.Equal(t, `package ab
 
-func MapAUserToBUser(x AUser) BUser {
+func Func1(x AUser) BUser {
+	return BUser{
+		ID: x.ID,
+	}
+}
+`, got1)
+	got2, err := gs[1].Sprint()
+	require.Nil(t, err)
+	assert.Equal(t, `package ab
+
+func Func2(x AUser) BUser {
 	return BUser{
 		ID:   x.ID,
 		Name: x.Name,
 	}
 }
-`, got)
+`, got2)
 }
 
 func Test_FuncName(t *testing.T) {
