@@ -114,7 +114,7 @@ func TestConvertMapper_Map(t *testing.T) {
 			dest: TypedInt,
 			want: &SimpleCaster{
 				caller: &Caller{
-					PkgPath:    "github.com/abekoh/mapc/typemapper",
+					PkgPath:    "github.com/abekoh/mapc/mapcstd",
 					Name:       "typedInt",
 					CallerType: Typ,
 				},
