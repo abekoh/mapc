@@ -33,8 +33,8 @@ func TestNewFuncFromMapping(t *testing.T) {
 	assert.Equal(t, &Typ{name: "SrcUser", pkgPath: "github.com/abekoh/mapc/testdata/sample"}, got.srcTyp)
 	assert.Equal(t, &Typ{name: "DestUser", pkgPath: "github.com/abekoh/mapc/testdata/sample"}, got.destTyp)
 	assert.Len(t, got.mapExprs, 1)
-	assert.Equal(t, "ID", got.mapExprs[0].From())
-	assert.Equal(t, "ID", got.mapExprs[0].To())
+	assert.Equal(t, "ID", got.mapExprs[0].Src())
+	assert.Equal(t, "ID", got.mapExprs[0].Dest())
 }
 
 func Test_funcName(t *testing.T) {

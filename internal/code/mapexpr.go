@@ -8,8 +8,8 @@ import (
 )
 
 type MapExpr interface {
-	From() string
-	To() string
+	Src() string
+	Dest() string
 	DstExpr(arg string) (dst.Expr, bool)
 	Comment() (string, bool)
 }
@@ -51,11 +51,11 @@ type SimpleMapExpr struct {
 	casters []Caster
 }
 
-func (e SimpleMapExpr) From() string {
+func (e SimpleMapExpr) Src() string {
 	return e.src
 }
 
-func (e SimpleMapExpr) To() string {
+func (e SimpleMapExpr) Dest() string {
 	return e.dest
 }
 
@@ -94,11 +94,11 @@ type CommentedMapExpr struct {
 	comment string
 }
 
-func (c CommentedMapExpr) From() string {
+func (c CommentedMapExpr) Src() string {
 	return ""
 }
 
-func (c CommentedMapExpr) To() string {
+func (c CommentedMapExpr) Dest() string {
 	return c.to
 }
 
