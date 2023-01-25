@@ -41,7 +41,7 @@ func (mel MapExprList) DstExprs(arg string) (exprs []dst.Expr, startComments []s
 			aboveLineIsExpr = false
 		}
 	}
-	// returned comments are appended dest lbrace
+	// returned comments are appended to lbrace
 	return
 }
 
