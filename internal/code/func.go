@@ -116,11 +116,11 @@ func funcName(m *mapping.Mapping, opt *FuncOption) (res string) {
 	} else if opt.NameTemplate != nil {
 		var buf bytes.Buffer
 		err := opt.NameTemplate.Execute(&buf, struct {
-			From string
-			To   string
+			Src  string
+			Dest string
 		}{
-			From: m.Src.Name(),
-			To:   m.Dest.Name(),
+			Src:  m.Src.Name(),
+			Dest: m.Dest.Name(),
 		})
 		if err == nil {
 			res = buf.String()
