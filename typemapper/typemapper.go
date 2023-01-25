@@ -5,7 +5,7 @@ import (
 )
 
 type TypeMapper interface {
-	Map(from, to *types.Typ) (Caster, bool)
+	Map(src, dest *types.Typ) (Caster, bool)
 }
 
 var Defaults = []TypeMapper{

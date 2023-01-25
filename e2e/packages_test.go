@@ -36,8 +36,8 @@ func MapAUserToBUser(x AUser) BUser {
 `, got)
 }
 
-func Test_FromIsPrivate(t *testing.T) {
-	t.Run("outPkgPath is from's, success all fields", func(t *testing.T) {
+func Test_SrcIsPrivate(t *testing.T) {
+	t.Run("outPkgPath is src's, success all fields", func(t *testing.T) {
 		m := mapc.New()
 		m.Option.FuncComment = false
 		m.Option.FieldMappers = append(m.Option.FieldMappers,
@@ -63,7 +63,7 @@ func MapUserToUser(x user) b.User {
 }
 `, got)
 	})
-	t.Run("outPkgPath is to's, fail", func(t *testing.T) {
+	t.Run("outPkgPath is dest's, fail", func(t *testing.T) {
 		m := mapc.New()
 		m.Option.FuncComment = false
 		m.Option.FieldMappers = append(m.Option.FieldMappers,
@@ -76,8 +76,8 @@ func MapUserToUser(x user) b.User {
 	})
 }
 
-func Test_ToIsPrivate(t *testing.T) {
-	t.Run("outPkgPath is to's, success all fields", func(t *testing.T) {
+func Test_DestIsPrivate(t *testing.T) {
+	t.Run("outPkgPath is dest's, success all fields", func(t *testing.T) {
 		m := mapc.New()
 		m.Option.FuncComment = false
 		m.Option.FieldMappers = append(m.Option.FieldMappers,
@@ -103,7 +103,7 @@ func MapUserToUser(x b.User) user {
 }
 `, got)
 	})
-	t.Run("outPkgPath is to's, fail", func(t *testing.T) {
+	t.Run("outPkgPath is dest's, fail", func(t *testing.T) {
 		m := mapc.New()
 		m.Option.FuncComment = false
 		m.Option.FieldMappers = append(m.Option.FieldMappers,

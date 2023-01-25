@@ -61,12 +61,12 @@ func TestFile_Write(t *testing.T) {
 
 func TestFile_FindFunc(t *testing.T) {
 	f := loadSample(t)
-	fnName := "MapSrcToDestUser"
+	fnName := "MapSrcUserToDestUser"
 	fn, ok := f.FindFunc(fnName)
 	if !ok {
 		t.Errorf("not found %s", fnName)
 	}
-	assert.Equal(t, fn.name, "MapSrcToDestUser")
+	assert.Equal(t, fn.name, "MapSrcUserToDestUser")
 }
 
 func TestFile_Attach(t *testing.T) {

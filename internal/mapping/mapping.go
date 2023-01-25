@@ -16,36 +16,36 @@ type Mapper struct {
 }
 
 type Mapping struct {
-	From       *types.Struct
-	To         *types.Struct
+	Src        *types.Struct
+	Dest       *types.Struct
 	FieldPairs []*FieldPair
 }
 
 type FieldPair struct {
-	From    *types.Field
-	To      *types.Field
+	Src     *types.Field
+	Dest    *types.Field
 	Casters []typemapper.Caster
 }
 
-func (m Mapper) NewMapping(from, to any, outPkgPath string) (*Mapping, error) {
-	fromStr, err := types.NewStruct(reflect.TypeOf(from))
+func (m Mapper) NewMapping(src, dest any, outPkgPath string) (*Mapping, error) {
+	srcStr, err := types.NewStruct(reflect.TypeOf(src))
 	if err != nil {
 		return nil, fmt.Errorf("failed to construct struct: %w", err)
 	}
-	if !isAccessible(fromStr, outPkgPath) {
-		return nil, fmt.Errorf("%v is not accessible from %v", fromStr.Name(), outPkgPath)
+	if !isAccessible(srcStr, outPkgPath) {
+		return nil, fmt.Errorf("%v is not accessible from %v", srcStr.Name(), outPkgPath)
 	}
-	toStr, err := types.NewStruct(reflect.TypeOf(to))
+	destStr, err := types.NewStruct(reflect.TypeOf(dest))
 	if err != nil {
 		return nil, fmt.Errorf("failed to construct struct: %w", err)
 	}
-	if !isAccessible(toStr, outPkgPath) {
-		return nil, fmt.Errorf("%v is not accessible from %v", toStr.Name(), outPkgPath)
+	if !isAccessible(destStr, outPkgPath) {
+		return nil, fmt.Errorf("%v is not accessible from %v", destStr.Name(), outPkgPath)
 	}
-	fieldPairs := m.newFieldPairs(fromStr, toStr, outPkgPath)
+	fieldPairs := m.newFieldPairs(srcStr, destStr, outPkgPath)
 	return &Mapping{
-		From:       fromStr,
-		To:         toStr,
+		Src:        srcStr,
+		Dest:       destStr,
 		FieldPairs: fieldPairs,
 	}, nil
 }
@@ -57,21 +57,21 @@ func isAccessible(id types.Identifier, outPkgPath string) bool {
 	return id.PkgPath() == outPkgPath
 }
 
-func (m Mapper) newFieldPairs(from, to *types.Struct, outPkgPath string) []*FieldPair {
-	toFieldMap := make(map[string]*types.Field)
-	for _, field := range to.Fields {
-		toFieldMap[field.Name()] = field
+func (m Mapper) newFieldPairs(src, dest *types.Struct, outPkgPath string) []*FieldPair {
+	destFieldMap := make(map[string]*types.Field)
+	for _, field := range dest.Fields {
+		destFieldMap[field.Name()] = field
 	}
 
 	var pairs []*FieldPair
-	for _, fromField := range from.Fields {
+	for _, srcField := range src.Fields {
 		for _, fieldMapper := range m.FieldMappers {
-			key := fieldMapper.Map(fromField.Name())
-			if toField, ok := toFieldMap[key]; ok {
-				if !isAccessible(fromField, outPkgPath) || !isAccessible(toField, outPkgPath) {
+			key := fieldMapper.Map(srcField.Name())
+			if destField, ok := destFieldMap[key]; ok {
+				if !isAccessible(srcField, outPkgPath) || !isAccessible(destField, outPkgPath) {
 					break
 				}
-				if pair, ok := m.newFieldPair(fromField, toField); ok {
+				if pair, ok := m.newFieldPair(srcField, destField); ok {
 					pairs = append(pairs, pair)
 					break
 				}
@@ -81,12 +81,12 @@ func (m Mapper) newFieldPairs(from, to *types.Struct, outPkgPath string) []*Fiel
 	return pairs
 }
 
-func (m Mapper) newFieldPair(from, to *types.Field) (*FieldPair, bool) {
+func (m Mapper) newFieldPair(src, dest *types.Field) (*FieldPair, bool) {
 	for _, typeMapper := range m.TypeMappers {
-		if caster, ok := typeMapper.Map(from.Typ(), to.Typ()); ok {
+		if caster, ok := typeMapper.Map(src.Typ(), dest.Typ()); ok {
 			return &FieldPair{
-				From:    from,
-				To:      to,
+				Src:     src,
+				Dest:    dest,
 				Casters: []typemapper.Caster{caster},
 			}, true
 		}

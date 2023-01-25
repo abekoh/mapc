@@ -8,8 +8,8 @@ import (
 )
 
 type MapExpr interface {
-	From() string
-	To() string
+	Src() string
+	Dest() string
 	DstExpr(arg string) (dst.Expr, bool)
 	Comment() (string, bool)
 }
@@ -46,17 +46,17 @@ func (mel MapExprList) DstExprs(arg string) (exprs []dst.Expr, startComments []s
 }
 
 type SimpleMapExpr struct {
-	from    string
-	to      string
+	src     string
+	dest    string
 	casters []Caster
 }
 
-func (e SimpleMapExpr) From() string {
-	return e.from
+func (e SimpleMapExpr) Src() string {
+	return e.src
 }
 
-func (e SimpleMapExpr) To() string {
-	return e.to
+func (e SimpleMapExpr) Dest() string {
+	return e.dest
 }
 
 func (e SimpleMapExpr) Comment() (string, bool) {
@@ -65,7 +65,7 @@ func (e SimpleMapExpr) Comment() (string, bool) {
 
 func (e SimpleMapExpr) DstExpr(arg string) (dst.Expr, bool) {
 	return &dst.KeyValueExpr{
-		Key:   dst.NewIdent(e.to),
+		Key:   dst.NewIdent(e.dest),
 		Value: e.valueExpr(arg),
 		Decs: dst.KeyValueExprDecorations{
 			NodeDecs: dst.NodeDecs{
@@ -80,7 +80,7 @@ func (e SimpleMapExpr) valueExpr(arg string) dst.Expr {
 	var el dst.Expr
 	el = &dst.SelectorExpr{
 		X:    genVar(arg),
-		Sel:  dst.NewIdent(e.from),
+		Sel:  dst.NewIdent(e.src),
 		Decs: dst.SelectorExprDecorations{},
 	}
 	for _, caster := range e.casters {
@@ -90,16 +90,16 @@ func (e SimpleMapExpr) valueExpr(arg string) dst.Expr {
 }
 
 type CommentedMapExpr struct {
-	to      string
+	dest    string
 	comment string
 }
 
-func (c CommentedMapExpr) From() string {
+func (c CommentedMapExpr) Src() string {
 	return ""
 }
 
-func (c CommentedMapExpr) To() string {
-	return c.to
+func (c CommentedMapExpr) Dest() string {
+	return c.dest
 }
 
 func (c CommentedMapExpr) DstExpr(_ string) (dst.Expr, bool) {
@@ -114,7 +114,7 @@ func parseComments(comments ...string) (res MapExprList) {
 	for _, c := range comments {
 		if key := commentToKey(c); key != "" {
 			res = append(res, &CommentedMapExpr{
-				to:      key,
+				dest:    key,
 				comment: c,
 			})
 		}

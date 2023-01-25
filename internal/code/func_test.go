@@ -14,15 +14,15 @@ import (
 )
 
 func TestNewFuncFromMapping(t *testing.T) {
-	from, _ := types.NewStruct(reflect.TypeOf(sample.SrcUser{}))
-	to, _ := types.NewStruct(reflect.TypeOf(sample.DestUser{}))
+	src, _ := types.NewStruct(reflect.TypeOf(sample.SrcUser{}))
+	dest, _ := types.NewStruct(reflect.TypeOf(sample.DestUser{}))
 	m := &mapping.Mapping{
-		From: from,
-		To:   to,
+		Src:  src,
+		Dest: dest,
 		FieldPairs: []*mapping.FieldPair{
 			{
-				From:    from.Fields[0],
-				To:      to.Fields[0],
+				Src:     src.Fields[0],
+				Dest:    dest.Fields[0],
 				Casters: []typemapper.Caster{&typemapper.NopCaster{}},
 			},
 		},
@@ -30,11 +30,11 @@ func TestNewFuncFromMapping(t *testing.T) {
 	got := NewFuncFromMapping(m, &FuncOption{})
 	assert.Equal(t, "MapSrcUserToDestUser", got.name)
 	assert.Equal(t, "x", got.argName)
-	assert.Equal(t, &Typ{name: "SrcUser", pkgPath: "github.com/abekoh/mapc/testdata/sample"}, got.fromTyp)
-	assert.Equal(t, &Typ{name: "DestUser", pkgPath: "github.com/abekoh/mapc/testdata/sample"}, got.toTyp)
+	assert.Equal(t, &Typ{name: "SrcUser", pkgPath: "github.com/abekoh/mapc/testdata/sample"}, got.srcTyp)
+	assert.Equal(t, &Typ{name: "DestUser", pkgPath: "github.com/abekoh/mapc/testdata/sample"}, got.destTyp)
 	assert.Len(t, got.mapExprs, 1)
-	assert.Equal(t, "ID", got.mapExprs[0].From())
-	assert.Equal(t, "ID", got.mapExprs[0].To())
+	assert.Equal(t, "ID", got.mapExprs[0].Src())
+	assert.Equal(t, "ID", got.mapExprs[0].Dest())
 }
 
 func Test_funcName(t *testing.T) {
@@ -43,11 +43,11 @@ func Test_funcName(t *testing.T) {
 		opt *FuncOption
 	}
 	m := func() *mapping.Mapping {
-		from, _ := types.NewStruct(reflect.TypeOf(sample.SrcUser{}))
-		to, _ := types.NewStruct(reflect.TypeOf(sample.DestUser{}))
+		src, _ := types.NewStruct(reflect.TypeOf(sample.SrcUser{}))
+		dest, _ := types.NewStruct(reflect.TypeOf(sample.DestUser{}))
 		return &mapping.Mapping{
-			From: from,
-			To:   to,
+			Src:  src,
+			Dest: dest,
 		}
 	}()
 	tests := []struct {
@@ -80,7 +80,7 @@ func Test_funcName(t *testing.T) {
 				m: m,
 				opt: &FuncOption{
 					NameTemplate: func() *template.Template {
-						t, _ := template.New("FuncName").Parse("{{ .From }}To{{ .To }}")
+						t, _ := template.New("FuncName").Parse("{{ .Src }}To{{ .Dest }}")
 						return t
 					}(),
 				},
@@ -93,7 +93,7 @@ func Test_funcName(t *testing.T) {
 				m: m,
 				opt: &FuncOption{
 					NameTemplate: func() *template.Template {
-						t, _ := template.New("FuncName").Parse("{{ .From }}To{{ .To }}")
+						t, _ := template.New("FuncName").Parse("{{ .Src }}To{{ .Dest }}")
 						return t
 					}(),
 					Private: true,
@@ -166,16 +166,16 @@ func TestFunc_AppendNotSetExprs(t *testing.T) {
 		return &Func{
 			name:    "AFunc",
 			argName: "x",
-			fromTyp: &Typ{
+			srcTyp: &Typ{
 				name: "int",
 			},
-			toTyp: &Typ{
+			destTyp: &Typ{
 				name: "int",
 			},
 			mapExprs: MapExprList{
 				&SimpleMapExpr{
-					from: "z",
-					to:   "z",
+					src:  "z",
+					dest: "z",
 				},
 			},
 		}
@@ -184,15 +184,15 @@ func TestFunc_AppendNotSetExprs(t *testing.T) {
 		x := &Func{
 			name:    "AFunc",
 			argName: "x",
-			fromTyp: &Typ{
+			srcTyp: &Typ{
 				name: "int",
 			},
-			toTyp: &Typ{
+			destTyp: &Typ{
 				name: "int",
 			},
 			mapExprs: MapExprList{
 				&CommentedMapExpr{
-					to: "y",
+					dest: "y",
 				},
 			},
 		}
@@ -206,15 +206,15 @@ func TestFunc_AppendNotSetExprs(t *testing.T) {
 		x := &Func{
 			name:    "AFunc",
 			argName: "x",
-			fromTyp: &Typ{
+			srcTyp: &Typ{
 				name: "int",
 			},
-			toTyp: &Typ{
+			destTyp: &Typ{
 				name: "int",
 			},
 			mapExprs: MapExprList{
 				&CommentedMapExpr{
-					to: "z",
+					dest: "z",
 				},
 			},
 		}
@@ -228,15 +228,15 @@ func TestFunc_AppendNotSetExprs(t *testing.T) {
 		x := &Func{
 			name:    "AFunc",
 			argName: "x",
-			fromTyp: &Typ{
+			srcTyp: &Typ{
 				name: "int",
 			},
-			toTyp: &Typ{
+			destTyp: &Typ{
 				name: "string",
 			},
 			mapExprs: MapExprList{
 				&CommentedMapExpr{
-					to: "y",
+					dest: "y",
 				},
 			},
 		}
