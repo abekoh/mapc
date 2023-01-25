@@ -43,11 +43,11 @@ func Test_funcName(t *testing.T) {
 		opt *FuncOption
 	}
 	m := func() *mapping.Mapping {
-		from, _ := types.NewStruct(reflect.TypeOf(sample.SrcUser{}))
-		to, _ := types.NewStruct(reflect.TypeOf(sample.DestUser{}))
+		src, _ := types.NewStruct(reflect.TypeOf(sample.SrcUser{}))
+		dest, _ := types.NewStruct(reflect.TypeOf(sample.DestUser{}))
 		return &mapping.Mapping{
-			Src:  from,
-			Dest: to,
+			Src:  src,
+			Dest: dest,
 		}
 	}()
 	tests := []struct {
