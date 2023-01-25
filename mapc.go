@@ -51,7 +51,14 @@ func (m *MapC) Group(optFns ...func(*Option)) *Group {
 }
 
 func (m *MapC) Generate() (res GeneratedList, errs []error) {
+	generatedMap := make(map[string]*Generated)
 	for _, input := range m.inputs {
+		var generated *Generated
+		if g, ok := generatedMap[input.option.OutPath]; ok {
+			generated = g
+		} else {
+			generated = &Generated{filePath: input.option.OutPath}
+		}
 		if input.option == nil {
 			errs = append(errs, fmt.Errorf("option is nil. src=%T, dest=%T", input.src, input.dest))
 			continue
@@ -69,33 +76,36 @@ func (m *MapC) Generate() (res GeneratedList, errs []error) {
 			errs = append(errs, fmt.Errorf("failed to map: %w", err))
 			continue
 		}
-		// TODO: cache file
-		var f *code.File
-		if existed, err := code.LoadFile(input.option.OutPath, pkgPath); err == nil {
-			f = existed
-		} else {
-			f = code.NewFile(pkgPath)
+		if generated.codeFile == nil {
+			if existed, err := code.LoadFile(input.option.OutPath, pkgPath); err == nil {
+				generated.codeFile = existed
+			} else {
+				generated.codeFile = code.NewFile(pkgPath)
+			}
 		}
 		fn := code.NewFuncFromMapping(mp, &code.FuncOption{
 			Name:                 input.option.FuncName,
 			FuncComment:          input.option.FuncComment,
 			NoMapperFieldComment: input.option.NoMapperFieldComment,
 		})
-		if existedFn, ok := f.FindFunc(fn.Name()); ok {
+		if existedFn, ok := generated.codeFile.FindFunc(fn.Name()); ok {
 			if err := fn.AppendNotSetExprs(existedFn); err != nil {
 				errs = append(errs, fmt.Errorf("failed to append not set exprs: %w", err))
 				continue
 			}
 		}
-		err = f.Attach(fn)
+		err = generated.codeFile.Attach(fn)
 		if err != nil {
 			errs = append(errs, fmt.Errorf("failed to apply: %w", err))
 			continue
 		}
-		g := &Generated{
-			filePath: input.option.OutPath,
-			codeFile: f,
+		if input.option.OutPath == "" {
+			res = append(res, generated)
+		} else {
+			generatedMap[generated.filePath] = generated
 		}
+	}
+	for _, g := range generatedMap {
 		res = append(res, g)
 	}
 	return
