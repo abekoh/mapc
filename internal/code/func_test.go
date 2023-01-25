@@ -30,8 +30,8 @@ func TestNewFuncFromMapping(t *testing.T) {
 	got := NewFuncFromMapping(m, &FuncOption{})
 	assert.Equal(t, "MapSrcUserToDestUser", got.name)
 	assert.Equal(t, "x", got.argName)
-	assert.Equal(t, &Typ{name: "SrcUser", pkgPath: "github.com/abekoh/mapc/testdata/sample"}, got.fromTyp)
-	assert.Equal(t, &Typ{name: "DestUser", pkgPath: "github.com/abekoh/mapc/testdata/sample"}, got.toTyp)
+	assert.Equal(t, &Typ{name: "SrcUser", pkgPath: "github.com/abekoh/mapc/testdata/sample"}, got.srcTyp)
+	assert.Equal(t, &Typ{name: "DestUser", pkgPath: "github.com/abekoh/mapc/testdata/sample"}, got.destTyp)
 	assert.Len(t, got.mapExprs, 1)
 	assert.Equal(t, "ID", got.mapExprs[0].From())
 	assert.Equal(t, "ID", got.mapExprs[0].To())
@@ -166,10 +166,10 @@ func TestFunc_AppendNotSetExprs(t *testing.T) {
 		return &Func{
 			name:    "AFunc",
 			argName: "x",
-			fromTyp: &Typ{
+			srcTyp: &Typ{
 				name: "int",
 			},
-			toTyp: &Typ{
+			destTyp: &Typ{
 				name: "int",
 			},
 			mapExprs: MapExprList{
@@ -184,10 +184,10 @@ func TestFunc_AppendNotSetExprs(t *testing.T) {
 		x := &Func{
 			name:    "AFunc",
 			argName: "x",
-			fromTyp: &Typ{
+			srcTyp: &Typ{
 				name: "int",
 			},
-			toTyp: &Typ{
+			destTyp: &Typ{
 				name: "int",
 			},
 			mapExprs: MapExprList{
@@ -206,10 +206,10 @@ func TestFunc_AppendNotSetExprs(t *testing.T) {
 		x := &Func{
 			name:    "AFunc",
 			argName: "x",
-			fromTyp: &Typ{
+			srcTyp: &Typ{
 				name: "int",
 			},
-			toTyp: &Typ{
+			destTyp: &Typ{
 				name: "int",
 			},
 			mapExprs: MapExprList{
@@ -228,10 +228,10 @@ func TestFunc_AppendNotSetExprs(t *testing.T) {
 		x := &Func{
 			name:    "AFunc",
 			argName: "x",
-			fromTyp: &Typ{
+			srcTyp: &Typ{
 				name: "int",
 			},
-			toTyp: &Typ{
+			destTyp: &Typ{
 				name: "string",
 			},
 			mapExprs: MapExprList{
