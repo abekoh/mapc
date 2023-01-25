@@ -68,7 +68,7 @@ func TestConvertMapper_Map(t *testing.T) {
 				caller: &Caller{
 					PkgPath:    "",
 					Name:       "int",
-					CallerType: Typ,
+					CallerType: Type,
 				},
 			},
 			wantOk: true,
@@ -80,7 +80,7 @@ func TestConvertMapper_Map(t *testing.T) {
 				caller: &Caller{
 					PkgPath:    "",
 					Name:       "string",
-					CallerType: Typ,
+					CallerType: Type,
 				},
 			},
 			wantOk: true,
@@ -92,7 +92,7 @@ func TestConvertMapper_Map(t *testing.T) {
 				caller: &Caller{
 					PkgPath:    "github.com/abekoh/mapc/testdata/sample",
 					Name:       "Object",
-					CallerType: Typ,
+					CallerType: Type,
 				},
 			},
 			wantOk: true,
@@ -104,7 +104,7 @@ func TestConvertMapper_Map(t *testing.T) {
 				caller: &Caller{
 					PkgPath:    "",
 					Name:       "int64",
-					CallerType: Typ,
+					CallerType: Type,
 				},
 			},
 			wantOk: true,
@@ -116,7 +116,7 @@ func TestConvertMapper_Map(t *testing.T) {
 				caller: &Caller{
 					PkgPath:    "github.com/abekoh/mapc/mapcstd",
 					Name:       "typedInt",
-					CallerType: Typ,
+					CallerType: Type,
 				},
 			},
 			wantOk: true,
@@ -128,7 +128,7 @@ func TestConvertMapper_Map(t *testing.T) {
 				caller: &Caller{
 					PkgPath:    "",
 					Name:       "string",
-					CallerType: Typ,
+					CallerType: Type,
 				},
 			},
 			wantOk: true,

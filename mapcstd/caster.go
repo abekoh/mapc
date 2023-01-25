@@ -20,7 +20,7 @@ type CallerType int
 
 const (
 	Unary CallerType = iota
-	Typ
+	Type
 	Func
 )
 

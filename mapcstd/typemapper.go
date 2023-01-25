@@ -34,7 +34,7 @@ func (c ConvertMapper) Map(src, dest *types.Typ) (Caster, bool) {
 			caller: &Caller{
 				Name:       dest.Name(),
 				PkgPath:    dest.PkgPath(),
-				CallerType: Typ,
+				CallerType: Type,
 			},
 		}, true
 	}
