@@ -29,7 +29,7 @@ func New() *MapC {
 		Option: &Option{
 			FuncComment:          true,
 			NoMapperFieldComment: true,
-			FieldMappers:         fieldmapper.DefaultMappers,
+			FieldMappers:         fieldmapper.DefaultFieldMappers,
 			TypeMappers:          typemapper.Defaults,
 		},
 	}

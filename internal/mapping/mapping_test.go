@@ -14,7 +14,7 @@ func TestMapper_NewMapping(t *testing.T) {
 	outPkgPath := "github.com/abekoh/mapc/testdata/sample"
 	t.Run("map same field", func(t *testing.T) {
 		mapper := Mapper{
-			FieldMappers: fieldmapper.DefaultMappers,
+			FieldMappers: fieldmapper.DefaultFieldMappers,
 			TypeMappers:  typemapper.Defaults,
 		}
 		got, err := mapper.NewMapping(sample.SrcUser{}, sample.DestUser{}, outPkgPath)
