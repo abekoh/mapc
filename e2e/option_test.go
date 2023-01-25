@@ -10,6 +10,36 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+func Test_OptionWithGroup(t *testing.T) {
+	m := mapc.New()
+	m.Option.FuncComment = false
+	m.Option.NoMapperFieldComment = false
+	m.Option.OutPkgPath = "github.com/abekoh/mapc/e2e/testdata/ab"
+	m.Option.FieldMappers = []mapcstd.FieldMapper{
+		mapcstd.HashMap{"ID": "ID"},
+	}
+	g := m.Group(func(option *mapc.Option) {
+		option.FieldMappers = append(
+			option.FieldMappers,
+			mapcstd.HashMap{"Name": "Name"},
+		)
+	})
+	g.Register(ab.AUser{}, ab.BUser{})
+	gs, errs := m.Generate()
+	requireNoErrors(t, errs)
+	got, err := gs[0].Sprint()
+	require.Nil(t, err)
+	assert.Equal(t, `package ab
+
+func MapAUserToBUser(x AUser) BUser {
+	return BUser{
+		ID:   x.ID,
+		Name: x.Name,
+	}
+}
+`, got)
+}
+
 func Test_FuncComments(t *testing.T) {
 	m := mapc.New()
 	m.Option.NoMapperFieldComment = false
