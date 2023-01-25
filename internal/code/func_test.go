@@ -192,7 +192,7 @@ func TestFunc_AppendNotSetExprs(t *testing.T) {
 			},
 			mapExprs: MapExprList{
 				&CommentedMapExpr{
-					to: "y",
+					dest: "y",
 				},
 			},
 		}
@@ -214,7 +214,7 @@ func TestFunc_AppendNotSetExprs(t *testing.T) {
 			},
 			mapExprs: MapExprList{
 				&CommentedMapExpr{
-					to: "z",
+					dest: "z",
 				},
 			},
 		}
@@ -236,7 +236,7 @@ func TestFunc_AppendNotSetExprs(t *testing.T) {
 			},
 			mapExprs: MapExprList{
 				&CommentedMapExpr{
-					to: "y",
+					dest: "y",
 				},
 			},
 		}

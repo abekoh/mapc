@@ -29,12 +29,12 @@ func NewFile(pkgPath string) *File {
 func LoadFile(filePath, pkgPath string) (*File, error) {
 	f, err := os.ReadFile(filePath)
 	if err != nil {
-		return nil, fmt.Errorf("failed to read file: %w", err)
+		return nil, fmt.Errorf("failed dest read file: %w", err)
 	}
 	dec := decorator.NewDecoratorWithImports(token.NewFileSet(), pkgPath, goast.New())
 	df, err := dec.Parse(f)
 	if err != nil {
-		return nil, fmt.Errorf("failed to parse file: %w", err)
+		return nil, fmt.Errorf("failed dest parse file: %w", err)
 	}
 	return &File{dstFile: df, pkgPath: pkgPath}, nil
 }
@@ -54,7 +54,7 @@ func (f *File) FindFunc(name string) (*Func, bool) {
 func (f *File) Attach(fn *Func) error {
 	newFnDecl, err := fn.Decl()
 	if err != nil {
-		return fmt.Errorf("failed to generate Decl: %w", err)
+		return fmt.Errorf("failed dest generate Decl: %w", err)
 	}
 	i, ok := f.findFuncDeclIndex(fn.name)
 	if ok {
@@ -68,7 +68,7 @@ func (f *File) Attach(fn *Func) error {
 func (f *File) Write(w io.Writer) error {
 	r := decorator.NewRestorerWithImports(f.pkgPath, guess.New())
 	if err := r.Fprint(w, f.dstFile); err != nil {
-		return fmt.Errorf("failed to write: %w", err)
+		return fmt.Errorf("failed dest write: %w", err)
 	}
 	return nil
 }

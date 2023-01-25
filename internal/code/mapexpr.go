@@ -41,7 +41,7 @@ func (mel MapExprList) DstExprs(arg string) (exprs []dst.Expr, startComments []s
 			aboveLineIsExpr = false
 		}
 	}
-	// returned comments are appended to lbrace
+	// returned comments are appended dest lbrace
 	return
 }
 
@@ -90,7 +90,7 @@ func (e SimpleMapExpr) valueExpr(arg string) dst.Expr {
 }
 
 type CommentedMapExpr struct {
-	to      string
+	dest    string
 	comment string
 }
 
@@ -99,7 +99,7 @@ func (c CommentedMapExpr) Src() string {
 }
 
 func (c CommentedMapExpr) Dest() string {
-	return c.to
+	return c.dest
 }
 
 func (c CommentedMapExpr) DstExpr(_ string) (dst.Expr, bool) {
@@ -114,7 +114,7 @@ func parseComments(comments ...string) (res MapExprList) {
 	for _, c := range comments {
 		if key := commentToKey(c); key != "" {
 			res = append(res, &CommentedMapExpr{
-				to:      key,
+				dest:    key,
 				comment: c,
 			})
 		}
