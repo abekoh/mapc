@@ -48,29 +48,31 @@ func LoadFile(filePath, pkgPath string) (*File, error) {
 	return &File{dstFile: df, pkgPath: pkgPath}, nil
 }
 
-func (f *File) Attach(fn *Func, mode Mode) error {
-	i, _, ok := f.findFuncDecl(fn.name)
+func (f *File) Attach(inpFn *Func, mode Mode) error {
+	i, existedFn, ok := f.FindFunc(inpFn.name)
 
+	var resFn *Func
 	if !ok {
-		newFnDecl, err := fn.Decl()
-		if err != nil {
-			return fmt.Errorf("failed to generate Decl: %w", err)
-		}
-		f.dstFile.Decls = append(f.dstFile.Decls, newFnDecl)
-		return nil
+		resFn = inpFn
 	}
-
 	switch mode {
+	case PrioritizeGenerated:
+		inpFn.AppendNotSetExprs(existedFn)
+		resFn = inpFn
+	case PrioritizeExisted:
+		existedFn.AppendNotSetExprs(inpFn)
+		resFn = existedFn
 	case Deterministic:
-		newFnDecl, err := fn.Decl()
-		if err != nil {
-			return fmt.Errorf("failed to generate Decl: %w", err)
-		}
-		f.dstFile.Decls[i] = newFnDecl
-		return nil
+		resFn = inpFn
 	default:
 		return errors.New("invalid mode")
 	}
+	fnDecl, err := resFn.Decl()
+	if err != nil {
+		return fmt.Errorf("failed to generate Decl: %w", err)
+	}
+	f.dstFile.Decls[i] = fnDecl
+	return nil
 }
 
 func (f *File) Write(w io.Writer) error {
