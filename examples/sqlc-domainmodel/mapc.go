@@ -17,7 +17,7 @@ func main() {
 	m.Option.TypeMappers = append(m.Option.TypeMappers, &mapcstd.MapTypeMapper{
 		mapcstd.NewTyp(reflect.TypeOf("string")): map[*mapcstd.Typ]mapcstd.Caster{
 			mapcstd.NewTyp(reflect.TypeOf(domain.UserID{})): mapcstd.NewSimpleCaster(&mapcstd.Caller{
-				PkgPath:    "UserID",
+				PkgPath:    "github.com/abekoh/mapc/examples/sqlc-domainmodel/domain",
 				Name:       "UserID",
 				CallerType: mapcstd.Type,
 			}),
