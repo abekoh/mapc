@@ -23,7 +23,7 @@ func loadSampleRaw(t *testing.T) string {
 
 func loadSample(t *testing.T) *File {
 	t.Helper()
-	f, err := LoadFile("../../testdata/sample/sample.go", "github.com/abekoh/mapc/internal/code/testdata/sample")
+	f, err := LoadFile("../../testdata/sample/sample.go", "github.com/abekoh/mapc/testdata/sample")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -61,12 +61,165 @@ func TestFile_Write(t *testing.T) {
 
 func TestFile_FindFunc(t *testing.T) {
 	f := loadSample(t)
-	fnName := "MapSrcUserToDestUser"
-	fn, ok := f.FindFunc(fnName)
-	if !ok {
-		t.Errorf("not found %s", fnName)
-	}
-	assert.Equal(t, fn.name, "MapSrcUserToDestUser")
+	t.Run("only selectors", func(t *testing.T) {
+		idx, fn, ok := f.FindFunc("MapSrcUserToDestUser")
+		require.True(t, ok)
+		assert.Greater(t, idx, 0)
+		assert.Equal(t, &Func{
+			name:    "MapSrcUserToDestUser",
+			argName: "x",
+			srcTyp: &Typ{
+				name:    "SrcUser",
+				pkgPath: "github.com/abekoh/mapc/testdata/sample",
+			},
+			destTyp: &Typ{
+				name:    "DestUser",
+				pkgPath: "github.com/abekoh/mapc/testdata/sample",
+			},
+			mapExprs: MapExprList{
+				&SimpleMapExpr{
+					src:     "ID",
+					dest:    "ID",
+					casters: nil,
+				},
+				&SimpleMapExpr{
+					src:     "Name",
+					dest:    "Name",
+					casters: nil,
+				},
+				&SimpleMapExpr{
+					src:     "Age",
+					dest:    "Age",
+					casters: nil,
+				},
+				&SimpleMapExpr{
+					src:     "RegisteredAt",
+					dest:    "RegisteredAt",
+					casters: nil,
+				},
+			},
+		}, fn)
+	})
+	t.Run("only comments", func(t *testing.T) {
+		idx, fn, ok := f.FindFunc("OnlyCommentsMapper")
+		require.True(t, ok)
+		assert.Greater(t, idx, 0)
+		assert.Equal(t, &Func{
+			name:    "OnlyCommentsMapper",
+			argName: "x",
+			srcTyp: &Typ{
+				name:    "SrcUser",
+				pkgPath: "github.com/abekoh/mapc/testdata/sample",
+			},
+			destTyp: &Typ{
+				name:    "DestUser",
+				pkgPath: "github.com/abekoh/mapc/testdata/sample",
+			},
+			mapExprs: MapExprList{
+				&CommentedMapExpr{
+					dest:    "ID",
+					comment: "//ID:",
+				},
+				&CommentedMapExpr{
+					dest:    "Name",
+					comment: "//Name:",
+				},
+				&CommentedMapExpr{
+					dest:    "Age",
+					comment: "// Age:",
+				},
+				&CommentedMapExpr{
+					dest:    "RegisteredAt",
+					comment: "// RegisteredAt:",
+				},
+			},
+		}, fn)
+	})
+	t.Run("first line is comment", func(t *testing.T) {
+		idx, fn, ok := f.FindFunc("FirstLineIsCommentMapper")
+		require.True(t, ok)
+		assert.Greater(t, idx, 0)
+		assert.Equal(t, &Func{
+			name:    "FirstLineIsCommentMapper",
+			argName: "x",
+			srcTyp: &Typ{
+				name:    "SrcUser",
+				pkgPath: "github.com/abekoh/mapc/testdata/sample",
+			},
+			destTyp: &Typ{
+				name:    "DestUser",
+				pkgPath: "github.com/abekoh/mapc/testdata/sample",
+			},
+			mapExprs: MapExprList{
+				&CommentedMapExpr{
+					dest:    "ID",
+					comment: "//ID:",
+				},
+				&SimpleMapExpr{
+					src:     "Name",
+					dest:    "Name",
+					casters: nil,
+				},
+				&SimpleMapExpr{
+					src:     "Age",
+					dest:    "Age",
+					casters: nil,
+				},
+				&SimpleMapExpr{
+					src:     "RegisteredAt",
+					dest:    "RegisteredAt",
+					casters: nil,
+				},
+			},
+		}, fn)
+	})
+	t.Run("last line is comment", func(t *testing.T) {
+		idx, fn, ok := f.FindFunc("LastLineIsCommentMapper")
+		require.True(t, ok)
+		assert.Greater(t, idx, 0)
+		assert.Equal(t, &Func{
+			name:    "LastLineIsCommentMapper",
+			argName: "x",
+			srcTyp: &Typ{
+				name:    "SrcUser",
+				pkgPath: "github.com/abekoh/mapc/testdata/sample",
+			},
+			destTyp: &Typ{
+				name:    "DestUser",
+				pkgPath: "github.com/abekoh/mapc/testdata/sample",
+			},
+			mapExprs: MapExprList{
+				&SimpleMapExpr{
+					src:     "ID",
+					dest:    "ID",
+					casters: nil,
+				},
+				&SimpleMapExpr{
+					src:     "Name",
+					dest:    "Name",
+					casters: nil,
+				},
+				&SimpleMapExpr{
+					src:     "Age",
+					dest:    "Age",
+					casters: nil,
+				},
+				&CommentedMapExpr{
+					dest:    "RegisteredAt",
+					comment: "//RegisteredAt:",
+				},
+			},
+		}, fn)
+	})
+	t.Run("no selectors", func(t *testing.T) {
+		idx, fn, ok := f.FindFunc("NoSelectorsMapper")
+		require.True(t, ok)
+		assert.Greater(t, idx, 0)
+		assert.Len(t, fn.mapExprs, 4)
+		for _, expr := range fn.mapExprs {
+			assert.IsType(t, &UnknownMapExpr{}, expr)
+		}
+	})
 }
 
 func TestFile_Attach(t *testing.T) {
@@ -77,17 +230,17 @@ func TestFile_Attach(t *testing.T) {
 	fn := NewFuncFromMapping(m, nil)
 	t.Run("when Func is found, replace", func(t *testing.T) {
 		f := loadSample(t)
-		err = f.Attach(fn)
+		err = f.Attach(fn, Deterministic)
 		require.Nil(t, err)
-		got, ok := f.FindFunc("MapSrcUserToDestUser")
+		_, got, ok := f.FindFunc("MapSrcUserToDestUser")
 		assert.True(t, ok)
 		assert.Equal(t, fn, got)
 	})
 	t.Run("when Func is not found, append", func(t *testing.T) {
 		f := NewFile(outPkgPath)
-		err = f.Attach(fn)
+		err = f.Attach(fn, Deterministic)
 		require.Nil(t, err)
-		got, ok := f.FindFunc("MapSrcUserToDestUser")
+		_, got, ok := f.FindFunc("MapSrcUserToDestUser")
 		assert.True(t, ok)
 		assert.Equal(t, fn, got)
 	})

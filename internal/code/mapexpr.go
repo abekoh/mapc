@@ -45,6 +45,17 @@ func (mel MapExprList) DstExprs(arg string) (exprs []dst.Expr, startComments []s
 	return
 }
 
+func (mel MapExprList) SeparateCommented() (normal, commented MapExprList) {
+	for _, me := range mel {
+		if _, ok := me.Comment(); ok {
+			commented = append(commented, me)
+		} else {
+			normal = append(normal, me)
+		}
+	}
+	return
+}
+
 type SimpleMapExpr struct {
 	src     string
 	dest    string
@@ -123,12 +134,42 @@ func parseComments(comments ...string) (res MapExprList) {
 }
 
 func commentToKey(comment string) string {
-	re := regexp.MustCompile(`^\\/\\/\\s(.+):\\s.*$`)
+	re := regexp.MustCompile(`^\/\/\s*([a-zA-Z0-9]+)\:.*$`)
 	r := re.FindStringSubmatch(comment)
 	if len(r) == 2 {
 		return r[1]
 	}
 	return ""
+}
+
+type UnknownMapExpr struct {
+	dest    string
+	dstExpr dst.Expr
+}
+
+func (e UnknownMapExpr) Src() string {
+	return ""
+}
+
+func (e UnknownMapExpr) Dest() string {
+	return e.dest
+}
+
+func (e UnknownMapExpr) DstExpr(_ string) (dst.Expr, bool) {
+	return &dst.KeyValueExpr{
+		Key:   dst.NewIdent(e.dest),
+		Value: e.dstExpr,
+		Decs: dst.KeyValueExprDecorations{
+			NodeDecs: dst.NodeDecs{
+				Before: dst.NewLine,
+				After:  dst.NewLine,
+			},
+		},
+	}, true
+}
+
+func (e UnknownMapExpr) Comment() (string, bool) {
+	return "", false
 }
 
 type Caster interface {

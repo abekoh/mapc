@@ -1,6 +1,7 @@
 package code
 
 import (
+	"errors"
 	"fmt"
 	"go/token"
 	"io"
@@ -11,6 +12,14 @@ import (
 	"github.com/dave/dst/decorator"
 	"github.com/dave/dst/decorator/resolver/goast"
 	"github.com/dave/dst/decorator/resolver/guess"
+)
+
+type Mode int
+
+const (
+	PrioritizeGenerated Mode = iota
+	PrioritizeExisted
+	Deterministic
 )
 
 type File struct {
@@ -39,29 +48,43 @@ func LoadFile(filePath, pkgPath string) (*File, error) {
 	return &File{dstFile: df, pkgPath: pkgPath}, nil
 }
 
-func (f *File) FindFunc(name string) (*Func, bool) {
-	d, ok := f.findFuncDecl(name)
-	if !ok {
-		return nil, false
-	}
-	fn, err := newFuncFromDecl(f.pkgPath, d)
-	if err != nil {
-		return nil, false
-	}
-	return fn, true
-}
+func (f *File) Attach(inpFn *Func, mode Mode) error {
+	i, existedFn, ok := f.FindFunc(inpFn.name)
 
-func (f *File) Attach(fn *Func) error {
-	newFnDecl, err := fn.Decl()
+	if !ok {
+		fnDecl, err := inpFn.Decl()
+		if err != nil {
+			return fmt.Errorf("failed to generate Decl: %w", err)
+		}
+		f.dstFile.Decls = append(f.dstFile.Decls, fnDecl)
+		return nil
+	}
+
+	var resFn *Func
+	var err error
+	switch mode {
+	case PrioritizeGenerated:
+		resFn, err = inpFn.FillMapExprs(existedFn)
+	case PrioritizeExisted:
+		resFn, err = existedFn.FillMapExprs(inpFn)
+	case Deterministic:
+		resFn = inpFn
+	default:
+		return errors.New("invalid mode")
+	}
+	if err != nil {
+		return fmt.Errorf("failed to fill MapExprs: %w", err)
+	}
+
+	// copy comment options from inpFn: FIXME
+	resFn.withFuncComment = inpFn.withFuncComment
+	resFn.editable = inpFn.editable
+
+	fnDecl, err := resFn.Decl()
 	if err != nil {
 		return fmt.Errorf("failed to generate Decl: %w", err)
 	}
-	i, ok := f.findFuncDeclIndex(fn.name)
-	if ok {
-		f.dstFile.Decls[i] = newFnDecl
-	} else {
-		f.dstFile.Decls = append(f.dstFile.Decls, newFnDecl)
-	}
+	f.dstFile.Decls[i] = fnDecl
 	return nil
 }
 
@@ -73,22 +96,24 @@ func (f *File) Write(w io.Writer) error {
 	return nil
 }
 
-func (f *File) findFuncDecl(name string) (*dst.FuncDecl, bool) {
-	for _, decl := range f.dstFile.Decls {
+func (f *File) findFuncDecl(name string) (idx int, fn *dst.FuncDecl, ok bool) {
+	for i, decl := range f.dstFile.Decls {
 		funcDecl, ok := decl.(*dst.FuncDecl)
 		if ok && funcDecl.Name != nil && funcDecl.Name.Name == name {
-			return funcDecl, true
+			return i, funcDecl, true
 		}
 	}
-	return nil, false
+	return -1, nil, false
 }
 
-func (f *File) findFuncDeclIndex(name string) (int, bool) {
-	for i, decl := range f.dstFile.Decls {
-		fd, ok := decl.(*dst.FuncDecl)
-		if ok && fd.Name.Name == name {
-			return i, true
-		}
+func (f *File) FindFunc(name string) (idx int, fn *Func, ok bool) {
+	i, d, ok := f.findFuncDecl(name)
+	if !ok {
+		return -1, nil, false
 	}
-	return -1, false
+	fn, err := newFuncFromDecl(f.pkgPath, d)
+	if err != nil {
+		return -1, nil, false
+	}
+	return i, fn, true
 }

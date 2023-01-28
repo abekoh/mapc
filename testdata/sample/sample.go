@@ -91,3 +91,39 @@ func MapSrcUserToDestUser(x SrcUser) DestUser {
 		RegisteredAt: x.RegisteredAt,
 	}
 }
+
+func OnlyCommentsMapper(x SrcUser) DestUser {
+	return DestUser{
+		//ID:
+		//Name:
+		// Age:
+		// RegisteredAt:
+	}
+}
+
+func FirstLineIsCommentMapper(x SrcUser) DestUser {
+	return DestUser{
+		//ID:
+		Name:         x.Name,
+		Age:          x.Age,
+		RegisteredAt: x.RegisteredAt,
+	}
+}
+
+func LastLineIsCommentMapper(x SrcUser) DestUser {
+	return DestUser{
+		ID:   x.ID,
+		Name: x.Name,
+		Age:  x.Age,
+		//RegisteredAt:
+	}
+}
+
+func NoSelectorsMapper(x SrcUser) DestUser {
+	return DestUser{
+		ID:           uuid.New(),
+		Name:         "Name",
+		Age:          func() int { return 20 }(),
+		RegisteredAt: time.Date(2023, 1, 1, 0, 0, 0, 0, time.UTC),
+	}
+}
