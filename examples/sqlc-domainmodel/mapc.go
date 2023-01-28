@@ -13,6 +13,7 @@ import (
 func main() {
 	m := mapc.New()
 	m.Option.OutPath = "infrastructure/mapper.go"
+	// FIXME
 	m.Option.TypeMappers = append(m.Option.TypeMappers, &mapcstd.MapTypeMapper{
 		mapcstd.NewTyp(reflect.TypeOf("string")): map[*mapcstd.Typ]mapcstd.Caster{
 			mapcstd.NewTyp(reflect.TypeOf(domain.UserID{})): mapcstd.NewSimpleCaster(&mapcstd.Caller{
