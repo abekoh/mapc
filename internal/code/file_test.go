@@ -100,6 +100,41 @@ func TestFile_FindFunc(t *testing.T) {
 			},
 		}, fn)
 	})
+	t.Run("only comments", func(t *testing.T) {
+		idx, fn, ok := f.FindFunc("OnlyCommentsMapper")
+		require.True(t, ok)
+		assert.Greater(t, idx, 0)
+		assert.Equal(t, &Func{
+			name:    "OnlyCommentsMapper",
+			argName: "x",
+			srcTyp: &Typ{
+				name:    "SrcUser",
+				pkgPath: "github.com/abekoh/mapc/testdata/sample",
+			},
+			destTyp: &Typ{
+				name:    "DestUser",
+				pkgPath: "github.com/abekoh/mapc/testdata/sample",
+			},
+			mapExprs: MapExprList{
+				&CommentedMapExpr{
+					dest:    "ID",
+					comment: "//ID:",
+				},
+				&CommentedMapExpr{
+					dest:    "Name",
+					comment: "//Name:",
+				},
+				&CommentedMapExpr{
+					dest:    "Age",
+					comment: "// Age:",
+				},
+				&CommentedMapExpr{
+					dest:    "RegisteredAt",
+					comment: "// RegisteredAt:",
+				},
+			},
+		}, fn)
+	})
 	t.Run("no selectors", func(t *testing.T) {
 		idx, fn, ok := f.FindFunc("NoSelectorsMapper")
 		require.True(t, ok)

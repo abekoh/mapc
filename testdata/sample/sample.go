@@ -92,12 +92,12 @@ func MapSrcUserToDestUser(x SrcUser) DestUser {
 	}
 }
 
-func OnlyCommentMapper(x SrcUser) DestUser {
+func OnlyCommentsMapper(x SrcUser) DestUser {
 	return DestUser{
 		//ID:
 		//Name:
-		//Age:
-		//RegisteredAt:
+		// Age:
+		// RegisteredAt:
 	}
 }
 

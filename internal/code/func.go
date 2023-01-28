@@ -199,6 +199,7 @@ func newFuncFromDecl(pkgPath string, d *dst.FuncDecl) (*Func, error) {
 		return nil, fmt.Errorf("body.Results[0] must be *dst.CompositeLit")
 	}
 	res.mapExprs = MapExprList{}
+	res.mapExprs = append(res.mapExprs, parseComments(comps.Decs.Lbrace.All()...)...)
 	for _, expr := range comps.Elts {
 		res.mapExprs = append(res.mapExprs, parseComments(expr.Decorations().Start.All()...)...)
 		kvExpr, ok := expr.(*dst.KeyValueExpr)
