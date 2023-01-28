@@ -10,8 +10,8 @@ import (
 // You can edit mapping fields.
 func MapUserToUser(x sqlc.User) domain.User {
 	return domain.User{
+		ID:   domain.UserID(x.ID),
 		Name: x.Name,
-		ID:   "hoge",
 	}
 }
 
@@ -20,11 +20,11 @@ func MapUserToUser(x sqlc.User) domain.User {
 // You can edit mapping fields.
 func MapTaskToTask(x sqlc.Task) domain.Task {
 	return domain.Task{
+		ID:           domain.TaskID(x.ID),
+		UserID:       domain.UserID(x.UserID),
 		Title:        x.Title,
 		Description:  x.Description,
 		RegisteredAt: x.RegisteredAt,
-		// ID:
-		// UserID:
 		// StoryPoint:
 	}
 }
@@ -34,11 +34,11 @@ func MapTaskToTask(x sqlc.Task) domain.Task {
 // You can edit mapping fields.
 func MapSubTaskToSubTask(x sqlc.SubTask) domain.SubTask {
 	return domain.SubTask{
+		ID:           domain.SubTaskID(x.ID),
+		TaskID:       domain.TaskID(x.TaskID),
+		UserID:       domain.UserID(x.UserID),
 		Title:        x.Title,
 		Description:  x.Description,
 		RegisteredAt: x.RegisteredAt,
-		// ID:
-		// TaskID:
-		// UserID:
 	}
 }
