@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"context"
 	"time"
 
 	"github.com/google/uuid"
@@ -12,6 +13,11 @@ type (
 	User struct {
 		ID   UserID
 		Name string
+	}
+
+	UserRepository interface {
+		Get(ctx context.Context, id UserID) (*User, error)
+		List(ctx context.Context) (*User, error)
 	}
 )
 
