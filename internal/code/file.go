@@ -51,12 +51,17 @@ func LoadFile(filePath, pkgPath string) (*File, error) {
 func (f *File) Attach(inpFn *Func, mode Mode) error {
 	i, existedFn, ok := f.FindFunc(inpFn.name)
 
+	if !ok {
+		fnDecl, err := inpFn.Decl()
+		if err != nil {
+			return fmt.Errorf("failed to generate Decl: %w", err)
+		}
+		f.dstFile.Decls = append(f.dstFile.Decls, fnDecl)
+		return nil
+	}
+
 	var resFn *Func
 	var err error
-
-	if !ok {
-		resFn = inpFn
-	}
 	switch mode {
 	case PrioritizeGenerated:
 		resFn, err = inpFn.FillMapExprs(existedFn)
