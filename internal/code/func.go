@@ -31,11 +31,11 @@ type Func struct {
 	editable        bool
 }
 
-func (f *Func) Name() string {
+func (f Func) Name() string {
 	return f.name
 }
 
-func (f *Func) funcComments() []string {
+func (f Func) funcComments() []string {
 	comments := []string{
 		"\n",
 		fmt.Sprintf("// %s maps %s to %s.", f.name, f.srcTyp.name, f.destTyp.name),
@@ -223,12 +223,12 @@ func newFuncFromDecl(pkgPath string, d *dst.FuncDecl) (*Func, error) {
 	return res, nil
 }
 
-func (f *Func) AppendNotSetExprs(x *Func) error {
+func (f Func) FillMapExprs(x *Func) (*Func, error) {
 	if !f.srcTyp.Equal(x.srcTyp) {
-		return errors.New("srcTyp must be equal")
+		return nil, errors.New("srcTyp must be equal")
 	}
 	if !f.destTyp.Equal(x.destTyp) {
-		return errors.New("destTyp must be equal")
+		return nil, errors.New("destTyp must be equal")
 	}
 	existedNormal, existedCommented := f.mapExprs.SeparateCommented()
 	xNormal, xCommented := x.mapExprs.SeparateCommented()
@@ -250,10 +250,10 @@ func (f *Func) AppendNotSetExprs(x *Func) error {
 	addExprs(xCommented)
 
 	f.mapExprs = resMapExprs
-	return nil
+	return &f, nil
 }
 
-func (f *Func) Decl() (*dst.FuncDecl, error) {
+func (f Func) Decl() (*dst.FuncDecl, error) {
 	var fnComments []string
 	if f.withFuncComment {
 		fnComments = f.funcComments()

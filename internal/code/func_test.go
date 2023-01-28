@@ -161,7 +161,7 @@ func Test_argName(t *testing.T) {
 	}
 }
 
-func TestFunc_AppendNotSetExprs(t *testing.T) {
+func TestFunc_FillMapExprs(t *testing.T) {
 	genTarget := func() *Func {
 		return &Func{
 			name:    "MapAToB",
@@ -201,8 +201,7 @@ func TestFunc_AppendNotSetExprs(t *testing.T) {
 				},
 			},
 		}
-		target := genTarget()
-		err := target.AppendNotSetExprs(x)
+		got, err := genTarget().FillMapExprs(x)
 		require.Nil(t, err)
 		assert.Equal(t, MapExprList{
 			&SimpleMapExpr{
@@ -217,7 +216,7 @@ func TestFunc_AppendNotSetExprs(t *testing.T) {
 				dest:    "t",
 				comment: "t",
 			},
-		}, target.mapExprs)
+		}, got.mapExprs)
 	})
 	t.Run("CommentedMepExpr is appended", func(t *testing.T) {
 		x := &Func{
@@ -236,8 +235,7 @@ func TestFunc_AppendNotSetExprs(t *testing.T) {
 				},
 			},
 		}
-		target := genTarget()
-		err := target.AppendNotSetExprs(x)
+		got, err := genTarget().FillMapExprs(x)
 		require.Nil(t, err)
 		assert.Equal(t, MapExprList{
 			&SimpleMapExpr{
@@ -252,7 +250,7 @@ func TestFunc_AppendNotSetExprs(t *testing.T) {
 				dest:    "v",
 				comment: "v",
 			},
-		}, target.mapExprs)
+		}, got.mapExprs)
 	})
 	t.Run("same key is existed", func(t *testing.T) {
 		x := &Func{
@@ -271,8 +269,7 @@ func TestFunc_AppendNotSetExprs(t *testing.T) {
 				},
 			},
 		}
-		target := genTarget()
-		err := target.AppendNotSetExprs(x)
+		got, err := genTarget().FillMapExprs(x)
 		require.Nil(t, err)
 		assert.Equal(t, MapExprList{
 			&SimpleMapExpr{
@@ -283,7 +280,7 @@ func TestFunc_AppendNotSetExprs(t *testing.T) {
 				dest:    "t",
 				comment: "t",
 			},
-		}, target.mapExprs)
+		}, got.mapExprs)
 	})
 	t.Run("type is not match", func(t *testing.T) {
 		x := &Func{
@@ -301,8 +298,7 @@ func TestFunc_AppendNotSetExprs(t *testing.T) {
 				},
 			},
 		}
-		target := genTarget()
-		err := target.AppendNotSetExprs(x)
+		_, err := genTarget().FillMapExprs(x)
 		require.NotNil(t, err)
 	})
 }

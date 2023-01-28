@@ -57,10 +57,10 @@ func (f *File) Attach(inpFn *Func, mode Mode) error {
 	}
 	switch mode {
 	case PrioritizeGenerated:
-		inpFn.AppendNotSetExprs(existedFn)
+		inpFn.FillMapExprs(existedFn)
 		resFn = inpFn
 	case PrioritizeExisted:
-		existedFn.AppendNotSetExprs(inpFn)
+		existedFn.FillMapExprs(inpFn)
 		resFn = existedFn
 	case Deterministic:
 		resFn = inpFn
