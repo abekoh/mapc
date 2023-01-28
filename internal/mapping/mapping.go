@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"reflect"
 
+	"github.com/abekoh/mapc/internal/str"
 	"github.com/abekoh/mapc/internal/util"
 	"github.com/abekoh/mapc/mapcstd"
 )
@@ -14,26 +15,26 @@ type Mapper struct {
 }
 
 type Mapping struct {
-	Src        *mapcstd.Struct
-	Dest       *mapcstd.Struct
+	Src        *str.Struct
+	Dest       *str.Struct
 	FieldPairs []*FieldPair
 }
 
 type FieldPair struct {
-	Src     *mapcstd.Field
-	Dest    *mapcstd.Field
+	Src     *str.Field
+	Dest    *str.Field
 	Casters []mapcstd.Caster
 }
 
 func (m Mapper) NewMapping(src, dest any, outPkgPath string) (*Mapping, error) {
-	srcStr, err := mapcstd.NewStruct(reflect.TypeOf(src))
+	srcStr, err := str.NewStruct(reflect.TypeOf(src))
 	if err != nil {
 		return nil, fmt.Errorf("failed to construct struct: %w", err)
 	}
 	if !isAccessible(srcStr, outPkgPath) {
 		return nil, fmt.Errorf("%v is not accessible from %v", srcStr.Name(), outPkgPath)
 	}
-	destStr, err := mapcstd.NewStruct(reflect.TypeOf(dest))
+	destStr, err := str.NewStruct(reflect.TypeOf(dest))
 	if err != nil {
 		return nil, fmt.Errorf("failed to construct struct: %w", err)
 	}
@@ -48,15 +49,15 @@ func (m Mapper) NewMapping(src, dest any, outPkgPath string) (*Mapping, error) {
 	}, nil
 }
 
-func isAccessible(id mapcstd.Identifier, outPkgPath string) bool {
+func isAccessible(id str.Identifier, outPkgPath string) bool {
 	if !util.IsPrivate(id.Name()) {
 		return true
 	}
 	return id.PkgPath() == outPkgPath
 }
 
-func (m Mapper) newFieldPairs(src, dest *mapcstd.Struct, outPkgPath string) []*FieldPair {
-	destFieldMap := make(map[string]*mapcstd.Field)
+func (m Mapper) newFieldPairs(src, dest *str.Struct, outPkgPath string) []*FieldPair {
+	destFieldMap := make(map[string]*str.Field)
 	for _, field := range dest.Fields {
 		destFieldMap[field.Name()] = field
 	}
@@ -79,7 +80,7 @@ func (m Mapper) newFieldPairs(src, dest *mapcstd.Struct, outPkgPath string) []*F
 	return pairs
 }
 
-func (m Mapper) newFieldPair(src, dest *mapcstd.Field) (*FieldPair, bool) {
+func (m Mapper) newFieldPair(src, dest *str.Field) (*FieldPair, bool) {
 	for _, typeMapper := range m.TypeMappers {
 		if caster, ok := typeMapper.Map(src.Typ(), dest.Typ()); ok {
 			return &FieldPair{

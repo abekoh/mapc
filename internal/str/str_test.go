@@ -1,4 +1,4 @@
-package mapcstd
+package str
 
 import (
 	"reflect"
