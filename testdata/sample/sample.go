@@ -118,3 +118,12 @@ func LastLineIsCommentMapper(x SrcUser) DestUser {
 		//RegisteredAt:
 	}
 }
+
+func NotSelectorMapper(x SrcUser) DestUser {
+	return DestUser{
+		ID:           uuid.New(),
+		Name:         "Name",
+		Age:          func() int { return 20 }(),
+		RegisteredAt: time.Date(2023, 1, 1, 0, 0, 0, 0, time.UTC),
+	}
+}
