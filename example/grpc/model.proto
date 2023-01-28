@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+option go_package = "github.com/abekoh/mapc/example/grpc/grpcmodel"
+
+package grpc;
+
+message User {
+  string id = 1;
+  string name = 2;
+}
+
+message Task {
+  string id = 1;
+  string title = 2;
+  string description = 3;
+  int32 story_point = 4;
+  string registered_at = 5;
+  User user = 6;
+  repeated SubTask subtasks = 7;
+}
+
+message SubTask {
+  string id = 1;
+  string title = 2;
+  string description = 3;
+  string registered_at = 4;
+  User user = 5;
+}
