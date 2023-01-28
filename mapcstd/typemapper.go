@@ -82,3 +82,9 @@ func (m MapTypeMapper) Map(src, dest *Typ) (Caster, bool) {
 	}
 	return c, true
 }
+
+type TypeMapperFunc func(src, dest *Typ) (Caster, bool)
+
+func (m TypeMapperFunc) Map(src, dest *Typ) (Caster, bool) {
+	return m(src, dest)
+}
