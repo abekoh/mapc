@@ -48,7 +48,7 @@ func LoadFile(filePath, pkgPath string) (*File, error) {
 }
 
 func (f *File) FindFunc(name string) (*Func, bool) {
-	d, ok := f.findFuncDecl(name)
+	d, ok := f.findFuncDeclOLD(name)
 	if !ok {
 		return nil, false
 	}
@@ -81,7 +81,17 @@ func (f *File) Write(w io.Writer) error {
 	return nil
 }
 
-func (f *File) findFuncDecl(name string) (*dst.FuncDecl, bool) {
+func (f *File) findFuncDecl(name string) (idx int, fn *dst.FuncDecl, ok bool) {
+	for i, decl := range f.dstFile.Decls {
+		funcDecl, ok := decl.(*dst.FuncDecl)
+		if ok && funcDecl.Name != nil && funcDecl.Name.Name == name {
+			return i, funcDecl, true
+		}
+	}
+	return -1, nil, false
+}
+
+func (f *File) findFuncDeclOLD(name string) (*dst.FuncDecl, bool) {
 	for _, decl := range f.dstFile.Decls {
 		funcDecl, ok := decl.(*dst.FuncDecl)
 		if ok && funcDecl.Name != nil && funcDecl.Name.Name == name {
