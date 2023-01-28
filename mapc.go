@@ -54,40 +54,35 @@ func (m *MapC) Group(optFns ...func(*Option)) *Group {
 func (m *MapC) Generate() (res []*Generated, errs []error) {
 	store := NewGeneratedStore()
 	for _, input := range m.inputs {
-		generated := store.Get(input.option.OutPath)
+		pkgPath := input.option.OutPkgPath
+		if pkgPath == "" {
+			pkgPath = pkgPathFromRelativePath(input.option.OutPath)
+		}
+		generated := store.Get(input.option.OutPath, pkgPath)
 
 		mapper := mapping.Mapper{
 			FieldMappers: input.option.FieldMappers,
 			TypeMappers:  input.option.TypeMappers,
 		}
-		pkgPath := input.option.OutPkgPath
-		if pkgPath == "" {
-			pkgPath = pkgPathFromRelativePath(input.option.OutPath)
-		}
+
 		mp, err := mapper.NewMapping(input.src, input.dest, pkgPath)
 		if err != nil {
 			errs = append(errs, fmt.Errorf("failed to map: %w", err))
 			continue
 		}
-		if generated.codeFile == nil {
-			if existed, err := code.LoadFile(input.option.OutPath, pkgPath); err == nil {
-				generated.codeFile = existed
-			} else {
-				generated.codeFile = code.NewFile(pkgPath)
-			}
-		}
+
 		fn := code.NewFuncFromMapping(mp, &code.FuncOption{
 			Name:                 input.option.FuncName,
 			FuncComment:          input.option.FuncComment,
 			NoMapperFieldComment: input.option.NoMapperFieldComment,
 			Editable:             input.option.Mode.Editable(),
 		})
-		if existedFn, ok := generated.codeFile.FindFunc(fn.Name()); ok {
-			if err := fn.AppendNotSetExprs(existedFn); err != nil {
-				errs = append(errs, fmt.Errorf("failed to append not set exprs: %w", err))
-				continue
-			}
-		}
+		//if existedFn, ok := generated.codeFile.FindFunc(fn.Name()); ok {
+		//	if err := fn.AppendNotSetExprs(existedFn); err != nil {
+		//		errs = append(errs, fmt.Errorf("failed to append not set exprs: %w", err))
+		//		continue
+		//	}
+		//}
 		err = generated.codeFile.Attach(fn)
 		if err != nil {
 			errs = append(errs, fmt.Errorf("failed to apply: %w", err))
@@ -233,11 +228,17 @@ func NewGeneratedStore() *GeneratedStore {
 	}
 }
 
-func (gs *GeneratedStore) Get(outPath string) *Generated {
+func (gs *GeneratedStore) Get(outPath, pkgPath string) *Generated {
 	if g, ok := gs.tempMap[outPath]; ok {
 		return g
 	} else {
-		return &Generated{filePath: outPath}
+		g := &Generated{filePath: outPath}
+		if existed, err := code.LoadFile(outPath, pkgPath); err == nil {
+			g.codeFile = existed
+		} else {
+			g.codeFile = code.NewFile(pkgPath)
+		}
+		return g
 	}
 }
 
