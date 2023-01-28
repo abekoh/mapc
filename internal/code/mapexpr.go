@@ -45,6 +45,17 @@ func (mel MapExprList) DstExprs(arg string) (exprs []dst.Expr, startComments []s
 	return
 }
 
+func (mel MapExprList) SeparateCommented() (normal, commented MapExprList) {
+	for _, me := range mel {
+		if _, ok := me.Comment(); ok {
+			commented = append(commented, me)
+		} else {
+			normal = append(normal, me)
+		}
+	}
+	return
+}
+
 type SimpleMapExpr struct {
 	src     string
 	dest    string
