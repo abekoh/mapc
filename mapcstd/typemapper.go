@@ -69,9 +69,9 @@ func (p DerefMapper) Map(src, dest *Typ) (Caster, bool) {
 	return nil, false
 }
 
-type MapTypeMapper map[Typ]map[Typ]Caster
+type MapTypeMapper map[*Typ]map[*Typ]Caster
 
-func (m MapTypeMapper) Map(src, dest Typ) (Caster, bool) {
+func (m MapTypeMapper) Map(src, dest *Typ) (Caster, bool) {
 	m2, ok := m[src]
 	if !ok {
 		return nil, false
