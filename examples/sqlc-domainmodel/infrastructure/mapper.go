@@ -11,7 +11,7 @@ import (
 func MapUserToUser(x sqlc.User) domain.User {
 	return domain.User{
 		Name: x.Name,
-		// ID:
+		ID:   "hoge",
 	}
 }
 
