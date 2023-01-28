@@ -11,7 +11,8 @@ import (
 func main() {
 	m := mapc.New()
 	m.Option.OutPath = "infrastructure/mapper.go"
-	// FIXME
+
+	// TODO: set UserID like `type UserID uuid.UUID`, and setup custom caster
 	//m.Option.TypeMappers = append(m.Option.TypeMappers, mapcstd.TypeMapperFunc(
 	//	func(src, dest *mapcstd.Typ) (mapcstd.Caster, bool) {
 	//		if src.Equals(mapcstd.NewTypOf("")) && dest.Equals(mapcstd.NewTypOf(domain.UserID(""))) {
