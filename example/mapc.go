@@ -4,8 +4,8 @@ import (
 	"log"
 
 	"github.com/abekoh/mapc"
-	"github.com/abekoh/mapc/examples/sqlc-domainmodel/domain"
-	"github.com/abekoh/mapc/examples/sqlc-domainmodel/infrastructure/sqlc"
+	"github.com/abekoh/mapc/example/domain"
+	"github.com/abekoh/mapc/example/infrastructure/sqlc"
 )
 
 func main() {

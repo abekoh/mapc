@@ -1,4 +1,4 @@
-module github.com/abekoh/mapc/examples/sqlc-domainmodel
+module github.com/abekoh/mapc/example
 
 go 1.19
 
