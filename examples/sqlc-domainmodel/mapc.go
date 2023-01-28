@@ -2,7 +2,6 @@ package main
 
 import (
 	"log"
-	"reflect"
 
 	"github.com/abekoh/mapc"
 	"github.com/abekoh/mapc/examples/sqlc-domainmodel/domain"
@@ -15,8 +14,8 @@ func main() {
 	m.Option.OutPath = "infrastructure/mapper.go"
 	// FIXME
 	m.Option.TypeMappers = append(m.Option.TypeMappers, &mapcstd.MapTypeMapper{
-		mapcstd.NewTyp(reflect.TypeOf("string")): map[*mapcstd.Typ]mapcstd.Caster{
-			mapcstd.NewTyp(reflect.TypeOf(domain.UserID{})): mapcstd.NewSimpleCaster(&mapcstd.Caller{
+		mapcstd.NewTypOf("string"): map[*mapcstd.Typ]mapcstd.Caster{
+			mapcstd.NewTypOf(domain.UserID{}): mapcstd.NewSimpleCaster(&mapcstd.Caller{
 				PkgPath:    "github.com/abekoh/mapc/examples/sqlc-domainmodel/domain",
 				Name:       "UserID",
 				CallerType: mapcstd.Type,
