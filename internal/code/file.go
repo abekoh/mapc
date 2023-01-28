@@ -75,6 +75,11 @@ func (f *File) Attach(inpFn *Func, mode Mode) error {
 	if err != nil {
 		return fmt.Errorf("failed to fill MapExprs: %w", err)
 	}
+
+	// copy comment options from inpFn: FIXME
+	resFn.withFuncComment = inpFn.withFuncComment
+	resFn.editable = inpFn.editable
+
 	fnDecl, err := resFn.Decl()
 	if err != nil {
 		return fmt.Errorf("failed to generate Decl: %w", err)
