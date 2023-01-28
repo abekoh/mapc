@@ -5,7 +5,7 @@ import (
 
 	"github.com/abekoh/mapc"
 	"github.com/abekoh/mapc/example/domain"
-	"github.com/abekoh/mapc/example/graph/model"
+	"github.com/abekoh/mapc/example/graphql/gqlmodel"
 	"github.com/abekoh/mapc/example/infrastructure/sqlc"
 )
 
@@ -36,12 +36,12 @@ func main() {
 	infra.Register(sqlc.SubTask{}, domain.SubTask{})
 
 	graph := m.Group(func(option *mapc.Option) {
-		option.OutPath = "graph/mapper.go"
+		option.OutPath = "graphql/mapper.go"
 		option.Mode = mapc.Deterministic
 	})
-	graph.Register(sqlc.User{}, model.User{})
-	graph.Register(sqlc.Task{}, model.Task{})
-	graph.Register(sqlc.SubTask{}, model.SubTask{})
+	graph.Register(sqlc.User{}, gqlmodel.User{})
+	graph.Register(sqlc.Task{}, gqlmodel.Task{})
+	graph.Register(sqlc.SubTask{}, gqlmodel.SubTask{})
 
 	gs, errs := m.Generate()
 	if len(errs) > 0 {
@@ -50,7 +50,7 @@ func main() {
 	for _, g := range gs {
 		err := g.Save()
 		if err != nil {
-			log.Fatal()
+			log.Fatal(err)
 		}
 	}
 }

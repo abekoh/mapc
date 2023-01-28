@@ -1,4 +1,4 @@
-package graph
+package graphql
 
 // This file will be automatically regenerated based on the schema, any resolver implementations
 // will be copied through when generating and any unknown code will be moved to the end.
@@ -8,7 +8,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/abekoh/mapc/example/graph/model"
+	"github.com/abekoh/mapc/example/graphql/model"
 )
 
 // CreateUser is the resolver for the createUser field.
