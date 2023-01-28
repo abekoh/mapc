@@ -13,6 +13,14 @@ import (
 	"github.com/dave/dst/decorator/resolver/guess"
 )
 
+type Mode int
+
+const (
+	PrioritizeGenerated Mode = iota
+	PrioritizeExisted
+	Deterministic
+)
+
 type File struct {
 	pkgPath string
 	dstFile *dst.File
@@ -51,7 +59,7 @@ func (f *File) FindFunc(name string) (*Func, bool) {
 	return fn, true
 }
 
-func (f *File) Attach(fn *Func) error {
+func (f *File) Attach(fn *Func, mode Mode) error {
 	newFnDecl, err := fn.Decl()
 	if err != nil {
 		return fmt.Errorf("failed to generate Decl: %w", err)

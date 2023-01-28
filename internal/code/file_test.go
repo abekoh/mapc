@@ -77,7 +77,7 @@ func TestFile_Attach(t *testing.T) {
 	fn := NewFuncFromMapping(m, nil)
 	t.Run("when Func is found, replace", func(t *testing.T) {
 		f := loadSample(t)
-		err = f.Attach(fn)
+		err = f.Attach(fn, PrioritizeGenerated)
 		require.Nil(t, err)
 		got, ok := f.FindFunc("MapSrcUserToDestUser")
 		assert.True(t, ok)
@@ -85,7 +85,7 @@ func TestFile_Attach(t *testing.T) {
 	})
 	t.Run("when Func is not found, append", func(t *testing.T) {
 		f := NewFile(outPkgPath)
-		err = f.Attach(fn)
+		err = f.Attach(fn, PrioritizeGenerated)
 		require.Nil(t, err)
 		got, ok := f.FindFunc("MapSrcUserToDestUser")
 		assert.True(t, ok)

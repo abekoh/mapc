@@ -83,7 +83,7 @@ func (m *MapC) Generate() (res []*Generated, errs []error) {
 		//		continue
 		//	}
 		//}
-		err = generated.codeFile.Attach(fn)
+		err = generated.codeFile.Attach(fn, code.Mode(input.option.Mode))
 		if err != nil {
 			errs = append(errs, fmt.Errorf("failed to apply: %w", err))
 			continue
