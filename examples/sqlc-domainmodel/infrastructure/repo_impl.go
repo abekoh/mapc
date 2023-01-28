@@ -5,6 +5,7 @@ import (
 	"database/sql"
 
 	"github.com/abekoh/mapc/examples/sqlc-domainmodel/domain"
+	"github.com/abekoh/mapc/examples/sqlc-domainmodel/infrastructure/sqlc"
 )
 
 type RepositoryImpl struct {
@@ -12,9 +13,13 @@ type RepositoryImpl struct {
 }
 
 func (r RepositoryImpl) Get(ctx context.Context, id domain.UserID) (*domain.User, error) {
-	//queries := New(r.db)
-	//TODO implement me
-	panic("implement me")
+	queries := sqlc.New(r.db)
+	user, err := queries.GetUser(ctx, id.String())
+	if err != nil {
+		return nil, err
+	}
+	res := MapUserToUser(user)
+	return &res, nil
 }
 
 func (r RepositoryImpl) List(ctx context.Context) (*domain.User, error) {

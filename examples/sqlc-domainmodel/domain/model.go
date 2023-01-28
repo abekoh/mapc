@@ -21,6 +21,10 @@ type (
 	}
 )
 
+func (i UserID) String() string {
+	return i.String()
+}
+
 type (
 	TaskID uuid.UUID
 

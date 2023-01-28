@@ -2,8 +2,8 @@ version: 2
 sql:
   - engine: sqlite
     schema: migrations
-    queries: infrastructure/query.sql
+    queries: infrastructure/sql/query.sql
     gen:
       go:
-        package: infrastructure
-        out: infrastructure
+        package: sqlc
+        out: infrastructure/sqlc
