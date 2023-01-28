@@ -60,10 +60,6 @@ func (m *MapC) Generate() (res GeneratedList, errs []error) {
 		} else {
 			generated = &Generated{filePath: input.option.OutPath}
 		}
-		if input.option == nil {
-			errs = append(errs, fmt.Errorf("option is nil. src=%T, dest=%T", input.src, input.dest))
-			continue
-		}
 		mapper := mapping.Mapper{
 			FieldMappers: input.option.FieldMappers,
 			TypeMappers:  input.option.TypeMappers,
