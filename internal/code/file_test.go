@@ -62,11 +62,12 @@ func TestFile_Write(t *testing.T) {
 func TestFile_FindFunc(t *testing.T) {
 	f := loadSample(t)
 	fnName := "MapSrcUserToDestUser"
-	fn, ok := f.FindFunc(fnName)
+	idx, fn, ok := f.FindFunc(fnName)
 	if !ok {
 		t.Errorf("not found %s", fnName)
 	}
-	assert.Equal(t, fn.name, "MapSrcUserToDestUser")
+	assert.Equal(t, 0, idx)
+	assert.Equal(t, "MapSrcUserToDestUser", fn.name)
 }
 
 func TestFile_Attach(t *testing.T) {
@@ -79,7 +80,7 @@ func TestFile_Attach(t *testing.T) {
 		f := loadSample(t)
 		err = f.Attach(fn, Deterministic)
 		require.Nil(t, err)
-		got, ok := f.FindFunc("MapSrcUserToDestUser")
+		_, got, ok := f.FindFunc("MapSrcUserToDestUser")
 		assert.True(t, ok)
 		assert.Equal(t, fn, got)
 	})
@@ -87,7 +88,7 @@ func TestFile_Attach(t *testing.T) {
 		f := NewFile(outPkgPath)
 		err = f.Attach(fn, Deterministic)
 		require.Nil(t, err)
-		got, ok := f.FindFunc("MapSrcUserToDestUser")
+		_, got, ok := f.FindFunc("MapSrcUserToDestUser")
 		assert.True(t, ok)
 		assert.Equal(t, fn, got)
 	})

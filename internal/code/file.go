@@ -48,18 +48,6 @@ func LoadFile(filePath, pkgPath string) (*File, error) {
 	return &File{dstFile: df, pkgPath: pkgPath}, nil
 }
 
-func (f *File) FindFunc(name string) (*Func, bool) {
-	_, d, ok := f.findFuncDecl(name)
-	if !ok {
-		return nil, false
-	}
-	fn, err := newFuncFromDecl(f.pkgPath, d)
-	if err != nil {
-		return nil, false
-	}
-	return fn, true
-}
-
 func (f *File) Attach(fn *Func, mode Mode) error {
 	i, _, ok := f.findFuncDecl(fn.name)
 
@@ -101,4 +89,16 @@ func (f *File) findFuncDecl(name string) (idx int, fn *dst.FuncDecl, ok bool) {
 		}
 	}
 	return -1, nil, false
+}
+
+func (f *File) FindFunc(name string) (idx int, fn *Func, ok bool) {
+	i, d, ok := f.findFuncDecl(name)
+	if !ok {
+		return i, nil, false
+	}
+	fn, err := newFuncFromDecl(f.pkgPath, d)
+	if err != nil {
+		return -1, nil, false
+	}
+	return -1, fn, true
 }
