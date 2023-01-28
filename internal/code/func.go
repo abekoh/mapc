@@ -209,6 +209,7 @@ func newFuncFromDecl(pkgPath string, d *dst.FuncDecl) (*Func, error) {
 		if !ok {
 			return nil, fmt.Errorf("key must be Ident")
 		}
+		// TODO: kvExpr.Value's type is unknown
 		selectorExpr, ok := kvExpr.Value.(*dst.SelectorExpr)
 		if !ok {
 			return nil, fmt.Errorf("value must be SelectorExpr")
