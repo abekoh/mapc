@@ -132,7 +132,7 @@ type Mode int
 
 const (
 	PrioritizeGenerated Mode = iota
-	PrioritizeHandwritten
+	PrioritizeExisted
 	Deterministic
 )
 
