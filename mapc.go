@@ -51,7 +51,7 @@ func (m *MapC) Group(optFns ...func(*Option)) *Group {
 	}
 }
 
-func (m *MapC) Generate() (res GeneratedList, errs []error) {
+func (m *MapC) Generate() (res []*Generated, errs []error) {
 	generatedMap := make(map[string]*Generated)
 	for _, input := range m.inputs {
 		var generated *Generated
@@ -194,8 +194,6 @@ type Generated struct {
 	filePath string
 	codeFile *code.File
 }
-
-type GeneratedList []*Generated
 
 func (g Generated) Write(w io.Writer) error {
 	return g.codeFile.Write(w)
