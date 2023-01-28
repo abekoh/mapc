@@ -61,10 +61,9 @@ func TestFile_Write(t *testing.T) {
 
 func TestFile_FindFunc(t *testing.T) {
 	f := loadSample(t)
-	fnName := "MapSrcUserToDestUser"
-	idx, fn, ok := f.FindFunc(fnName)
+	idx, fn, ok := f.FindFunc("MapSrcUserToDestUser")
 	if !ok {
-		t.Errorf("not found %s", fnName)
+		t.Errorf("not found %s", "MapSrcUserToDestUser")
 	}
 	assert.Greater(t, idx, 0)
 	assert.Equal(t, &Func{
