@@ -164,75 +164,136 @@ func Test_argName(t *testing.T) {
 func TestFunc_AppendNotSetExprs(t *testing.T) {
 	genTarget := func() *Func {
 		return &Func{
-			name:    "AFunc",
+			name:    "MapAToB",
 			argName: "x",
 			srcTyp: &Typ{
-				name: "int",
+				name: "A",
 			},
 			destTyp: &Typ{
-				name: "int",
+				name: "B",
 			},
 			mapExprs: MapExprList{
 				&SimpleMapExpr{
-					src:  "z",
-					dest: "z",
+					src:  "s",
+					dest: "s",
+				},
+				&CommentedMapExpr{
+					dest:    "t",
+					comment: "t",
 				},
 			},
 		}
 	}
-	t.Run("mapExpr is appended", func(t *testing.T) {
+	t.Run("SimpleMapExpr is appended", func(t *testing.T) {
 		x := &Func{
-			name:    "AFunc",
+			name:    "MapAToB",
 			argName: "x",
 			srcTyp: &Typ{
-				name: "int",
+				name: "A",
 			},
 			destTyp: &Typ{
-				name: "int",
+				name: "B",
 			},
 			mapExprs: MapExprList{
-				&CommentedMapExpr{
-					dest: "y",
+				&SimpleMapExpr{
+					src:  "u",
+					dest: "u",
 				},
 			},
 		}
 		target := genTarget()
-		assert.Len(t, target.mapExprs, 1)
 		err := target.AppendNotSetExprs(x)
 		require.Nil(t, err)
-		assert.Len(t, target.mapExprs, 2)
+		assert.Equal(t, MapExprList{
+			&SimpleMapExpr{
+				src:  "s",
+				dest: "s",
+			},
+			&SimpleMapExpr{
+				src:  "u",
+				dest: "u",
+			},
+			&CommentedMapExpr{
+				dest:    "t",
+				comment: "t",
+			},
+		}, target.mapExprs)
+	})
+	t.Run("CommentedMepExpr is appended", func(t *testing.T) {
+		x := &Func{
+			name:    "MapAToB",
+			argName: "x",
+			srcTyp: &Typ{
+				name: "A",
+			},
+			destTyp: &Typ{
+				name: "B",
+			},
+			mapExprs: MapExprList{
+				&CommentedMapExpr{
+					dest:    "v",
+					comment: "v",
+				},
+			},
+		}
+		target := genTarget()
+		err := target.AppendNotSetExprs(x)
+		require.Nil(t, err)
+		assert.Equal(t, MapExprList{
+			&SimpleMapExpr{
+				src:  "s",
+				dest: "s",
+			},
+			&CommentedMapExpr{
+				dest:    "t",
+				comment: "t",
+			},
+			&CommentedMapExpr{
+				dest:    "v",
+				comment: "v",
+			},
+		}, target.mapExprs)
 	})
 	t.Run("same key is existed", func(t *testing.T) {
 		x := &Func{
-			name:    "AFunc",
+			name:    "MapAToB",
 			argName: "x",
 			srcTyp: &Typ{
-				name: "int",
+				name: "A",
 			},
 			destTyp: &Typ{
-				name: "int",
+				name: "B",
 			},
 			mapExprs: MapExprList{
-				&CommentedMapExpr{
-					dest: "z",
+				&SimpleMapExpr{
+					src:  "s",
+					dest: "s",
 				},
 			},
 		}
 		target := genTarget()
-		assert.Len(t, target.mapExprs, 1)
 		err := target.AppendNotSetExprs(x)
 		require.Nil(t, err)
-		assert.Len(t, target.mapExprs, 1)
+		assert.Equal(t, MapExprList{
+			&SimpleMapExpr{
+				src:  "s",
+				dest: "s",
+			},
+			&CommentedMapExpr{
+				dest:    "t",
+				comment: "t",
+			},
+		}, target.mapExprs)
 	})
 	t.Run("type is not match", func(t *testing.T) {
 		x := &Func{
-			name:    "AFunc",
+			name:    "MapAToB",
 			argName: "x",
 			srcTyp: &Typ{
-				name: "int",
+				name: "A",
 			},
 			destTyp: &Typ{
-				name: "string",
+				name: "C",
 			},
 			mapExprs: MapExprList{
 				&CommentedMapExpr{
@@ -241,7 +302,6 @@ func TestFunc_AppendNotSetExprs(t *testing.T) {
 			},
 		}
 		target := genTarget()
-		assert.Len(t, target.mapExprs, 1)
 		err := target.AppendNotSetExprs(x)
 		require.NotNil(t, err)
 	})
