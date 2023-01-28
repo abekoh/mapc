@@ -91,3 +91,30 @@ func MapSrcUserToDestUser(x SrcUser) DestUser {
 		RegisteredAt: x.RegisteredAt,
 	}
 }
+
+func OnlyCommentMapper(x SrcUser) DestUser {
+	return DestUser{
+		//ID:
+		//Name:
+		//Age:
+		//RegisteredAt:
+	}
+}
+
+func FirstLineIsCommentMapper(x SrcUser) DestUser {
+	return DestUser{
+		//ID:
+		Name:         x.Name,
+		Age:          x.Age,
+		RegisteredAt: x.RegisteredAt,
+	}
+}
+
+func LastLineIsCommentMapper(x SrcUser) DestUser {
+	return DestUser{
+		ID:   x.ID,
+		Name: x.Name,
+		Age:  x.Age,
+		//RegisteredAt:
+	}
+}
