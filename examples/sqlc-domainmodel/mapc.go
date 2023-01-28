@@ -23,7 +23,11 @@ func main() {
 			}),
 		},
 	})
+
 	m.Register(sqlc.User{}, domain.User{})
+	m.Register(sqlc.Task{}, domain.Task{})
+	m.Register(sqlc.SubTask{}, domain.SubTask{})
+
 	gs, errs := m.Generate()
 	if len(errs) > 0 {
 		log.Fatal(errs)
