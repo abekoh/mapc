@@ -1,0 +1,9 @@
+version: 2
+sql:
+  - engine: sqlite
+    schema: migrations
+    queries: infrastructure/query.sql
+    gen:
+      go:
+        package: infrastructure
+        out: infrastructure

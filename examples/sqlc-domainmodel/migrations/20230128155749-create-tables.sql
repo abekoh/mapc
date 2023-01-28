@@ -13,7 +13,7 @@ CREATE TABLE tasks
     user_id       TEXT     NOT NULL,
     title         TEXT     NOT NULL,
     description   TEXT     NOT NULL,
-    story_point   INTEGER  NULL,
+    story_point   INTEGER,
     registered_at DATETIME NOT NULL,
     created_at    DATETIME NOT NULL,
     updated_at    DATETIME NOT NULL,
@@ -30,8 +30,8 @@ CREATE TABLE sub_tasks
     registered_at DATETIME NOT NULL,
     created_at    DATETIME NOT NULL,
     updated_at    DATETIME NOT NULL,
-    FOREIGN KEY (task_id) REFERENCES tasks (id)
-        FOREIGN KEY (user_id) REFERENCES users (id)
+    FOREIGN KEY (task_id) REFERENCES tasks (id),
+    FOREIGN KEY (user_id) REFERENCES users (id)
 );
 
 -- +migrate Down
