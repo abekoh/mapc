@@ -135,6 +135,82 @@ func TestFile_FindFunc(t *testing.T) {
 			},
 		}, fn)
 	})
+	t.Run("first line is comment", func(t *testing.T) {
+		idx, fn, ok := f.FindFunc("FirstLineIsCommentMapper")
+		require.True(t, ok)
+		assert.Greater(t, idx, 0)
+		assert.Equal(t, &Func{
+			name:    "FirstLineIsCommentMapper",
+			argName: "x",
+			srcTyp: &Typ{
+				name:    "SrcUser",
+				pkgPath: "github.com/abekoh/mapc/testdata/sample",
+			},
+			destTyp: &Typ{
+				name:    "DestUser",
+				pkgPath: "github.com/abekoh/mapc/testdata/sample",
+			},
+			mapExprs: MapExprList{
+				&CommentedMapExpr{
+					dest:    "ID",
+					comment: "//ID:",
+				},
+				&SimpleMapExpr{
+					src:     "Name",
+					dest:    "Name",
+					casters: nil,
+				},
+				&SimpleMapExpr{
+					src:     "Age",
+					dest:    "Age",
+					casters: nil,
+				},
+				&SimpleMapExpr{
+					src:     "RegisteredAt",
+					dest:    "RegisteredAt",
+					casters: nil,
+				},
+			},
+		}, fn)
+	})
+	t.Run("last line is comment", func(t *testing.T) {
+		idx, fn, ok := f.FindFunc("LastLineIsCommentMapper")
+		require.True(t, ok)
+		assert.Greater(t, idx, 0)
+		assert.Equal(t, &Func{
+			name:    "LastLineIsCommentMapper",
+			argName: "x",
+			srcTyp: &Typ{
+				name:    "SrcUser",
+				pkgPath: "github.com/abekoh/mapc/testdata/sample",
+			},
+			destTyp: &Typ{
+				name:    "DestUser",
+				pkgPath: "github.com/abekoh/mapc/testdata/sample",
+			},
+			mapExprs: MapExprList{
+				&SimpleMapExpr{
+					src:     "ID",
+					dest:    "ID",
+					casters: nil,
+				},
+				&SimpleMapExpr{
+					src:     "Name",
+					dest:    "Name",
+					casters: nil,
+				},
+				&SimpleMapExpr{
+					src:     "Age",
+					dest:    "Age",
+					casters: nil,
+				},
+				&CommentedMapExpr{
+					dest:    "RegisteredAt",
+					comment: "//RegisteredAt:",
+				},
+			},
+		}, fn)
+	})
 	t.Run("no selectors", func(t *testing.T) {
 		idx, fn, ok := f.FindFunc("NoSelectorsMapper")
 		require.True(t, ok)
