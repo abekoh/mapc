@@ -18,7 +18,7 @@ func main() {
 	//	func(src, dest *mapcstd.Typ) (mapcstd.Caster, bool) {
 	//		if src.Equals(mapcstd.NewTypOf("")) && dest.Equals(mapcstd.NewTypOf(domain.UserID(""))) {
 	//			return mapcstd.NewSimpleCaster(&mapcstd.Caller{
-	//				PkgPath:    "github.com/abekoh/mapc/examples/sqlc-domainmodel/domain",
+	//				PkgPath:    "github.com/abekoh/mapc/example/sqlc-domainmodel/domain",
 	//				Name:       "UserID",
 	//				CallerType: mapcstd.Type,
 	//			}), true
