@@ -6,6 +6,7 @@ import (
 	"github.com/abekoh/mapc"
 	"github.com/abekoh/mapc/example/domain"
 	"github.com/abekoh/mapc/example/graphql/gqlmodel"
+	"github.com/abekoh/mapc/example/grpc"
 	"github.com/abekoh/mapc/example/infrastructure/sqlc"
 )
 
@@ -42,6 +43,14 @@ func main() {
 	graph.Register(sqlc.User{}, gqlmodel.User{})
 	graph.Register(sqlc.Task{}, gqlmodel.Task{})
 	graph.Register(sqlc.SubTask{}, gqlmodel.SubTask{})
+
+	rpc := m.Group(func(option *mapc.Option) {
+		option.OutPath = "grpc/mapper.go"
+		option.Mode = mapc.Deterministic
+	})
+	rpc.Register(domain.User{}, grpc.User{})
+	rpc.Register(domain.Task{}, grpc.Task{})
+	rpc.Register(domain.SubTask{}, grpc.SubTask{})
 
 	gs, errs := m.Generate()
 	if len(errs) > 0 {

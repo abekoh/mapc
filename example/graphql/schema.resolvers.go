@@ -8,16 +8,16 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/abekoh/mapc/example/graphql/model"
+	"github.com/abekoh/mapc/example/graphql/gqlmodel"
 )
 
 // CreateUser is the resolver for the createUser field.
-func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) (*model.User, error) {
+func (r *mutationResolver) CreateUser(ctx context.Context, input gqlmodel.NewUser) (*gqlmodel.User, error) {
 	panic(fmt.Errorf("not implemented: CreateUser - createUser"))
 }
 
 // User is the resolver for the user field.
-func (r *queryResolver) User(ctx context.Context, id string) (*model.User, error) {
+func (r *queryResolver) User(ctx context.Context, id string) (*gqlmodel.User, error) {
 	panic(fmt.Errorf("not implemented: User - user"))
 }
 
