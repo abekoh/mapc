@@ -119,7 +119,7 @@ func LastLineIsCommentMapper(x SrcUser) DestUser {
 	}
 }
 
-func NotSelectorMapper(x SrcUser) DestUser {
+func NoSelectorsMapper(x SrcUser) DestUser {
 	return DestUser{
 		ID:           uuid.New(),
 		Name:         "Name",

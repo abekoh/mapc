@@ -209,16 +209,19 @@ func newFuncFromDecl(pkgPath string, d *dst.FuncDecl) (*Func, error) {
 		if !ok {
 			return nil, fmt.Errorf("key must be Ident")
 		}
-		// TODO: kvExpr.Value's type is unknown
 		selectorExpr, ok := kvExpr.Value.(*dst.SelectorExpr)
-		if !ok {
-			return nil, fmt.Errorf("value must be SelectorExpr")
+		if ok {
+			// TODO: with caster
+			res.mapExprs = append(res.mapExprs, &SimpleMapExpr{
+				src:  selectorExpr.Sel.Name,
+				dest: keyIdent.Name,
+			})
+		} else {
+			res.mapExprs = append(res.mapExprs, &UnknownMapExpr{
+				dest:    keyIdent.Name,
+				dstExpr: kvExpr.Value,
+			})
 		}
-		// TODO: with caster
-		res.mapExprs = append(res.mapExprs, &SimpleMapExpr{
-			src:  selectorExpr.Sel.Name,
-			dest: keyIdent.Name,
-		})
 		res.mapExprs = append(res.mapExprs, parseComments(expr.Decorations().End.All()...)...)
 	}
 	return res, nil

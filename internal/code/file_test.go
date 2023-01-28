@@ -61,47 +61,54 @@ func TestFile_Write(t *testing.T) {
 
 func TestFile_FindFunc(t *testing.T) {
 	f := loadSample(t)
-	idx, fn, ok := f.FindFunc("MapSrcUserToDestUser")
-	if !ok {
-		t.Errorf("not found %s", "MapSrcUserToDestUser")
-	}
-	assert.Greater(t, idx, 0)
-	assert.Equal(t, &Func{
-		name:    "MapSrcUserToDestUser",
-		argName: "x",
-		srcTyp: &Typ{
-			name:    "SrcUser",
-			pkgPath: "github.com/abekoh/mapc/testdata/sample",
-		},
-		destTyp: &Typ{
-			name:    "DestUser",
-			pkgPath: "github.com/abekoh/mapc/testdata/sample",
-		},
-		mapExprs: MapExprList{
-			&SimpleMapExpr{
-				src:     "ID",
-				dest:    "ID",
-				casters: nil,
+	t.Run("only selectors", func(t *testing.T) {
+		idx, fn, ok := f.FindFunc("MapSrcUserToDestUser")
+		require.True(t, ok)
+		assert.Greater(t, idx, 0)
+		assert.Equal(t, &Func{
+			name:    "MapSrcUserToDestUser",
+			argName: "x",
+			srcTyp: &Typ{
+				name:    "SrcUser",
+				pkgPath: "github.com/abekoh/mapc/testdata/sample",
 			},
-			&SimpleMapExpr{
-				src:     "Name",
-				dest:    "Name",
-				casters: nil,
+			destTyp: &Typ{
+				name:    "DestUser",
+				pkgPath: "github.com/abekoh/mapc/testdata/sample",
 			},
-			&SimpleMapExpr{
-				src:     "Age",
-				dest:    "Age",
-				casters: nil,
+			mapExprs: MapExprList{
+				&SimpleMapExpr{
+					src:     "ID",
+					dest:    "ID",
+					casters: nil,
+				},
+				&SimpleMapExpr{
+					src:     "Name",
+					dest:    "Name",
+					casters: nil,
+				},
+				&SimpleMapExpr{
+					src:     "Age",
+					dest:    "Age",
+					casters: nil,
+				},
+				&SimpleMapExpr{
+					src:     "RegisteredAt",
+					dest:    "RegisteredAt",
+					casters: nil,
+				},
 			},
-			&SimpleMapExpr{
-				src:     "RegisteredAt",
-				dest:    "RegisteredAt",
-				casters: nil,
-			},
-		},
-		withFuncComment: false,
-		editable:        false,
-	}, fn)
+		}, fn)
+	})
+	t.Run("no selectors", func(t *testing.T) {
+		idx, fn, ok := f.FindFunc("NoSelectorsMapper")
+		require.True(t, ok)
+		assert.Greater(t, idx, 0)
+		assert.Len(t, fn.mapExprs, 4)
+		for _, expr := range fn.mapExprs {
+			assert.IsType(t, &UnknownMapExpr{}, expr)
+		}
+	})
 }
 
 func TestFile_Attach(t *testing.T) {

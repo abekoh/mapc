@@ -142,6 +142,27 @@ func commentToKey(comment string) string {
 	return ""
 }
 
+type UnknownMapExpr struct {
+	dest    string
+	dstExpr dst.Expr
+}
+
+func (e UnknownMapExpr) Src() string {
+	return ""
+}
+
+func (e UnknownMapExpr) Dest() string {
+	return e.dest
+}
+
+func (e UnknownMapExpr) DstExpr(_ string) (dst.Expr, bool) {
+	return e.dstExpr, true
+}
+
+func (e UnknownMapExpr) Comment() (string, bool) {
+	return "", false
+}
+
 type Caster interface {
 	Expr(arg dst.Expr) dst.Expr
 }
