@@ -21,6 +21,7 @@ func modeTestMapc() *mapc.MapC {
 	}
 	m.Option.FuncName = "ModeTestMapper"
 	m.Option.OutPath = "testdata/ab/generated.go"
+	m.Option.OutPkgPath = "github.com/abekoh/mapc/e2e/testdata/ab"
 	return m
 }
 
