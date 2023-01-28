@@ -3,12 +3,10 @@ package domain
 import (
 	"context"
 	"time"
-
-	"github.com/google/uuid"
 )
 
 type (
-	UserID uuid.UUID
+	UserID string
 
 	User struct {
 		ID   UserID
@@ -26,7 +24,7 @@ func (i UserID) String() string {
 }
 
 type (
-	TaskID uuid.UUID
+	TaskID string
 
 	TaskType int
 
@@ -47,7 +45,7 @@ const (
 )
 
 type (
-	SubTaskID uuid.UUID
+	SubTaskID string
 
 	SubTask struct {
 		ID           SubTaskID

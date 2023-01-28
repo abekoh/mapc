@@ -25,6 +25,10 @@ func (t Typ) Name() string {
 	return t.refTyp.Name()
 }
 
+func (t Typ) Equals(x *Typ) bool {
+	return t.Name() == x.Name() && t.PkgPath() == x.PkgPath() && t.refTyp.Kind() == t.refTyp.Kind()
+}
+
 func (t Typ) AssignableTo(to *Typ) bool {
 	return t.refTyp.AssignableTo(to.refTyp)
 }

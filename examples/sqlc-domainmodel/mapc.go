@@ -6,22 +6,24 @@ import (
 	"github.com/abekoh/mapc"
 	"github.com/abekoh/mapc/examples/sqlc-domainmodel/domain"
 	"github.com/abekoh/mapc/examples/sqlc-domainmodel/infrastructure/sqlc"
-	"github.com/abekoh/mapc/mapcstd"
 )
 
 func main() {
 	m := mapc.New()
 	m.Option.OutPath = "infrastructure/mapper.go"
 	// FIXME
-	m.Option.TypeMappers = append(m.Option.TypeMappers, &mapcstd.MapTypeMapper{
-		mapcstd.NewTypOf("string"): map[*mapcstd.Typ]mapcstd.Caster{
-			mapcstd.NewTypOf(domain.UserID{}): mapcstd.NewSimpleCaster(&mapcstd.Caller{
-				PkgPath:    "github.com/abekoh/mapc/examples/sqlc-domainmodel/domain",
-				Name:       "UserID",
-				CallerType: mapcstd.Type,
-			}),
-		},
-	})
+	//m.Option.TypeMappers = append(m.Option.TypeMappers, mapcstd.TypeMapperFunc(
+	//	func(src, dest *mapcstd.Typ) (mapcstd.Caster, bool) {
+	//		if src.Equals(mapcstd.NewTypOf("")) && dest.Equals(mapcstd.NewTypOf(domain.UserID(""))) {
+	//			return mapcstd.NewSimpleCaster(&mapcstd.Caller{
+	//				PkgPath:    "github.com/abekoh/mapc/examples/sqlc-domainmodel/domain",
+	//				Name:       "UserID",
+	//				CallerType: mapcstd.Type,
+	//			}), true
+	//		}
+	//		return nil, false
+	//	}),
+	//)
 
 	m.Register(sqlc.User{}, domain.User{})
 	m.Register(sqlc.Task{}, domain.Task{})
