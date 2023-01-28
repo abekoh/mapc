@@ -118,6 +118,7 @@ type input struct {
 }
 
 type Option struct {
+	Mode                 Mode
 	OutPath              string
 	OutPkgPath           string
 	FuncName             string
@@ -126,6 +127,14 @@ type Option struct {
 	FieldMappers         []mapcstd.FieldMapper
 	TypeMappers          []mapcstd.TypeMapper
 }
+
+type Mode int
+
+const (
+	PrioritizeGenerated Mode = iota
+	PrioritizeHandwritten
+	Deterministic
+)
 
 func (o *Option) copy() *Option {
 	fms := make([]mapcstd.FieldMapper, len(o.FieldMappers))
