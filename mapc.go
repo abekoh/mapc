@@ -28,6 +28,7 @@ func New() *MapC {
 		Option: &Option{
 			FuncComment:          true,
 			NoMapperFieldComment: true,
+			Mode:                 PrioritizeGenerated,
 			FieldMappers:         mapcstd.DefaultFieldMappers,
 			TypeMappers:          mapcstd.DefaultTypeMappers,
 		},
@@ -87,6 +88,7 @@ func (m *MapC) Generate() (res GeneratedList, errs []error) {
 			Name:                 input.option.FuncName,
 			FuncComment:          input.option.FuncComment,
 			NoMapperFieldComment: input.option.NoMapperFieldComment,
+			Editable:             input.option.Mode.Editable(),
 		})
 		if existedFn, ok := generated.codeFile.FindFunc(fn.Name()); ok {
 			if err := fn.AppendNotSetExprs(existedFn); err != nil {
@@ -136,6 +138,15 @@ const (
 	Deterministic
 )
 
+func (m Mode) Editable() bool {
+	switch m {
+	case Deterministic:
+		return false
+	default:
+		return true
+	}
+}
+
 func (o *Option) copy() *Option {
 	fms := make([]mapcstd.FieldMapper, len(o.FieldMappers))
 	copy(fms, o.FieldMappers)
@@ -147,6 +158,7 @@ func (o *Option) copy() *Option {
 		FuncName:             o.FuncName,
 		FuncComment:          o.FuncComment,
 		NoMapperFieldComment: o.NoMapperFieldComment,
+		Mode:                 o.Mode,
 		FieldMappers:         fms,
 		TypeMappers:          tms,
 	}
