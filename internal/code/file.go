@@ -1,6 +1,7 @@
 package code
 
 import (
+	"errors"
 	"fmt"
 	"go/token"
 	"io"
@@ -60,17 +61,28 @@ func (f *File) FindFunc(name string) (*Func, bool) {
 }
 
 func (f *File) Attach(fn *Func, mode Mode) error {
-	newFnDecl, err := fn.Decl()
-	if err != nil {
-		return fmt.Errorf("failed to generate Decl: %w", err)
-	}
-	i, ok := f.findFuncDeclIndex(fn.name)
-	if ok {
-		f.dstFile.Decls[i] = newFnDecl
-	} else {
+	i, _, ok := f.findFuncDecl(fn.name)
+
+	if !ok {
+		newFnDecl, err := fn.Decl()
+		if err != nil {
+			return fmt.Errorf("failed to generate Decl: %w", err)
+		}
 		f.dstFile.Decls = append(f.dstFile.Decls, newFnDecl)
+		return nil
 	}
-	return nil
+
+	switch mode {
+	case Deterministic:
+		newFnDecl, err := fn.Decl()
+		if err != nil {
+			return fmt.Errorf("failed to generate Decl: %w", err)
+		}
+		f.dstFile.Decls[i] = newFnDecl
+		return nil
+	default:
+		return errors.New("invalid mode")
+	}
 }
 
 func (f *File) Write(w io.Writer) error {
