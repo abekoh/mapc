@@ -23,7 +23,7 @@ func loadSampleRaw(t *testing.T) string {
 
 func loadSample(t *testing.T) *File {
 	t.Helper()
-	f, err := LoadFile("../../testdata/sample/sample.go", "github.com/abekoh/mapc/internal/code/testdata/sample")
+	f, err := LoadFile("../../testdata/sample/sample.go", "github.com/abekoh/mapc/testdata/sample")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -67,7 +67,42 @@ func TestFile_FindFunc(t *testing.T) {
 		t.Errorf("not found %s", fnName)
 	}
 	assert.Greater(t, idx, 0)
-	assert.Equal(t, "MapSrcUserToDestUser", fn.name)
+	assert.Equal(t, &Func{
+		name:    "MapSrcUserToDestUser",
+		argName: "x",
+		srcTyp: &Typ{
+			name:    "SrcUser",
+			pkgPath: "github.com/abekoh/mapc/testdata/sample",
+		},
+		destTyp: &Typ{
+			name:    "DestUser",
+			pkgPath: "github.com/abekoh/mapc/testdata/sample",
+		},
+		mapExprs: MapExprList{
+			&SimpleMapExpr{
+				src:     "ID",
+				dest:    "ID",
+				casters: nil,
+			},
+			&SimpleMapExpr{
+				src:     "Name",
+				dest:    "Name",
+				casters: nil,
+			},
+			&SimpleMapExpr{
+				src:     "Age",
+				dest:    "Age",
+				casters: nil,
+			},
+			&SimpleMapExpr{
+				src:     "RegisteredAt",
+				dest:    "RegisteredAt",
+				casters: nil,
+			},
+		},
+		withFuncComment: false,
+		editable:        false,
+	}, fn)
 }
 
 func TestFile_Attach(t *testing.T) {
