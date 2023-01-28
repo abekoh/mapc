@@ -15,14 +15,14 @@ var StringValue = "foo"
 var PointerIntValue = &IntValue
 
 var (
-	Int              = NewTyp(reflect.TypeOf(1))
-	Int64            = NewTyp(reflect.TypeOf(int64(1)))
-	String           = NewTyp(reflect.TypeOf("foo"))
-	TypedInt         = NewTyp(reflect.TypeOf(typedInt(1)))
-	Object           = NewTyp(reflect.TypeOf(sample.Object{}))
-	PointerInt       = NewTyp(reflect.TypeOf(&IntValue))
-	PointerString    = NewTyp(reflect.TypeOf(&StringValue))
-	DoublePointerInt = NewTyp(reflect.TypeOf(&PointerIntValue))
+	Int              = NewTypOf(1)
+	Int64            = NewTypOf(int64(1))
+	String           = NewTypOf("foo")
+	TypedInt         = NewTypOf(typedInt(1))
+	Object           = NewTypOf(sample.Object{})
+	PointerInt       = NewTypOf(&IntValue)
+	PointerString    = NewTypOf(&StringValue)
+	DoublePointerInt = NewTypOf(&PointerIntValue)
 )
 
 func TestAssignMapper_Map(t *testing.T) {

@@ -9,6 +9,10 @@ type Typ struct {
 	refTyp reflect.Type
 }
 
+func NewTypOf(t any) *Typ {
+	return &Typ{refTyp: reflect.TypeOf(t)}
+}
+
 func NewTyp(refTyp reflect.Type) *Typ {
 	return &Typ{refTyp: refTyp}
 }
@@ -19,6 +23,10 @@ func (t Typ) PkgPath() string {
 
 func (t Typ) Name() string {
 	return t.refTyp.Name()
+}
+
+func (t Typ) Equals(x *Typ) bool {
+	return t.Name() == x.Name() && t.PkgPath() == x.PkgPath() && t.refTyp.Kind() == x.refTyp.Kind()
 }
 
 func (t Typ) AssignableTo(to *Typ) bool {

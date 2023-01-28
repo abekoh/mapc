@@ -28,6 +28,10 @@ type SimpleCaster struct {
 	caller *Caller
 }
 
+func NewSimpleCaster(caller *Caller) *SimpleCaster {
+	return &SimpleCaster{caller: caller}
+}
+
 func (s SimpleCaster) Caller() *Caller {
 	return s.caller
 }

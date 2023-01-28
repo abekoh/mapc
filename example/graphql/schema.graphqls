@@ -1,0 +1,37 @@
+scalar Time
+
+type User {
+    id: ID!
+    name: String!
+}
+
+type Task {
+    id: ID!
+    title: String!
+    description: String!
+    storyPoint: Int
+    registeredAt: Time!
+    user: User!
+    subTasks: [SubTask]!
+}
+
+type SubTask {
+    id: ID!
+    title: String!
+    description: String!
+    storyPoint: Int
+    registeredAt: Time!
+    user: User!
+}
+
+type Query {
+    user(id: ID!): User!
+}
+
+input NewUser {
+    name: String!
+}
+
+type Mutation {
+    createUser(input: NewUser!): User!
+}
