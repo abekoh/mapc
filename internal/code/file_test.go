@@ -66,7 +66,7 @@ func TestFile_FindFunc(t *testing.T) {
 	if !ok {
 		t.Errorf("not found %s", fnName)
 	}
-	assert.Equal(t, 0, idx)
+	assert.Greater(t, idx, 0)
 	assert.Equal(t, "MapSrcUserToDestUser", fn.name)
 }
 

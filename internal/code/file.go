@@ -52,20 +52,23 @@ func (f *File) Attach(inpFn *Func, mode Mode) error {
 	i, existedFn, ok := f.FindFunc(inpFn.name)
 
 	var resFn *Func
+	var err error
+
 	if !ok {
 		resFn = inpFn
 	}
 	switch mode {
 	case PrioritizeGenerated:
-		inpFn.FillMapExprs(existedFn)
-		resFn = inpFn
+		resFn, err = inpFn.FillMapExprs(existedFn)
 	case PrioritizeExisted:
-		existedFn.FillMapExprs(inpFn)
-		resFn = existedFn
+		resFn, err = existedFn.FillMapExprs(inpFn)
 	case Deterministic:
 		resFn = inpFn
 	default:
 		return errors.New("invalid mode")
+	}
+	if err != nil {
+		return fmt.Errorf("failed to fill MapExprs: %w", err)
 	}
 	fnDecl, err := resFn.Decl()
 	if err != nil {
@@ -96,11 +99,11 @@ func (f *File) findFuncDecl(name string) (idx int, fn *dst.FuncDecl, ok bool) {
 func (f *File) FindFunc(name string) (idx int, fn *Func, ok bool) {
 	i, d, ok := f.findFuncDecl(name)
 	if !ok {
-		return i, nil, false
+		return -1, nil, false
 	}
 	fn, err := newFuncFromDecl(f.pkgPath, d)
 	if err != nil {
 		return -1, nil, false
 	}
-	return -1, fn, true
+	return i, fn, true
 }
