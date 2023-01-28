@@ -156,7 +156,16 @@ func (e UnknownMapExpr) Dest() string {
 }
 
 func (e UnknownMapExpr) DstExpr(_ string) (dst.Expr, bool) {
-	return e.dstExpr, true
+	return &dst.KeyValueExpr{
+		Key:   dst.NewIdent(e.dest),
+		Value: e.dstExpr,
+		Decs: dst.KeyValueExprDecorations{
+			NodeDecs: dst.NodeDecs{
+				Before: dst.NewLine,
+				After:  dst.NewLine,
+			},
+		},
+	}, true
 }
 
 func (e UnknownMapExpr) Comment() (string, bool) {
