@@ -20,7 +20,7 @@ func modeTestMapc() *mapc.MapC {
 		},
 	}
 	m.Option.FuncName = "ModeTestMapper"
-	m.Option.OutPath = "e2e/testdata/ab/generated.go"
+	m.Option.OutPath = "testdata/ab/generated.go"
 	return m
 }
 
