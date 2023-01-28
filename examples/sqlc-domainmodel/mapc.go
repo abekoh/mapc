@@ -11,6 +11,7 @@ import (
 func main() {
 	m := mapc.New()
 	m.Option.OutPath = "infrastructure/mapper.go"
+	m.Option.Mode = mapc.Deterministic
 
 	// TODO: set UserID like `type UserID uuid.UUID`, and setup custom caster
 	//m.Option.TypeMappers = append(m.Option.TypeMappers, mapcstd.TypeMapperFunc(
