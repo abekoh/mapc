@@ -20,7 +20,7 @@ type (
 )
 
 func (i UserID) String() string {
-	return i.String()
+	return string(i)
 }
 
 type (
