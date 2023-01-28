@@ -230,12 +230,14 @@ func (f *Func) AppendNotSetExprs(x *Func) error {
 	if !f.destTyp.Equal(x.destTyp) {
 		return errors.New("destTyp must be equal")
 	}
-	existedMapExprMap := make(map[string]struct{})
+	existedExprSet := make(map[string]struct{})
 	for _, existedExpr := range f.mapExprs {
-		existedMapExprMap[existedExpr.Dest()] = struct{}{}
+		if _, ok := existedExpr.Comment(); !ok {
+			existedExprSet[existedExpr.Dest()] = struct{}{}
+		}
 	}
 	for _, xExpr := range x.mapExprs {
-		if _, ok := existedMapExprMap[xExpr.Dest()]; !ok {
+		if _, ok := existedExprSet[xExpr.Dest()]; !ok {
 			f.mapExprs = append(f.mapExprs, xExpr)
 		}
 	}
