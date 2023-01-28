@@ -52,14 +52,10 @@ func (m *MapC) Group(optFns ...func(*Option)) *Group {
 }
 
 func (m *MapC) Generate() (res []*Generated, errs []error) {
-	generatedMap := make(map[string]*Generated)
+	store := NewGeneratedStore()
 	for _, input := range m.inputs {
-		var generated *Generated
-		if g, ok := generatedMap[input.option.OutPath]; ok {
-			generated = g
-		} else {
-			generated = &Generated{filePath: input.option.OutPath}
-		}
+		generated := store.Get(input.option.OutPath)
+
 		mapper := mapping.Mapper{
 			FieldMappers: input.option.FieldMappers,
 			TypeMappers:  input.option.TypeMappers,
@@ -97,15 +93,10 @@ func (m *MapC) Generate() (res []*Generated, errs []error) {
 			errs = append(errs, fmt.Errorf("failed to apply: %w", err))
 			continue
 		}
-		if input.option.OutPath == "" {
-			res = append(res, generated)
-		} else {
-			generatedMap[generated.filePath] = generated
-		}
+
+		store.Set(input.option.OutPath, generated)
 	}
-	for _, g := range generatedMap {
-		res = append(res, g)
-	}
+	res = store.List()
 	return
 }
 
@@ -225,4 +216,44 @@ func (g Generated) Save() error {
 		return fmt.Errorf("failed to save: %w", err)
 	}
 	return nil
+}
+
+// GeneratedStore stores Generated elements.
+// tempMap has elements that have OutPath. Generated elements are shared with same OutPath value.
+// tempList has elements that doesn't have OutPath.
+type GeneratedStore struct {
+	tempMap  map[string]*Generated
+	tempList []*Generated
+}
+
+func NewGeneratedStore() *GeneratedStore {
+	return &GeneratedStore{
+		tempMap:  make(map[string]*Generated),
+		tempList: []*Generated{},
+	}
+}
+
+func (gs *GeneratedStore) Get(outPath string) *Generated {
+	if g, ok := gs.tempMap[outPath]; ok {
+		return g
+	} else {
+		return &Generated{filePath: outPath}
+	}
+}
+
+func (gs *GeneratedStore) Set(outPath string, g *Generated) {
+	if outPath == "" {
+		gs.tempList = append(gs.tempList, g)
+	} else {
+		gs.tempMap[outPath] = g
+	}
+}
+
+func (gs *GeneratedStore) List() []*Generated {
+	res := make([]*Generated, len(gs.tempList), len(gs.tempList)+len(gs.tempMap))
+	copy(res, gs.tempList)
+	for _, g := range gs.tempMap {
+		res = append(res, g)
+	}
+	return res
 }
