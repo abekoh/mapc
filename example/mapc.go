@@ -1,6 +1,8 @@
 package main
 
 import (
+	"database/sql"
+	"errors"
 	"log"
 
 	"github.com/abekoh/mapc"
@@ -8,7 +10,16 @@ import (
 	"github.com/abekoh/mapc/example/graphql/gqlmodel"
 	"github.com/abekoh/mapc/example/grpc"
 	"github.com/abekoh/mapc/example/infrastructure/sqlc"
+	"github.com/abekoh/mapc/mapcstd"
 )
+
+func NullInt64ToPointerInt(x sql.NullInt64) (*int, error) {
+	if x.Valid {
+		v := int(x.Int64)
+		return &v, nil
+	}
+	return nil, errors.New("x is null")
+}
 
 func main() {
 	m := mapc.New()
@@ -16,7 +27,7 @@ func main() {
 	// TODO: set UserID like `type UserID uuid.UUID`, and setup custom caster
 	//m.Option.TypeMappers = append(m.Option.TypeMappers, mapcstd.TypeMapperFunc(
 	//	func(src, dest *mapcstd.Typ) (mapcstd.Caster, bool) {
-	//		if src.Equals(mapcstd.NewTypOf("")) && dest.Equals(mapcstd.NewTypOf(domain.UserID(""))) {
+	//		if src.Equals(mapcstd.NewTypFrom("")) && dest.Equals(mapcstd.NewTypFrom(domain.UserID(""))) {
 	//			return mapcstd.NewSimpleCaster(&mapcstd.Caller{
 	//				PkgPath:    "github.com/abekoh/mapc/example/sqlc-domainmodel/domain",
 	//				Name:       "UserID",
@@ -30,6 +41,7 @@ func main() {
 	infra := m.Group(func(option *mapc.Option) {
 		option.OutPath = "infrastructure/mapper.go"
 		option.Mode = mapc.Deterministic
+		option.TypeMappers = append(option.TypeMappers, mapcstd.NewDeclaredTypeMapper(NullInt64ToPointerInt))
 	})
 
 	infra.Register(sqlc.User{}, domain.User{})

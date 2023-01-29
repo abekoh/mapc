@@ -9,7 +9,7 @@ type Typ struct {
 	refTyp reflect.Type
 }
 
-func NewTypOf(t any) *Typ {
+func NewTypFrom(t any) *Typ {
 	return &Typ{refTyp: reflect.TypeOf(t)}
 }
 

@@ -25,7 +25,7 @@ func MapTaskToTask(x sqlc.Task) domain.Task {
 		Title:        x.Title,
 		Description:  x.Description,
 		RegisteredAt: x.RegisteredAt,
-		// StoryPoint:
+		//StoryPoint: x.StoryPoint
 	}
 }
 
