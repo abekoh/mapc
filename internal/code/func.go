@@ -68,25 +68,24 @@ func NewFuncFromMapping(m *mapping.Mapping, opt *FuncOption) *Func {
 	mappedFieldMap := make(map[string]struct{})
 	for _, p := range m.FieldPairs {
 		var casters []Caster
-		for _, c := range p.Casters {
-			caller := c.Caller()
-			if caller == nil {
-				continue
-			}
-			switch caller.CallerType {
-			case mapcstd.Unary:
-				casters = append(casters, UnaryCaster(caller.Name[0]))
-			case mapcstd.Type:
-				casters = append(casters, TypeCaster{
-					name:    caller.Name,
-					pkgPath: caller.PkgPath,
-				})
-			case mapcstd.Func:
-				casters = append(casters, FuncCallCaster{
-					name:    caller.Name,
-					pkgPath: caller.PkgPath,
-				})
-			default:
+		for _, caster := range p.Casters {
+			switch c := caster.(type) {
+			case mapcstd.Caller:
+				switch c.CallerType {
+				case mapcstd.Unary:
+					casters = append(casters, UnaryCaster(c.Name[0]))
+				case mapcstd.Type:
+					casters = append(casters, TypeCaster{
+						name:    c.Name,
+						pkgPath: c.PkgPath,
+					})
+				case mapcstd.Func:
+					casters = append(casters, FuncCallCaster{
+						name:    c.Name,
+						pkgPath: c.PkgPath,
+					})
+				default:
+				}
 			}
 		}
 		mapExprs = append(mapExprs, &SimpleMapExpr{
