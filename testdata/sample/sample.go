@@ -74,6 +74,14 @@ type SrcUser struct {
 	RegisteredAt time.Time
 }
 
+// SrcUser2 is source for mapping test
+type SrcUser2 struct {
+	ID           string
+	Name         string
+	Age          int
+	RegisteredAt string
+}
+
 // DestUser is destination for mapping test
 type DestUser struct {
 	ID           uuid.UUID
@@ -126,4 +134,33 @@ func NoSelectorsMapper(x SrcUser) DestUser {
 		Age:          func() int { return 20 }(),
 		RegisteredAt: time.Date(2023, 1, 1, 0, 0, 0, 0, time.UTC),
 	}
+}
+
+func MapStringToUUID(x string) (uuid.UUID, error) {
+	u, err := uuid.Parse(x)
+	if err != nil {
+		return [16]byte{}, err
+	}
+	return u, err
+}
+
+func MapStringToTime(x string) (time.Time, bool) {
+	t, err := time.Parse(x, time.RFC3339)
+	if err != nil {
+		return t, false
+	}
+	return t, true
+}
+
+func WithErrorMapper(x SrcUser2) (DestUser, error) {
+	a, err0 := MapStringToUUID(x.ID)
+	if err0 != nil {
+		return DestUser{}, err0
+	}
+	return DestUser{
+		ID:   a,
+		Name: x.Name,
+		Age:  x.Age,
+		// RegisteredAt:
+	}, nil
 }
