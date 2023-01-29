@@ -63,60 +63,60 @@ func TestConvertMapper_Map(t *testing.T) {
 		{
 			src:  Int,
 			dest: Int,
-			want: &CallerCaster{
-				pkgPath:    "",
-				name:       "int",
-				callerType: Type,
+			want: &Caller{
+				PkgPath:    "",
+				Name:       "int",
+				CallerType: Type,
 			},
 			wantOk: true,
 		},
 		{
 			src:  String,
 			dest: String,
-			want: &CallerCaster{
-				pkgPath:    "",
-				name:       "string",
-				callerType: Type,
+			want: &Caller{
+				PkgPath:    "",
+				Name:       "string",
+				CallerType: Type,
 			},
 			wantOk: true,
 		},
 		{
 			src:  Object,
 			dest: Object,
-			want: &CallerCaster{
-				pkgPath:    "github.com/abekoh/mapc/testdata/sample",
-				name:       "Object",
-				callerType: Type,
+			want: &Caller{
+				PkgPath:    "github.com/abekoh/mapc/testdata/sample",
+				Name:       "Object",
+				CallerType: Type,
 			},
 			wantOk: true,
 		},
 		{
 			src:  Int,
 			dest: Int64,
-			want: &CallerCaster{
-				pkgPath:    "",
-				name:       "int64",
-				callerType: Type,
+			want: &Caller{
+				PkgPath:    "",
+				Name:       "int64",
+				CallerType: Type,
 			},
 			wantOk: true,
 		},
 		{
 			src:  Int,
 			dest: TypedInt,
-			want: &CallerCaster{
-				pkgPath:    "github.com/abekoh/mapc/mapcstd",
-				name:       "typedInt",
-				callerType: Type,
+			want: &Caller{
+				PkgPath:    "github.com/abekoh/mapc/mapcstd",
+				Name:       "typedInt",
+				CallerType: Type,
 			},
 			wantOk: true,
 		},
 		{
 			src:  Int,
 			dest: String,
-			want: &CallerCaster{
-				pkgPath:    "",
-				name:       "string",
-				callerType: Type,
+			want: &Caller{
+				PkgPath:    "",
+				Name:       "string",
+				CallerType: Type,
 			},
 			wantOk: true,
 		},
@@ -156,30 +156,30 @@ func TestRefMapper_Map(t *testing.T) {
 		{
 			src:  Int,
 			dest: PointerInt,
-			want: &CallerCaster{
-				pkgPath:    "",
-				name:       "&",
-				callerType: Unary,
+			want: &Caller{
+				PkgPath:    "",
+				Name:       "&",
+				CallerType: Unary,
 			},
 			wantOk: true,
 		},
 		{
 			src:  PointerInt,
 			dest: DoublePointerInt,
-			want: &CallerCaster{
-				pkgPath:    "",
-				name:       "&",
-				callerType: Unary,
+			want: &Caller{
+				PkgPath:    "",
+				Name:       "&",
+				CallerType: Unary,
 			},
 			wantOk: true,
 		},
 		{
 			src:  String,
 			dest: PointerString,
-			want: &CallerCaster{
-				pkgPath:    "",
-				name:       "&",
-				callerType: Unary,
+			want: &Caller{
+				PkgPath:    "",
+				Name:       "&",
+				CallerType: Unary,
 			},
 			wantOk: true,
 		},
@@ -237,30 +237,30 @@ func TestDerefMapper_Map(t *testing.T) {
 		{
 			src:  PointerString,
 			dest: String,
-			want: &CallerCaster{
-				pkgPath:    "",
-				name:       "*",
-				callerType: Unary,
+			want: &Caller{
+				PkgPath:    "",
+				Name:       "*",
+				CallerType: Unary,
 			},
 			wantOk: true,
 		},
 		{
 			src:  PointerInt,
 			dest: Int,
-			want: &CallerCaster{
-				pkgPath:    "",
-				name:       "*",
-				callerType: Unary,
+			want: &Caller{
+				PkgPath:    "",
+				Name:       "*",
+				CallerType: Unary,
 			},
 			wantOk: true,
 		},
 		{
 			src:  DoublePointerInt,
 			dest: PointerInt,
-			want: &CallerCaster{
-				pkgPath:    "",
-				name:       "*",
-				callerType: Unary,
+			want: &Caller{
+				PkgPath:    "",
+				Name:       "*",
+				CallerType: Unary,
 			},
 		},
 		{
