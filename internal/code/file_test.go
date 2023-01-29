@@ -220,6 +220,13 @@ func TestFile_FindFunc(t *testing.T) {
 			assert.IsType(t, &UnknownMapExpr{}, expr)
 		}
 	})
+	t.Run("with error mapper", func(t *testing.T) {
+		idx, fn, ok := f.FindFunc("WithErrorMapper")
+		_ = fn
+		// TODO: check unknown statements
+		require.True(t, ok)
+		assert.Greater(t, idx, 0)
+	})
 }
 
 func TestFile_Attach(t *testing.T) {
