@@ -38,10 +38,9 @@ func NewFunOf(a any) (*Fun, error) {
 		retType = OnlyValue
 	case 2:
 		destTyp = NewTyp(typ.Out(0))
-		e := new(error)
 		if typ.Out(1).Kind() == reflect.Bool {
 			retType = WithOk
-		} else if typ.Out(1).Implements(reflect.TypeOf(e)) {
+		} else if typ.Out(1).Name() == "error" {
 			retType = WithError
 		} else {
 			return nil, fmt.Errorf("second return value must be error or bool")

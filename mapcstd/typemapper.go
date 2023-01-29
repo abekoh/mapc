@@ -105,5 +105,6 @@ func (m DeclaredTypeMapper) Map(src, dest *Typ) (Caster, bool) {
 		PkgPath:    m.fn.PkgPath(),
 		Name:       m.fn.Name(),
 		CallerType: Func,
+		ReturnType: m.fn.retType,
 	}, true
 }

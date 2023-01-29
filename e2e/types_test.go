@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/abekoh/mapc"
+	"github.com/abekoh/mapc/e2e/testdata/ab"
 	"github.com/abekoh/mapc/e2e/testdata/various"
 	"github.com/abekoh/mapc/mapcstd"
 	"github.com/stretchr/testify/assert"
@@ -167,6 +168,36 @@ func MapSToS2(x S) S2 {
 		Int64:  int64(x.Int),
 		String: string(x.Int32),
 		Uint:   uint(x.Uint64),
+	}
+}
+`, got)
+}
+
+func Test_DeclaredTypeMapper(t *testing.T) {
+	m := mapc.New()
+	m.Option.FuncComment = false
+	m.Option.NoMapperFieldComment = false
+	m.Option.OutPkgPath = "github.com/abekoh/mapc/e2e/testdata/ab"
+	m.Option.FieldMappers = []mapcstd.FieldMapper{mapcstd.HashMap{
+		"ID": "ID",
+	}}
+	m.Option.TypeMappers = append(m.Option.TypeMappers,
+		mapcstd.NewDeclaredTypeMapper(ab.MapStringToUUID),
+	)
+	m.Register(ab.AUser2{}, ab.BUser{})
+	gs, errs := m.Generate()
+	requireNoErrors(t, errs)
+	got, err := gs[0].Sprint()
+	require.Nil(t, err)
+	assert.Equal(t, `package ab
+
+func MapAUser2ToBUser(x AUser2) (BUser, error) {
+	id, err := MapStringToUUID(x)
+	if err != nil {
+		return BUser{}, err
+	}
+	return BUser{
+		ID: x.ID,
 	}
 }
 `, got)
