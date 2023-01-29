@@ -1,7 +1,5 @@
 package mapcstd
 
-import "github.com/abekoh/mapc/internal/fun"
-
 type TypeMapper interface {
 	Map(src, dest *Typ) (Caster, bool)
 }
@@ -92,11 +90,11 @@ func (m TypeMapperFunc) Map(src, dest *Typ) (Caster, bool) {
 }
 
 type DeclaredTypeMapper struct {
-	fn *fun.Fun
+	fn *Fun
 }
 
 func NewDeclaredTypeMapper(a any) *DeclaredTypeMapper {
-	fn, err := fun.NewFunOf(a)
+	fn, err := NewFunOf(a)
 	if err != nil {
 		panic(err)
 	}

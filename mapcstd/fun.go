@@ -1,15 +1,13 @@
-package fun
+package mapcstd
 
 import (
 	"fmt"
 	"reflect"
-
-	"github.com/abekoh/mapc/mapcstd"
 )
 
 type Fun struct {
-	srcTyp  *mapcstd.Typ
-	destTyp *mapcstd.Typ
+	srcTyp  *Typ
+	destTyp *Typ
 	name    string
 	pkgPath string
 	retType ReturnType
@@ -32,14 +30,14 @@ func NewFunOf(a any) (*Fun, error) {
 	if typ.NumIn() != 1 {
 		return nil, fmt.Errorf("# of inputs must be one")
 	}
-	var destTyp *mapcstd.Typ
+	var destTyp *Typ
 	var retType ReturnType
 	switch typ.NumOut() {
 	case 1:
-		destTyp = mapcstd.NewTyp(typ.Out(0))
+		destTyp = NewTyp(typ.Out(0))
 		retType = OnlyValue
 	case 2:
-		destTyp = mapcstd.NewTyp(typ.Out(0))
+		destTyp = NewTyp(typ.Out(0))
 		e := new(error)
 		if typ.Out(1).Kind() == reflect.Bool {
 			retType = WithOk
@@ -52,7 +50,7 @@ func NewFunOf(a any) (*Fun, error) {
 		return nil, fmt.Errorf("# of outputs must be one or two")
 	}
 	return &Fun{
-		srcTyp:  mapcstd.NewTyp(typ.In(0)),
+		srcTyp:  NewTyp(typ.In(0)),
 		destTyp: destTyp,
 		name:    typ.Name(),
 		pkgPath: typ.PkgPath(),
@@ -60,7 +58,7 @@ func NewFunOf(a any) (*Fun, error) {
 	}, nil
 }
 
-func (f Fun) SameInOut(src, dest *mapcstd.Typ) bool {
+func (f Fun) SameInOut(src, dest *Typ) bool {
 	return src.Equals(f.srcTyp) && dest.Equals(f.destTyp)
 }
 
