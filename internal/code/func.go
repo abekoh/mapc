@@ -73,14 +73,14 @@ func NewFuncFromMapping(m *mapping.Mapping, opt *FuncOption) *Func {
 			case mapcstd.Caller:
 				switch c.CallerType {
 				case mapcstd.Unary:
-					casters = append(casters, UnaryCaster(c.Name[0]))
+					casters = append(casters, UnaryCaller(c.Name[0]))
 				case mapcstd.Type:
-					casters = append(casters, TypeCaster{
+					casters = append(casters, TypeCaller{
 						name:    c.Name,
 						pkgPath: c.PkgPath,
 					})
 				case mapcstd.Func:
-					casters = append(casters, FuncCallCaster{
+					casters = append(casters, FuncCaller{
 						name:    c.Name,
 						pkgPath: c.PkgPath,
 					})

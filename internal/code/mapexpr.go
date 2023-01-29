@@ -176,12 +176,12 @@ type Caster interface {
 	Expr(arg dst.Expr) dst.Expr
 }
 
-type TypeCaster struct {
+type TypeCaller struct {
 	name    string
 	pkgPath string
 }
 
-func (t TypeCaster) Expr(arg dst.Expr) dst.Expr {
+func (t TypeCaller) Expr(arg dst.Expr) dst.Expr {
 	return &dst.CallExpr{
 		Fun:      genTypeWithName(t.name, t.pkgPath),
 		Args:     []dst.Expr{arg},
@@ -190,12 +190,12 @@ func (t TypeCaster) Expr(arg dst.Expr) dst.Expr {
 	}
 }
 
-type FuncCallCaster struct {
+type FuncCaller struct {
 	name    string
 	pkgPath string
 }
 
-func (c FuncCallCaster) Expr(arg dst.Expr) dst.Expr {
+func (c FuncCaller) Expr(arg dst.Expr) dst.Expr {
 	return &dst.CallExpr{
 		Fun:      genFunc(c.name, c.pkgPath),
 		Args:     []dst.Expr{arg},
@@ -204,9 +204,9 @@ func (c FuncCallCaster) Expr(arg dst.Expr) dst.Expr {
 	}
 }
 
-type UnaryCaster byte
+type UnaryCaller byte
 
-func (u UnaryCaster) Expr(arg dst.Expr) dst.Expr {
+func (u UnaryCaller) Expr(arg dst.Expr) dst.Expr {
 	var op token.Token
 	switch rune(u) {
 	case '&':
