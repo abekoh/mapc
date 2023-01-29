@@ -262,6 +262,7 @@ func TestDerefMapper_Map(t *testing.T) {
 				Name:       "*",
 				CallerType: Unary,
 			},
+			wantOk: true,
 		},
 		{
 			src:    PointerInt,
