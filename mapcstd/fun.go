@@ -24,7 +24,6 @@ const (
 )
 
 func NewFunFrom(a any) (*Fun, error) {
-	// TODO: add test, refactoring
 	typ := reflect.TypeOf(a)
 	if typ.Kind() != reflect.Func {
 		return nil, fmt.Errorf("kind must be func, got %v", typ.Kind())
