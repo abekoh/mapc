@@ -3,6 +3,8 @@ package mapcstd
 import (
 	"fmt"
 	"reflect"
+	"runtime"
+	"strings"
 )
 
 type Fun struct {
@@ -48,13 +50,28 @@ func NewFunOf(a any) (*Fun, error) {
 	default:
 		return nil, fmt.Errorf("# of outputs must be one or two")
 	}
+	pkgPath, name := funcNameAndPkgPath(a)
 	return &Fun{
 		srcTyp:  NewTyp(typ.In(0)),
 		destTyp: destTyp,
-		name:    typ.Name(),
-		pkgPath: typ.PkgPath(),
+		name:    name,
+		pkgPath: pkgPath,
 		retType: retType,
 	}, nil
+}
+
+func funcNameAndPkgPath(a any) (pkgPath, name string) {
+	// OPTIMIZE: don't use split/join
+	val := reflect.ValueOf(a)
+	n := runtime.FuncForPC(val.Pointer()).Name()
+	sp := strings.Split(n, ".")
+	if len(sp) == 1 {
+		return "", n
+	}
+	if len(sp) > 1 {
+		return strings.Join(sp[0:len(sp)-1], "."), sp[len(sp)-1]
+	}
+	return
 }
 
 func (f Fun) SameInOut(src, dest *Typ) bool {
