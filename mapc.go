@@ -77,8 +77,8 @@ func (m *MapC) Generate() (res []*Generated, errs []error) {
 			NoMapperFieldComment: input.option.NoMapperFieldComment,
 			Editable:             input.option.Mode.Editable(),
 		})
-		//if existedFn, ok := generated.codeFile.FindFunc(fn.Name()); ok {
-		//	if err := fn.FillMapExprs(existedFn); err != nil {
+		//if existedFn, ok := generated.codeFile.FindFunc(fun.Name()); ok {
+		//	if err := fun.FillMapExprs(existedFn); err != nil {
 		//		errs = append(errs, fmt.Errorf("failed to append not set exprs: %w", err))
 		//		continue
 		//	}

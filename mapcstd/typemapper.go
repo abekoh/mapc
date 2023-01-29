@@ -1,5 +1,7 @@
 package mapcstd
 
+import "github.com/abekoh/mapc/internal/fun"
+
 type TypeMapper interface {
 	Map(src, dest *Typ) (Caster, bool)
 }
@@ -87,4 +89,29 @@ type TypeMapperFunc func(src, dest *Typ) (Caster, bool)
 
 func (m TypeMapperFunc) Map(src, dest *Typ) (Caster, bool) {
 	return m(src, dest)
+}
+
+type DeclaredTypeMapper struct {
+	fn *fun.Fun
+}
+
+func NewDeclaredTypeMapper(a any) *DeclaredTypeMapper {
+	fn, err := fun.NewFunOf(a)
+	if err != nil {
+		panic(err)
+	}
+	return &DeclaredTypeMapper{
+		fn: fn,
+	}
+}
+
+func (m DeclaredTypeMapper) Map(src, dest *Typ) (Caster, bool) {
+	if !m.fn.SameInOut(src, dest) {
+		return nil, false
+	}
+	return NewSimpleCaster(&Caller{
+		PkgPath:    m.fn.PkgPath(),
+		Name:       m.fn.Name(),
+		CallerType: Func,
+	}), true
 }
