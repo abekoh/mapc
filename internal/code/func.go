@@ -70,7 +70,7 @@ func NewFuncFromMapping(m *mapping.Mapping, opt *FuncOption) *Func {
 		var casters []Caster
 		for _, caster := range p.Casters {
 			switch c := caster.(type) {
-			case mapcstd.Caller:
+			case *mapcstd.Caller:
 				switch c.CallerType {
 				case mapcstd.Unary:
 					casters = append(casters, UnaryCaller(c.Name[0]))
