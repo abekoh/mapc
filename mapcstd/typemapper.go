@@ -88,7 +88,7 @@ type DeclaredTypeMapper struct {
 }
 
 func NewDeclaredTypeMapper(a any) *DeclaredTypeMapper {
-	fn, err := NewFunOf(a)
+	fn, err := NewFunFrom(a)
 	if err != nil {
 		panic(err)
 	}

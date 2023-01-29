@@ -23,7 +23,7 @@ const (
 	WithOk
 )
 
-func NewFunOf(a any) (*Fun, error) {
+func NewFunFrom(a any) (*Fun, error) {
 	// TODO: add test, refactoring
 	typ := reflect.TypeOf(a)
 	if typ.Kind() != reflect.Func {

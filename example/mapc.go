@@ -27,7 +27,7 @@ func main() {
 	// TODO: set UserID like `type UserID uuid.UUID`, and setup custom caster
 	//m.Option.TypeMappers = append(m.Option.TypeMappers, mapcstd.TypeMapperFunc(
 	//	func(src, dest *mapcstd.Typ) (mapcstd.Caster, bool) {
-	//		if src.Equals(mapcstd.NewTypOf("")) && dest.Equals(mapcstd.NewTypOf(domain.UserID(""))) {
+	//		if src.Equals(mapcstd.NewTypFrom("")) && dest.Equals(mapcstd.NewTypFrom(domain.UserID(""))) {
 	//			return mapcstd.NewSimpleCaster(&mapcstd.Caller{
 	//				PkgPath:    "github.com/abekoh/mapc/example/sqlc-domainmodel/domain",
 	//				Name:       "UserID",
