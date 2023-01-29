@@ -26,12 +26,10 @@ type ConvertMapper struct {
 
 func (c ConvertMapper) Map(src, dest *Typ) (Caster, bool) {
 	if src.ConvertibleTo(dest) {
-		return &SimpleCaster{
-			caller: &Caller{
-				Name:       dest.Name(),
-				PkgPath:    dest.PkgPath(),
-				CallerType: Type,
-			},
+		return &CallerCaster{
+			name:       dest.Name(),
+			pkgPath:    dest.PkgPath(),
+			callerType: Type,
 		}, true
 	}
 	return nil, false
@@ -42,12 +40,10 @@ type RefMapper struct {
 
 func (p RefMapper) Map(src, dest *Typ) (Caster, bool) {
 	if srcElm, ok := dest.Elem(); ok && src.AssignableTo(srcElm) {
-		return &SimpleCaster{
-			caller: &Caller{
-				PkgPath:    "",
-				Name:       "&",
-				CallerType: Unary,
-			},
+		return &CallerCaster{
+			pkgPath:    "",
+			name:       "&",
+			callerType: Unary,
 		}, true
 	}
 	return nil, false
@@ -58,12 +54,10 @@ type DerefMapper struct {
 
 func (p DerefMapper) Map(src, dest *Typ) (Caster, bool) {
 	if destElm, ok := src.Elem(); ok && destElm.AssignableTo(dest) {
-		return &SimpleCaster{
-			caller: &Caller{
-				PkgPath:    "",
-				Name:       "*",
-				CallerType: Unary,
-			},
+		return &CallerCaster{
+			pkgPath:    "",
+			name:       "*",
+			callerType: Unary,
 		}, true
 	}
 	return nil, false
@@ -107,9 +101,9 @@ func (m DeclaredTypeMapper) Map(src, dest *Typ) (Caster, bool) {
 	if !m.fn.SameInOut(src, dest) {
 		return nil, false
 	}
-	return NewSimpleCaster(&Caller{
-		PkgPath:    m.fn.PkgPath(),
-		Name:       m.fn.Name(),
-		CallerType: Func,
-	}), true
+	return &CallerCaster{
+		pkgPath:    m.fn.PkgPath(),
+		name:       m.fn.Name(),
+		callerType: Func,
+	}, true
 }

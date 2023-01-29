@@ -1,19 +1,43 @@
 package mapcstd
 
 type Caster interface {
-	Caller() *Caller
+	Name() string
+	PkgPath() string
+	Type() CasterType
+	ReturnType() ReturnType
 }
 
-type Caller struct {
-	PkgPath    string
-	Name       string
-	CallerType CallerType
-}
+type CasterType int
+
+const (
+	Nop CasterType = iota
+	Caller
+	Method
+)
 
 type NopCaster struct{}
 
-func (n NopCaster) Caller() *Caller {
-	return nil
+func (n NopCaster) Name() string {
+	return ""
+}
+
+func (n NopCaster) PkgPath() string {
+	return ""
+}
+
+func (n NopCaster) Type() CasterType {
+	return Nop
+}
+
+func (n NopCaster) ReturnType() ReturnType {
+	return OnlyValue
+}
+
+type CallerCaster struct {
+	pkgPath    string
+	name       string
+	callerType CallerType
+	retType    ReturnType
 }
 
 type CallerType int
@@ -24,14 +48,18 @@ const (
 	Func
 )
 
-type SimpleCaster struct {
-	caller *Caller
+func (c CallerCaster) Name() string {
+	return c.name
 }
 
-func NewSimpleCaster(caller *Caller) *SimpleCaster {
-	return &SimpleCaster{caller: caller}
+func (c CallerCaster) PkgPath() string {
+	return c.pkgPath
 }
 
-func (s SimpleCaster) Caller() *Caller {
-	return s.caller
+func (c CallerCaster) Type() CasterType {
+	return Caller
+}
+
+func (c CallerCaster) ReturnType() ReturnType {
+	return c.retType
 }
