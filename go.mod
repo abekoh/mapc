@@ -6,7 +6,7 @@ require (
 	github.com/dave/dst v0.27.2
 	github.com/google/uuid v1.3.0
 	github.com/stretchr/testify v1.8.1
-	golang.org/x/mod v0.6.0-dev.0.20220419223038-86c51ed26bb4
+	golang.org/x/mod v0.8.0
 )
 
 require (
